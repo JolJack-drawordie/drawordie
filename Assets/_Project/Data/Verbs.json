@@ -1,0 +1,9 @@
+{
+  "verbs": [
+    { "id": 201, "name": "베기", "baseCost": 2, "baseValue": 5, "action": "Attack", "desc": "5 데미지" },
+    { "id": 202, "name": "찌르기", "baseCost": 1, "baseValue": 3, "action": "Attack", "desc": "3 데미지" },
+    { "id": 203, "name": "방어", "baseCost": 1, "baseValue": 4, "action": "Defend", "desc": "4 방어도" },
+    { "id": 204, "name": "회복", "baseCost": 2, "baseValue": 3, "action": "Heal", "desc": "3 체력 회복" },
+    { "id": 205, "name": "강타", "baseCost": 3, "baseValue": 10, "action": "Attack", "desc": "10 데미지" }
+  ]
+}

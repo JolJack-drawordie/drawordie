@@ -1,0 +1,9 @@
+{
+  "adjectives": [
+    { "id": 101, "name": "강력한", "cost": 1, "dmgMod": 3, "desc": "데미지 +3" },
+    { "id": 102, "name": "빠른", "cost": 0, "dmgMod": 0, "desc": "코스트가 없는 날렵함" },
+    { "id": 103, "name": "날카로운", "cost": 2, "dmgMod": 5, "desc": "데미지 +5 (치명적)" },
+    { "id": 104, "name": "가벼운", "cost": 0, "dmgMod": -1, "desc": "데미지 -1" },
+    { "id": 105, "name": "불타는", "cost": 1, "dmgMod": 4, "desc": "데미지 +4" }
+  ]
+}
