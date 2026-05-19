@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using TMPro; // 🌟 TextMeshPro를 사용하기 위해 반드시 추가해야 하는 마법의 주문!
+using TMPro;
 
 public class AuthManager : MonoBehaviour
 {
@@ -9,22 +9,32 @@ public class AuthManager : MonoBehaviour
     public GameObject loginPanel;
     public GameObject registerPanel;
 
-    [Header("로그인 입력 필드 (TMP)")]
+    [Header("로그인 입력 필드")]
     public TMP_InputField loginID;
     public TMP_InputField loginPW;
 
-    [Header("회원가입 입력 필드 (TMP)")]
+    [Header("회원가입 입력 필드")]
     public TMP_InputField regID;
     public TMP_InputField regPW;
     public TMP_InputField regNick;
 
-    // --- 화면 전환 기능 ---
-    public void OpenRegister() { loginPanel.SetActive(false); registerPanel.SetActive(true); }
-    public void OpenLogin() { registerPanel.SetActive(false); loginPanel.SetActive(true); }
+    // 화면 전환 기능 
+    public void OpenRegister() { 
+        loginPanel.SetActive(false); 
+        registerPanel.SetActive(true); 
+    }
+    public void OpenLogin() { 
+        registerPanel.SetActive(false); 
+        loginPanel.SetActive(true); 
+    }
 
-    // --- 버튼 클릭 이벤트 ---
-    public void LoginClick() { StartCoroutine(LoginAction()); }
-    public void RegisterClick() { StartCoroutine(RegisterAction()); }
+    // 버튼 클릭 이벤트
+    public void LoginClick() { 
+        StartCoroutine(LoginAction()); 
+    }
+    public void RegisterClick() { 
+        StartCoroutine(RegisterAction());
+    }
 
     IEnumerator LoginAction()
     {

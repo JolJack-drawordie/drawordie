@@ -1,37 +1,35 @@
+using System;
 using System.Collections.Generic;
 
-// --- 1. 형용사(Adjective) 데이터 구조 ---
-[System.Serializable]
-public class AdjectiveInfo 
+// --- 서버에서 받아올 데이터 구조 ---
+[Serializable]
+public class Adjective 
 {
     public int id;
     public string name;
-    public int cost;     // ⭐ costMod를 cost로 이름을 바꿨습니다!
-    public int dmgMod;   
+    public int costMod; // 서버 변수명과 일치!
+    public int dmgMod;
+    public int shdMod;
+    public int healMod;
     public string desc;  
 }
 
-[System.Serializable]
-public class AdjectiveList 
-{ 
-    public List<AdjectiveInfo> adjectives; 
-}
-
-
-// --- 2. 동사(Verb) 데이터 구조 ---
-[System.Serializable]
-public class VerbInfo 
+[Serializable]
+public class Gerund 
 {
     public int id;
     public string name;
-    public int baseCost;  // 기본 코스트
-    public int baseValue; // 기본 위력 (데미지나 방어량)
-    public string action; // 행동 타입 (Attack, Defend 등)
-    public string desc;   // 설명
+    public int baseCost; 
+    public int baseDmg;
+    public int baseShd;
+    public int baseHeal;
+    public string desc;   
 }
 
-[System.Serializable]
-public class VerbList 
+// 🔥 서버가 보내주는 최상위 포장 박스
+[Serializable]
+public class BattleStartHand 
 { 
-    public List<VerbInfo> verbs; 
+    public List<Adjective> adjectives; 
+    public List<Gerund> gerunds;
 }
