@@ -1,15 +1,10 @@
 using UnityEngine;
-using System.IO;
-using System.Collections; // ⭐ 코루틴 사용을 위해 반드시 필요!
-using System.Collections.Generic;
+using UnityEngine.Networking;
+using System.Collections;
 using UnityEngine.InputSystem;
 
 public class DataManager : MonoBehaviour
 {
-    [Header("데이터베이스")]
-    public AdjectiveList adjDB; 
-    public VerbList verbDB;      
-
     [Header("전투 시스템")]
     public int currentMana;
     public int diceResult;
@@ -18,77 +13,77 @@ public class DataManager : MonoBehaviour
     public GameObject cardPrefab;
     public Transform handArea;
 
-    void Start() { LoadAllData(); }
-
     void Update()
     {
-        if (Keyboard.current.rKey.wasPressedThisFrame) { RollDiceAndStartTurn(); }
-    }
-
-    public void LoadAllData()
-    {
-        string baseDir = Path.Combine(Application.dataPath, "_DrawOrDie", "Data");
-        
-        string adjPath = Path.Combine(baseDir, "Adjectives.json");
-        if (File.Exists(adjPath)) adjDB = JsonUtility.FromJson<AdjectiveList>(File.ReadAllText(adjPath));
-
-        string verbPath = Path.Combine(baseDir, "Verbs.json");
-        if (File.Exists(verbPath)) verbDB = JsonUtility.FromJson<VerbList>(File.ReadAllText(verbPath));
+        // R키를 누르면 주사위를 굴리고 턴을 시작!
+        if (Keyboard.current.rKey.wasPressedThisFrame) 
+        { 
+            RollDiceAndStartTurn(); 
+        }
     }
 
     public void RollDiceAndStartTurn()
     {
+        // 1. 주사위 기반 코스트 시스템 작동!
         diceResult = Random.Range(1, 7);
         currentMana = diceResult;
         Debug.Log($"🎲 주사위: {diceResult} (마나: {currentMana})");
 
-        // ⭐ 코루틴을 실행할 때는 StartCoroutine()을 써야 합니다!
-        StartCoroutine(DrawCardsRoutine(5));
+        // 2. 서버에 카드 요청 시작
+        StartCoroutine(FetchAndDrawCards());
     }
 
-    // ⭐ 핵심: 0.2초씩 쉬면서 카드를 하나씩 생성하는 코루틴 함수
-    IEnumerator DrawCardsRoutine(int count)
+    // ⭐ 1단계: 서버에서 카드 5장 받아오기
+    IEnumerator FetchAndDrawCards()
     {
-        // 1. 기존 카드 치우기
-        foreach (Transform child in handArea)
-        {
-            Destroy(child.gameObject);
-        }
+        // 기존 카드 싹 치우기
+        foreach (Transform child in handArea) Destroy(child.gameObject);
 
-        Debug.Log($"<color=yellow>--- {count}장의 카드를 순차적으로 뽑습니다 ---</color>");
+        string url = "http://localhost:8080/api/game/start-cards";
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                // 서버 JSON을 C# 클래스로 완벽 변환!
+                string json = www.downloadHandler.text;
+                BattleStartHand hand = JsonUtility.FromJson<BattleStartHand>(json);
+                
+                // 받아온 카드로 드로우 애니메이션 시작
+                StartCoroutine(DrawCardsRoutine(hand));
+            }
+            else
+            {
+                Debug.LogError("서버에서 카드를 가져오지 못했습니다: " + www.error);
+            }
+        }
+    }
+
+    // ⭐ 2단계: 받아온 카드로 프리팹 생성 및 연출 (기존 코드 활용)
+    IEnumerator DrawCardsRoutine(BattleStartHand hand)
+    {
+        int totalCards = hand.adjectives.Count + hand.gerunds.Count; // 2 + 3 = 5장
+        Debug.Log($"<color=yellow>--- 서버에서 뽑아준 {totalCards}장의 카드를 순차적으로 냅니다 ---</color>");
 
         float cardSpacing = 130f;    
         float heightSpacing = 15f;   
         float angleSpacing = -6f;    
 
-        for (int i = 0; i < count; i++)
+        // 카드 데이터를 순서대로 배열에 담기 (형용사 2장 -> 동명사 3장 순서)
+        string[] cNames = { hand.adjectives[0].name, hand.adjectives[1].name, hand.gerunds[0].name, hand.gerunds[1].name, hand.gerunds[2].name };
+        string[] cCosts = { hand.adjectives[0].costMod.ToString(), hand.adjectives[1].costMod.ToString(), hand.gerunds[0].baseCost.ToString(), hand.gerunds[1].baseCost.ToString(), hand.gerunds[2].baseCost.ToString() };
+        string[] cDescs = { hand.adjectives[0].desc, hand.adjectives[1].desc, hand.gerunds[0].desc, hand.gerunds[1].desc, hand.gerunds[2].desc };
+
+        for (int i = 0; i < totalCards; i++)
         {
-            int cardType = Random.Range(0, 2); 
-            string cName = "", cCost = "", cDesc = "";
-
-            if (cardType == 0) // 형용사
-            {
-                var adj = adjDB.adjectives[Random.Range(0, adjDB.adjectives.Count)];
-                cName = adj.name;
-                // ⭐ 기호 붙이는 복잡한 코드를 지우고, 일반 숫자처럼 변환합니다.
-                cCost = adj.cost.ToString(); 
-                cDesc = adj.desc;
-            }
-            else // 동사
-            {
-                var verb = verbDB.verbs[Random.Range(0, verbDB.verbs.Count)];
-                cName = verb.name;
-                cCost = verb.baseCost.ToString();
-                cDesc = verb.desc;
-            }
-
             GameObject newCard = Instantiate(cardPrefab, handArea);
             
-            // 생성되자마자 덱 위치(중앙 상단)로 이동
+            // 생성되자마자 덱 위치(중앙 상단)로 초기화
             RectTransform rect = newCard.GetComponent<RectTransform>();
             rect.localPosition = new Vector3(0, 600f, 0); 
 
-            float centerOffset = i - (count - 1) / 2f; 
+            float centerOffset = i - (totalCards - 1) / 2f; 
             float xPos = centerOffset * cardSpacing;
             float yPos = -Mathf.Abs(centerOffset) * heightSpacing; 
             float zRot = centerOffset * angleSpacing;              
@@ -96,12 +91,12 @@ public class DataManager : MonoBehaviour
             CardUI ui = newCard.GetComponent<CardUI>();
             if (ui != null)
             {
-                ui.Setup(cName, cCost, cDesc);
+                // 배열에 담아둔 데이터로 프리팹 세팅!
+                ui.Setup(cNames[i], cCosts[i], cDescs[i]);
                 ui.SetTransform(new Vector3(xPos, yPos, 0), Quaternion.Euler(0, 0, zRot), i);
             }
 
-            // ⭐ 마법의 문장: 여기서 0.15초 동안 멈췄다가 다음 카드를 생성합니다!
-            // 이 숫자를 조절해서 드로우 속도를 바꿀 수 있습니다.
+            // 0.15초 대기 꿀맛 연출
             yield return new WaitForSeconds(0.15f); 
         }
     }
