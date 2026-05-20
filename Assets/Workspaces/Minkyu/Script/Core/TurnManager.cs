@@ -6,6 +6,7 @@ public class TurnManager : MonoBehaviour
     [Header("참조")]
     public GameManager gameManager;
     public DiceManager diceManager;
+    public UIManager uiManager;
     public PlayerUnit player;
     public EnemyUnit enemy;
 
@@ -16,6 +17,12 @@ public class TurnManager : MonoBehaviour
     private void Start()
     {
         gameManager.StartBattle();
+
+        if (uiManager != null)
+        {
+            uiManager.HideResult();
+        }
+
         StartCoroutine(BattleLoop());
     }
 
@@ -23,35 +30,33 @@ public class TurnManager : MonoBehaviour
     {
         while (!gameManager.isGameOver)
         {
-            // 턴 시작
             turnCount++;
             gameManager.currentState = BattleState.TurnStart;
-            Debug.Log($"===== 턴 {turnCount} 시작 =====");
+            Debug.Log($"===== Turn {turnCount} Start =====");
 
             int rolledEnergy = diceManager.RollDice();
-            Debug.Log($"이번 턴 플레이어 에너지: {rolledEnergy}");
+            Debug.Log($"Turn Energy: {rolledEnergy}");
 
             yield return new WaitForSeconds(1f);
 
-            // 플레이어 턴
             gameManager.currentState = BattleState.PlayerTurn;
             playerActionFinished = false;
-            Debug.Log("플레이어 턴 시작");
+            Debug.Log("Player Turn Start");
 
-            // 임시 테스트용: 스페이스 누르면 공격 후 턴 종료
             while (!playerActionFinished)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    // 예시로 에너지 1 소모 공격
                     if (diceManager.HasEnoughEnergy(1))
                     {
                         diceManager.UseEnergy(1);
                         player.Attack(enemy);
                         gameManager.CheckBattleResult();
 
-                        if (gameManager.isGameOver)
+                        if (ShowBattleResultIfGameOver())
+                        {
                             yield break;
+                        }
                     }
 
                     playerActionFinished = true;
@@ -62,25 +67,45 @@ public class TurnManager : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
-            // 적 턴
             gameManager.currentState = BattleState.EnemyTurn;
-            Debug.Log("적 턴 시작");
+            Debug.Log("Enemy Turn Start");
 
             enemy.Attack(player);
             gameManager.CheckBattleResult();
 
-            if (gameManager.isGameOver)
+            if (ShowBattleResultIfGameOver())
+            {
                 yield break;
+            }
 
             yield return new WaitForSeconds(1f);
 
-            // 턴 종료
             gameManager.currentState = BattleState.TurnEnd;
-            Debug.Log($"===== 턴 {turnCount} 종료 =====");
+            Debug.Log($"===== Turn {turnCount} End =====");
 
             yield return new WaitForSeconds(1f);
         }
     }
+
+    private bool ShowBattleResultIfGameOver()
+    {
+        if (!gameManager.isGameOver)
+        {
+            return false;
+        }
+
+        if (gameManager.currentState == BattleState.Victory)
+        {
+            uiManager.ShowResult(true);
+        }
+        else if (gameManager.currentState == BattleState.Defeat)
+        {
+            uiManager.ShowResult(false);
+        }
+
+        return true;
+    }
+
     public void EndPlayerTurn()
     {
         playerActionFinished = true;

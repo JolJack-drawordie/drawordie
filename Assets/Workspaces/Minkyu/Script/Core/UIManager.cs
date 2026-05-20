@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("기본 UI")]
     public TextMeshProUGUI energyText;
     public TextMeshProUGUI playerHpText;
     public TextMeshProUGUI enemyHpText;
@@ -11,9 +12,14 @@ public class UIManager : MonoBehaviour
     public Slider playerHpBar;
     public Slider enemyHpBar;
 
+    [Header("참조")]
     public DiceManager diceManager;
     public PlayerUnit player;
     public EnemyUnit enemy;
+
+    [Header("전투 결과 UI")]
+    public GameObject resultPanel;
+    public TextMeshProUGUI resultText;
 
     void Update()
     {
@@ -31,5 +37,24 @@ public class UIManager : MonoBehaviour
 
         enemyHpBar.maxValue = enemy.maxHp;
         enemyHpBar.value = enemy.currentHp;
+    }
+
+    public void ShowResult(bool isVictory)
+    {
+        resultPanel.SetActive(true);
+
+        if (isVictory)
+        {
+            resultText.text = "Victory";
+        }
+        else
+        {
+            resultText.text = "Defeat";
+        }
+    }
+
+    public void HideResult()
+    {
+        resultPanel.SetActive(false);
     }
 }
