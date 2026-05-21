@@ -37,6 +37,17 @@ public class TurnManager : MonoBehaviour
             int rolledEnergy = diceManager.RollDice();
             Debug.Log($"Turn Energy: {rolledEnergy}");
 
+            // 🔥 여기에 준하님의 카드 뽑기 스위치를 켭니다! 🔥
+            // (주의: CardManager나 DrawCards 이름은 준하님이 실제 작성하신 스크립트/함수 이름으로 맞춰주세요)
+            FindFirstObjectByType<DataManager>().TriggerCardDraw(); 
+
+            // 서버에서 카드를 받아와서 예쁘게 깔릴 때까지 1.5초 정도 충분히 기다려 줍니다.
+            yield return new WaitForSeconds(1.5f); 
+
+            gameManager.currentState = BattleState.PlayerTurn;
+            playerActionFinished = false;
+            Debug.Log("Player Turn Start");
+
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.PlayerTurn;

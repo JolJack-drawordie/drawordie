@@ -33,6 +33,12 @@ public class DataManager : MonoBehaviour
         StartCoroutine(FetchAndDrawCards());
     }
 
+    // 🔥 [추가된 부분] 민규님의 TurnManager가 밖에서 안전하게 누를 수 있는 전용 스위치! 🔥
+    public void TriggerCardDraw()
+    {
+        StartCoroutine(FetchAndDrawCards());
+    }
+    
     // ⭐ 1단계: 서버에서 카드 5장 받아오기
     IEnumerator FetchAndDrawCards()
     {
