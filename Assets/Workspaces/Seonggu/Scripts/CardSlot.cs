@@ -7,6 +7,7 @@ public class CardSlot : MonoBehaviour, IDropHandler
     public bool isOccupied = false; // 이미 슬롯에 카드가 있는지 체크
     public GameObject currentCard = null; // 현재 슬롯에 있는 카드 저장
 
+    
 
     public CardSO GetCardData()
     {
@@ -22,11 +23,20 @@ public class CardSlot : MonoBehaviour, IDropHandler
         currentCard = card;
         isOccupied = true;
 
+
+        card.transform.SetParent(transform, false); // 슬롯의 자식으로 설정
         card.transform.position = transform.position;
-        card.transform.SetParent(transform); // 슬롯의 자식으로 설정
         card.transform.localPosition = Vector3.zero; // 슬롯의 중앙에 배치
 
-        ComboManager.Instance.OnSlotUpdated();
+        CardUI cardUI = card.GetComponent<CardUI>();
+
+        cardUI.isInSlot = true;
+
+        CardDraggable draggable = card.GetComponent<CardDraggable>();
+        draggable.currentSlot = this;
+
+
+        //ComboManager.Instance.OnSlotUpdated();
     }
 
     public void RemoveCard()

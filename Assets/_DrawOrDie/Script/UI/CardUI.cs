@@ -18,7 +18,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private RectTransform rect;
 
     private CardDraggable cardDrag; // 홍성구 추가 : 카드 드래그 스크립트
-    
+    public bool isInSlot = false; // 홍성구 추가 : 카드가 슬롯에 있는지 확인하는 변수
+
     // ⭐ 추가됨: 카드의 원래 순서를 기억하는 변수
     public int siblingIndex; 
     void Awake()
@@ -47,6 +48,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     void Update()
     {
         if (cardDrag != null && cardDrag.isDragging) return; // 홍성구 추가 : 드래그 중이라면 리턴
+        if (isInSlot) return; // 홍성구 추가 : 슬롯안에 있다면 리턴
         rect.localPosition = Vector3.Lerp(rect.localPosition, targetPos, Time.deltaTime * 10f);
         rect.localRotation = Quaternion.Lerp(rect.localRotation, targetRot, Time.deltaTime * 10f);
         rect.localScale = Vector3.Lerp(rect.localScale, targetScale, Time.deltaTime * 10f);

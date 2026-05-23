@@ -26,23 +26,22 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
-
         canvas = GetComponentInParent<Canvas>();
-
         pointerEffect = GetComponent<CardUI>();
-
+        originalParent = transform.parent as RectTransform;
     }
 
     // 1. 카드를 클릭해서 드래그를 시작할 때
     public void OnBeginDrag(PointerEventData eventData)
     {
         isDragging = true;
-	
-	if (pointerEffect != null)
+        pointerEffect.isInSlot = false;
+
+        if (pointerEffect != null)
         {
             pointerEffect.OnCardFocus();
         }
-	transform.rotation = Quaternion.identity;
+        transform.rotation = Quaternion.identity;
 
         //슬롯에 있는 카드라면 슬롯 비우기
         if (currentSlot != null)
@@ -74,6 +73,11 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (pointerEffect != null)
         {
             pointerEffect.OffCardFocus();
+        }
+
+        if (!pointerEffect.isInSlot)
+        {
+            transform.SetParent(originalParent);
         }
 
         canvasGroup.alpha = 1.0f;           // 투명도 복구
