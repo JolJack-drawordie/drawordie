@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public int CardID; // 홍성구 추가 : 카드 id 추가
+
     [Header("UI 연결")]
     public TMP_Text nameText;
     public TMP_Text costText;
@@ -28,8 +30,9 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardDrag = GetComponent<CardDraggable>(); // 홍성구 추가 : 카드 드래그 스크립트 가져오기
     }
 
-    public void Setup(string name, string cost, string desc)
+    public void Setup(int id, string name, string cost, string desc) // 홍성구 수정 : 카드 id 추가
     {
+        CardID = id; 
         nameText.text = name;
         costText.text = cost;
         descText.text = desc;

@@ -76,10 +76,14 @@ public class DataManager : MonoBehaviour
         float heightSpacing = 15f;   
         float angleSpacing = -6f;    
 
+        // 홍성구 추가 : 카드 id 배열에 담기
+        int[] cID = { hand.adjectives[0].id, hand.adjectives[1].id, hand.gerunds[0].id, hand.gerunds[1].id, hand.gerunds[2].id };
+
         // 카드 데이터를 순서대로 배열에 담기 (형용사 2장 -> 동명사 3장 순서)
         string[] cNames = { hand.adjectives[0].name, hand.adjectives[1].name, hand.gerunds[0].name, hand.gerunds[1].name, hand.gerunds[2].name };
         string[] cCosts = { hand.adjectives[0].costMod.ToString(), hand.adjectives[1].costMod.ToString(), hand.gerunds[0].baseCost.ToString(), hand.gerunds[1].baseCost.ToString(), hand.gerunds[2].baseCost.ToString() };
         string[] cDescs = { hand.adjectives[0].desc, hand.adjectives[1].desc, hand.gerunds[0].desc, hand.gerunds[1].desc, hand.gerunds[2].desc };
+
 
         for (int i = 0; i < totalCards; i++)
         {
@@ -98,7 +102,7 @@ public class DataManager : MonoBehaviour
             if (ui != null)
             {
                 // 배열에 담아둔 데이터로 프리팹 세팅!
-                ui.Setup(cNames[i], cCosts[i], cDescs[i]);
+                ui.Setup(cID[i], cNames[i], cCosts[i], cDescs[i]); // 홍성구 수정 : 카드 id 추가
                 ui.SetTransform(new Vector3(xPos, yPos, 0), Quaternion.Euler(0, 0, zRot), i);
             }
 

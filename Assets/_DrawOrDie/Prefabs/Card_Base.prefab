@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7369213560457717281}
   - component: {fileID: 8560097961091716083}
   - component: {fileID: 873824682428546012}
+  - component: {fileID: -6012220247109659175}
   m_Layer: 5
   m_Name: Card_Base
   m_TagString: Untagged
@@ -93,9 +94,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0841dcc04993fe548a85191009a15420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardUI
+  CardID: 0
   nameText: {fileID: 1060929119193159818}
   costText: {fileID: 8289396598950106785}
   descText: {fileID: 8407196904591887457}
+  isInSlot: 0
   siblingIndex: 0
 --- !u!225 &8560097961091716083
 CanvasGroup:
@@ -123,6 +126,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardDraggable
   currentSlot: {fileID: 0}
   isDragging: 0
+--- !u!114 &-6012220247109659175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4076577216169505300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4313f4b2bab36ed47820ba5ac1f05076, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombinationCardUI
+  data:
+    combinationId: 
+    adjectiveId: 0
+    gerundId: 0
+    skillName: 
+    finalCost: 0
+    finalDamage: 0
+    finalShield: 0
+    finalHeal: 0
+    description: 
+  nameText: {fileID: 1060929119193159818}
+  costText: {fileID: 8289396598950106785}
+  descText: {fileID: 8407196904591887457}
 --- !u!1 &4394436740666892809
 GameObject:
   m_ObjectHideFlags: 0
