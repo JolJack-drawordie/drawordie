@@ -96,7 +96,7 @@ public class DataManager_test : MonoBehaviour
             CardUI ui = newCard.GetComponent<CardUI>();
             if (ui != null)
             {
-                ui.Setup(cName, cCost, cDesc);
+                ui.Setup(0, cName, cCost, cDesc);
                 ui.SetTransform(new Vector3(xPos, yPos, 0), Quaternion.Euler(0, 0, zRot), i);
             }
 

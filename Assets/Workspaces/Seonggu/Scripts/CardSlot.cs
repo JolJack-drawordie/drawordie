@@ -6,25 +6,34 @@ public class CardSlot : MonoBehaviour, IDropHandler
 {
     public bool isOccupied = false; // 이미 슬롯에 카드가 있는지 체크
     public GameObject currentCard = null; // 현재 슬롯에 있는 카드 저장
+    public int currentCardID;
+    
 
-
-    public CardSO GetCardData()
+    public int GetCardID()
     {
-        if (currentCard == null) return null;
+        if (currentCard == null) return -1;
 
-        CardVisual visual = currentCard.GetComponent<CardVisual>();
-        return visual != null ? visual.data : null;
+        return currentCardID;
     }
 
     // 카드가 슬롯에 들어왔을 때 호출될 함수
     public void PlaceCard(GameObject card)
     {
+        CardUI cardUI = card.GetComponent<CardUI>();
         currentCard = card;
+        currentCardID = cardUI.CardID;
         isOccupied = true;
 
+        card.transform.SetParent(transform, false); // 슬롯의 자식으로 설정
         card.transform.position = transform.position;
-        card.transform.SetParent(transform); // 슬롯의 자식으로 설정
         card.transform.localPosition = Vector3.zero; // 슬롯의 중앙에 배치
+        card.transform.localScale = Vector3.one;
+
+        cardUI.isInSlot = true;
+
+        CardDraggable draggable = card.GetComponent<CardDraggable>();
+        draggable.currentSlot = this;
+
 
         ComboManager.Instance.OnSlotUpdated();
     }
@@ -32,7 +41,9 @@ public class CardSlot : MonoBehaviour, IDropHandler
     public void RemoveCard()
     {
         currentCard = null;
+        currentCardID = -1;
         isOccupied = false;
+        ComboManager.Instance.OnSlotUpdated();
     }
 
     public void OnDrop(PointerEventData eventData)
