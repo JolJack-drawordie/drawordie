@@ -102,7 +102,7 @@ public class DataManager : MonoBehaviour
                 ui.SetTransform(new Vector3(xPos, yPos, 0), Quaternion.Euler(0, 0, zRot), i);
             }
 
-            // 0.15초 대기 꿀맛 연출
+            // 0.15초 대기
             yield return new WaitForSeconds(0.15f); 
         }
     }
