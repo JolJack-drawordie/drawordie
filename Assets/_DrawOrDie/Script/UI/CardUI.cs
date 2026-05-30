@@ -106,7 +106,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void Update()
     {
-        if (cardDrag != null && cardDrag.isDragging) return; 
+        if (cardDrag != null && cardDrag.isDragging) return;
+        if (isInSlot) return; // 슬롯 안에서는 위치 애니메이션 금지 (targetPos가 패 좌표계 값이라 이상한 위치로 날아감)
 
         rect.localPosition = Vector3.Lerp(rect.localPosition, targetPos, Time.deltaTime * 10f);
         rect.localRotation = Quaternion.Lerp(rect.localRotation, targetRot, Time.deltaTime * 10f);

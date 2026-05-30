@@ -38,11 +38,13 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (currentSlot != null)
         {
             currentSlot.RemoveCard();
-            currentSlot = null;       
+            currentSlot = null;
+            // 슬롯의 자식에서 handArea로 올려야 드래그 좌표계가 Canvas 기준으로 통일됨
+            transform.SetParent(DataManager.Instance.handArea);
         }
 
         canvasGroup.alpha = 0.6f;
-        canvasGroup.blocksRaycasts = false; 
+        canvasGroup.blocksRaycasts = false;
         transform.SetAsLastSibling();
 
         if (cardUI.cardType == CardType.Adjective)
@@ -60,24 +62,29 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
-        // 🚀 핵심: 카드를 놓는 순간, 카드의 정중앙 좌표 아래에 있는 모든 물리 콜라이더를 뚫어봅니다!
-        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        // 슬롯 판정: RectTransformUtility로 화면 좌표 포함 여부 직접 확인
+        // → Physics2D 좌표계 혼란 없이 Canvas 스케일을 자동 처리함
+        CardSlot[] slots = { ComboManager.Instance.adjSlot, ComboManager.Instance.gerSlot };
+        foreach (CardSlot slot in slots)
+        {
+            if (!slot.gameObject.activeInHierarchy) continue;
+            RectTransform slotRect = slot.GetComponent<RectTransform>();
+            if (RectTransformUtility.RectangleContainsScreenPoint(slotRect, eventData.position, canvas.worldCamera)
+                && slot.CanAcceptCard(cardUI))
+            {
+                slot.PlaceCard(gameObject);
+                return;
+            }
+        }
 
+        // 적 판정: 원래 동작하던 Physics2D 방식 복원
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         foreach (Collider2D hit in hits)
         {
-            // 1. 적(EnemyTarget) 컴포넌트를 맞췄다면?
             EnemyTarget enemy = hit.GetComponent<EnemyTarget>();
             if (enemy != null && (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy))
             {
                 enemy.ReceiveCard(cardUI);
-                return;
-            }
-
-            // 2. 슬롯(CardSlot) 컴포넌트를 맞췄다면?
-            CardSlot slot = hit.GetComponent<CardSlot>();
-            if (slot != null && slot.CanAcceptCard(cardUI))
-            {
-                slot.PlaceCard(gameObject);
                 return;
             }
         }
@@ -85,6 +92,6 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 아무것도 못 맞췄다면 다시 패로 튕겨냅니다.
         ComboManager.Instance.HideSlots();
         transform.SetParent(DataManager.Instance.handArea);
-        DataManager.Instance.RearrangeHand(); 
+        DataManager.Instance.RearrangeHand();
     }
 }

@@ -10,12 +10,11 @@ public class CardSlot : MonoBehaviour
     public GameObject currentCard = null;
     public int currentCardID;
 
-    // 🚀 Start를 사용하여 UI가 그려질 시간을 주고 넉넉한 충돌 크기를 지정!
     private void Start()
     {
         BoxCollider2D box = GetComponent<BoxCollider2D>();
         box.isTrigger = true;
-        box.size = new Vector2(200, 300); // 바늘구멍 탈출! 넉넉한 타겟 사이즈
+        box.size = new Vector2(200, 300);
     }
 
     public int GetCardID() { return currentCard == null ? -1 : currentCardID; }
@@ -25,9 +24,7 @@ public class CardSlot : MonoBehaviour
         if (isOccupied) return false;
         if (slotType == SlotType.Adjective && card.cardType == CardType.Adjective) return true;
         if (slotType == SlotType.Gerund && card.cardType == CardType.Gerund)
-        {
-            if (ComboManager.Instance.adjSlot.isOccupied) return true;
-        }
+            return ComboManager.Instance.adjSlot.isOccupied;
         return false;
     }
 
@@ -36,19 +33,23 @@ public class CardSlot : MonoBehaviour
         CardUI cardUI = card.GetComponent<CardUI>();
         currentCard = card;
         currentCardID = cardUI.CardID;
-        
-        isOccupied = true;
-        cardUI.isInSlot = true; 
 
-        card.transform.SetParent(transform, true);
-        card.transform.position = transform.position; // 눈에 보이는 위치 정확히 일치
-        
+        isOccupied = true;
+        cardUI.isInSlot = true;
+
+        RectTransform cardRect = card.GetComponent<RectTransform>();
+        card.transform.SetParent(transform, false);
+        cardRect.anchorMin = new Vector2(0.5f, 0.5f);
+        cardRect.anchorMax = new Vector2(0.5f, 0.5f);
+        cardRect.pivot = new Vector2(0.5f, 0.5f);
+        cardRect.anchoredPosition = Vector2.zero;
         card.transform.localRotation = Quaternion.identity;
         card.transform.localScale = Vector3.one;
 
         CardDraggable draggable = card.GetComponent<CardDraggable>();
         if (draggable != null) draggable.currentSlot = this;
 
+        DataManager.Instance.RearrangeHand();
         ComboManager.Instance.OnSlotUpdated();
     }
 
