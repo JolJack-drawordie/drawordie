@@ -163,7 +163,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 759162159}
-  - component: {fileID: 759162158}
   - component: {fileID: 759162160}
   m_Layer: 0
   m_Name: DataManager
@@ -172,26 +171,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &759162158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 759162157}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d3e50855171ff4c97501d0faf8ab06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DataManager
-  adjDB:
-    adjectives: []
-  verbDB:
-    verbs: []
-  currentMana: 0
-  diceResult: 0
-  cardPrefab: {fileID: 4076577216169505300, guid: b8d97a279cce80d45a5d7ba6a1ad859d, type: 3}
-  handArea: {fileID: 487128058}
 --- !u!4 &759162159
 Transform:
   m_ObjectHideFlags: 0

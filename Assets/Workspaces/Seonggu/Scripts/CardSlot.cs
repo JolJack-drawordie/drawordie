@@ -1,39 +1,53 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class CardSlot : MonoBehaviour, IDropHandler
+public enum SlotType { Adjective, Gerund }
+
+[RequireComponent(typeof(BoxCollider2D))]
+public class CardSlot : MonoBehaviour
 {
-    public bool isOccupied = false; // ÀÌ¹Ì ½½·Ô¿¡ Ä«µå°¡ ÀÖ´ÂÁö Ã¼Å©
-    public GameObject currentCard = null; // ÇöÀç ½½·Ô¿¡ ÀÖ´Â Ä«µå ÀúÀå
+    public SlotType slotType;
+    public bool isOccupied = false;
+    public GameObject currentCard = null;
     public int currentCardID;
-    
 
-    public int GetCardID()
+    // ğŸš€ Startë¥¼ ì‚¬ìš©í•˜ì—¬ UIê°€ ê·¸ë ¤ì§ˆ ì‹œê°„ì„ ì£¼ê³  ë„‰ë„‰í•œ ì¶©ëŒ í¬ê¸°ë¥¼ ì§€ì •!
+    private void Start()
     {
-        if (currentCard == null) return -1;
-
-        return currentCardID;
+        BoxCollider2D box = GetComponent<BoxCollider2D>();
+        box.isTrigger = true;
+        box.size = new Vector2(200, 300); // ë°”ëŠ˜êµ¬ë© íƒˆì¶œ! ë„‰ë„‰í•œ íƒ€ê²Ÿ ì‚¬ì´ì¦ˆ
     }
 
-    // Ä«µå°¡ ½½·Ô¿¡ µé¾î¿ÔÀ» ¶§ È£ÃâµÉ ÇÔ¼ö
+    public int GetCardID() { return currentCard == null ? -1 : currentCardID; }
+
+    public bool CanAcceptCard(CardUI card)
+    {
+        if (isOccupied) return false;
+        if (slotType == SlotType.Adjective && card.cardType == CardType.Adjective) return true;
+        if (slotType == SlotType.Gerund && card.cardType == CardType.Gerund)
+        {
+            if (ComboManager.Instance.adjSlot.isOccupied) return true;
+        }
+        return false;
+    }
+
     public void PlaceCard(GameObject card)
     {
         CardUI cardUI = card.GetComponent<CardUI>();
         currentCard = card;
         currentCardID = cardUI.CardID;
+        
         isOccupied = true;
+        cardUI.isInSlot = true; 
 
-        card.transform.SetParent(transform, false); // ½½·ÔÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤
-        card.transform.position = transform.position;
-        card.transform.localPosition = Vector3.zero; // ½½·ÔÀÇ Áß¾Ó¿¡ ¹èÄ¡
+        card.transform.SetParent(transform, true);
+        card.transform.position = transform.position; // ëˆˆì— ë³´ì´ëŠ” ìœ„ì¹˜ ì •í™•íˆ ì¼ì¹˜
+        
+        card.transform.localRotation = Quaternion.identity;
         card.transform.localScale = Vector3.one;
 
-        cardUI.isInSlot = true;
-
         CardDraggable draggable = card.GetComponent<CardDraggable>();
-        draggable.currentSlot = this;
-
+        if (draggable != null) draggable.currentSlot = this;
 
         ComboManager.Instance.OnSlotUpdated();
     }
@@ -44,17 +58,5 @@ public class CardSlot : MonoBehaviour, IDropHandler
         currentCardID = -1;
         isOccupied = false;
         ComboManager.Instance.OnSlotUpdated();
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        GameObject dropped = eventData.pointerDrag;
-
-        if (isOccupied) return; //½½·Ô¿¡ ÀÌ¹Ì Ä«µå°¡ ÀÖ´Ù¸é ½ÇÆĞ
-
-        if (dropped != null)
-        {
-            PlaceCard(dropped);
-        }
     }
 }

@@ -5,98 +5,63 @@ using UnityEngine.Networking;
 
 public class ComboManager : MonoBehaviour
 {
-    // ½Ì±ÛÅæ (¾îµğ¼­µç ComboManager.Instance·Î Á¢±Ù °¡´ÉÇÏ°Ô)
     public static ComboManager Instance;
 
-    public CardSlot adjSlot; // ¿ŞÂÊ ½½·Ô
-    public CardSlot gerSlot; // ¿À¸¥ÂÊ ½½·Ô
-    //public CardCombiner combiner; // Á¶ÇÕ ·ÎÁ÷ ½ºÅ©¸³Æ®
+    public CardSlot adjSlot; 
+    public CardSlot gerSlot; 
+    public GameObject slotPanel; // ğŸ’¡ Canvasì— ìˆëŠ” SlotPanel ì˜¤ë¸Œì íŠ¸ë¥¼ ì¸ìŠ¤í™í„°ì—ì„œ ì—°ê²°í•´ì£¼ì„¸ìš”!
 
-    [Header("°á°ú Ä«µå »ı¼º °ü¸®")]
-    public GameObject cardPrefab;
-    public Transform resultParent;
-    public Transform spawnPoint;
-
-
-    CombinationList ComboList;
+    private CombinationList ComboList;
     private Dictionary<string, Combination> comboTable = new Dictionary<string, Combination>();
 
-    void Awake()
-    {
-        Instance = this;
-    }
+    void Awake() { Instance = this; }
 
     void Start()
     {
+        HideSlots();
         StartCoroutine(LoadCombinations());
     }
 
-    // 1. ½½·Ô¿¡ Ä«µå°¡ ³õÀÏ ¶§¸¶´Ù ÀÌ ÇÔ¼ö¸¦ ºÎ¸¦ °Ì´Ï´Ù.
+    public void ShowSlots() { if (slotPanel != null) slotPanel.SetActive(true); }
+    public void HideSlots() { if (slotPanel != null) slotPanel.SetActive(false); }
+
     public void OnSlotUpdated()
     {
-        // µÎ ½½·Ô¿¡ µ¥ÀÌÅÍ°¡ ´Ù ÀÖ´ÂÁö È®ÀÎ
-        if (adjSlot.currentCard != null && gerSlot.currentCard != null)
+        if (adjSlot.isOccupied && gerSlot.isOccupied)
         {
-            Debug.Log("Àç·á È®ÀÎ ¿Ï·á! Á¶ÇÕÀ» ½ÃÀÛÇÕ´Ï´Ù.");
             TryCombination();
         }
     }
 
-    // 2. Ä«µå Á¶ÇÕ
     void TryCombination()
     {
         int adjCardID = adjSlot.GetCardID();
         int gerCardID = gerSlot.GetCardID();
-        Debug.Log("Á¶ÇÕ ½Ãµµ");
 
-        if (adjCardID <= 0 || gerCardID <= 0) return;
-
-        // Combiner¿¡°Ô Á¶ÇÕ °á°ú ¿äÃ»
         Combination result = Combine(adjCardID, gerCardID);
 
         if (result != null)
         {
-            Debug.Log("Á¶ÇÕ ¼º°ø! °á°ú¹°: " + result.skillName);
-            SpawnResult(result);
+            // â­ ê¸°ëŠ¥ ê°œì„  1: ì™„ì„±ëœ ì¹´ë“œë¥¼ ë‚´ íŒ¨(Hand)ë¡œ ë³´ëƒ…ë‹ˆë‹¤!
+            DataManager.Instance.AddSynergyCardToHand(result);
+
+            // â­ ê¸°ëŠ¥ ê°œì„  2: ìŠ¬ë¡¯ì— ë‚¨ì•„ìˆë˜ ì¬ë£Œ ì¹´ë“œ 2ì¥ì„ ì™„ì „íˆ íŒŒê´´(ì‚­ì œ)í•©ë‹ˆë‹¤!
+            if(adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
+            if(gerSlot.currentCard != null) Destroy(gerSlot.currentCard);
+            
+            adjSlot.RemoveCard();
+            gerSlot.RemoveCard();
+
+            // ì¡°í•©ì´ ëë‚¬ìœ¼ë‹ˆ ìŠ¬ë¡¯ íŒ¨ë„ì„ ìˆ¨ê¹ë‹ˆë‹¤.
+            HideSlots();
         }
-        else
-        {
-            Debug.Log("Á¶ÇÕ ½ÇÆĞ: ÀÏÄ¡ÇÏ´Â ·¹½ÃÇÇ°¡ ¾ø½À´Ï´Ù.");
-        }
-    }
-
-    // 3. Á¶ÇÕµÈ Ä«µå »ı¼º
-    void SpawnResult(Combination resultData)
-    {
-        GameObject newCard = Instantiate(cardPrefab, spawnPoint.position, Quaternion.identity, resultParent);
-
-        newCard.transform.localScale = Vector3.one;
-
-        CombinationCardUI ui = newCard.GetComponent<CombinationCardUI>();
-        if (ui != null)
-        {
-            ui.SetData(resultData);
-            ui.UpdateVisual();
-        }
-
-        Debug.Log($"ÃàÇÏÇÕ´Ï´Ù! {resultData.skillName} Ä«µå°¡ »ı¼ºµÇ¾ú½À´Ï´Ù.");
     }
 
     public Combination Combine(int slotAdjID, int slotGerID)
     {
-        if (slotAdjID <= 0 || slotGerID <= 0) return null;
-
-        // ½½·Ô Ä«µå ID Á¶ÇÕÀ¸·Î °Ë»ö¿ë ¹®ÀÚ¿­ Å° »ı¼º ("1_2")
         string searchKey = $"{slotAdjID}_{slotGerID}";
-
-        Debug.Log($"[Á¶ÇÕ ½Ãµµ] °Ë»ö Å°: {searchKey}");
-
-        if (comboTable.TryGetValue(searchKey, out Combination result))
-        {
-            return result;
-        }
-
-        return null; // ÀÏÄ¡ÇÏ´Â Á¶ÇÕ¹ı ¾øÀ½
+        if (comboTable.TryGetValue(searchKey, out Combination result)) return result;
+        return null;
     }
 
     IEnumerator LoadCombinations()
@@ -105,25 +70,15 @@ public class ComboManager : MonoBehaviour
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();
-
             if (www.result == UnityWebRequest.Result.Success)
             {
                 string json = www.downloadHandler.text;
                 ComboList = JsonUtility.FromJson<CombinationList>(json);
-                Debug.Log($"[¼º°ø] ÃÑ {ComboList.combinations.Count}°³ÀÇ °á°ú Ä«µå ·Îµå ¿Ï·á!");
-
-                //µñ¼Å³Ê¸®¿¡ °á°ú Ä«µå µ¥ÀÌÅÍ Ã¤¿ì±â
                 comboTable.Clear();
-
                 foreach (Combination combo in ComboList.combinations)
                 {
-                    string key = combo.combinationId;
-                    comboTable[key] = combo;
+                    comboTable[combo.combinationId] = combo;
                 }
-            }
-            else
-            {
-                Debug.LogError("¼­¹ö¿¡¼­ Ä«µå¸¦ °¡Á®¿ÀÁö ¸øÇß½À´Ï´Ù: " + www.error);
             }
         }
     }
