@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,57 +7,62 @@ public class DiceManager : MonoBehaviour
     [Header("에너지 설정")]
     public int baseEnergy = 3;
     public int diceValue;
+    public int CurrentEnergy { get; private set; }
 
     [Header("주사위 UI")]
+    public Button rollDiceButton; // 버튼 연결
+    public GameObject diceImageObject; // 주사위 이미지 부모
     public Image diceImage;
     public Sprite[] diceSprites;
 
-    public int CurrentEnergy { get; private set; }
+    public bool isRollFinished = false; // 턴매니저 대기용 플래그
 
-    public int RollDice()
+    void Start()
     {
+        if (diceImageObject != null) diceImageObject.SetActive(false); 
+        if (rollDiceButton != null) rollDiceButton.onClick.AddListener(OnClickRollButton);
+    }
+
+    public void ShowRollButton()
+    {
+        isRollFinished = false;
+        if (rollDiceButton != null) rollDiceButton.gameObject.SetActive(true);
+    }
+
+    private void OnClickRollButton()
+    {
+        rollDiceButton.gameObject.SetActive(false);
+        StartCoroutine(RollDiceRoutine());
+    }
+
+    IEnumerator RollDiceRoutine()
+    {
+        diceImageObject.SetActive(true);
+        
+        // 주사위 굴러가는 애니메이션
+        for(int i = 0; i < 10; i++)
+        {
+            diceImage.sprite = diceSprites[Random.Range(0, 6)];
+            yield return new WaitForSeconds(0.05f);
+        }
+
         diceValue = Random.Range(1, 7);
-
         CurrentEnergy = baseEnergy + diceValue;
-
-        UpdateDiceImage();
+        
+        if (diceImage != null && diceSprites.Length >= 6)
+            diceImage.sprite = diceSprites[diceValue - 1];
 
         Debug.Log($"Base Energy {baseEnergy} + Dice {diceValue} = Turn Energy: {CurrentEnergy}");
 
-        return CurrentEnergy;
-    }
+        yield return new WaitForSeconds(1f);
+        diceImageObject.SetActive(false);
 
-    private void UpdateDiceImage()
-    {
-        if (diceImage == null)
-        {
-            Debug.LogWarning("Dice Image가 연결되지 않았습니다.");
-            return;
-        }
-
-        if (diceSprites == null || diceSprites.Length < 6)
-        {
-            Debug.LogWarning("주사위 Sprite가 6개 연결되지 않았습니다.");
-            return;
-        }
-
-        diceImage.sprite = diceSprites[diceValue - 1];
+        isRollFinished = true; // 주사위가 끝나면 TurnManager가 다음을 진행함!
     }
 
     public void UseEnergy(int amount)
     {
         CurrentEnergy -= amount;
-
-        if (CurrentEnergy < 0)
-        {
-            CurrentEnergy = 0;
-        }
-
-        Debug.Log($"Use Energy {amount}. Remain Energy: {CurrentEnergy}");
-    }
-
-    public bool HasEnoughEnergy(int cost)
-    {
-        return CurrentEnergy >= cost;
+        if (CurrentEnergy < 0) CurrentEnergy = 0;
     }
 }

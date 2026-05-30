@@ -28,7 +28,7 @@ public class Gerund
 }
 
 [Serializable]
-public class Combination //홍성구 추가
+public class Combination
 {
     public string combinationId;
     public int adjectiveId;
@@ -41,7 +41,7 @@ public class Combination //홍성구 추가
     public string description;
 }
 
-// 🔥 서버가 보내주는 최상위 포장 박스
+// 🔥 에러의 원인이었던 최상위 포장 박스 (변수명 소문자 확인!)
 [Serializable]
 public class BattleStartHand 
 { 

@@ -1,40 +1,55 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class CardSlot : MonoBehaviour, IDropHandler
+public enum SlotType { Adjective, Gerund }
+
+[RequireComponent(typeof(BoxCollider2D))]
+public class CardSlot : MonoBehaviour
 {
-    public bool isOccupied = false; // 이미 슬롯에 카드가 있는지 체크
-    public GameObject currentCard = null; // 현재 슬롯에 있는 카드 저장
+    public SlotType slotType;
+    public bool isOccupied = false;
+    public GameObject currentCard = null;
     public int currentCardID;
-    
 
-    public int GetCardID()
+    private void Start()
     {
-        if (currentCard == null) return -1;
-
-        return currentCardID;
+        BoxCollider2D box = GetComponent<BoxCollider2D>();
+        box.isTrigger = true;
+        box.size = new Vector2(200, 300);
     }
 
-    // 카드가 슬롯에 들어왔을 때 호출될 함수
+    public int GetCardID() { return currentCard == null ? -1 : currentCardID; }
+
+    public bool CanAcceptCard(CardUI card)
+    {
+        if (isOccupied) return false;
+        if (slotType == SlotType.Adjective && card.cardType == CardType.Adjective) return true;
+        if (slotType == SlotType.Gerund && card.cardType == CardType.Gerund)
+            return ComboManager.Instance.adjSlot.isOccupied;
+        return false;
+    }
+
     public void PlaceCard(GameObject card)
     {
         CardUI cardUI = card.GetComponent<CardUI>();
         currentCard = card;
         currentCardID = cardUI.CardID;
+
         isOccupied = true;
-
-        card.transform.SetParent(transform, false); // 슬롯의 자식으로 설정
-        card.transform.position = transform.position;
-        card.transform.localPosition = Vector3.zero; // 슬롯의 중앙에 배치
-        card.transform.localScale = Vector3.one;
-
         cardUI.isInSlot = true;
 
+        RectTransform cardRect = card.GetComponent<RectTransform>();
+        card.transform.SetParent(transform, false);
+        cardRect.anchorMin = new Vector2(0.5f, 0.5f);
+        cardRect.anchorMax = new Vector2(0.5f, 0.5f);
+        cardRect.pivot = new Vector2(0.5f, 0.5f);
+        cardRect.anchoredPosition = Vector2.zero;
+        card.transform.localRotation = Quaternion.identity;
+        card.transform.localScale = Vector3.one;
+
         CardDraggable draggable = card.GetComponent<CardDraggable>();
-        draggable.currentSlot = this;
+        if (draggable != null) draggable.currentSlot = this;
 
-
+        DataManager.Instance.RearrangeHand();
         ComboManager.Instance.OnSlotUpdated();
     }
 
@@ -44,17 +59,5 @@ public class CardSlot : MonoBehaviour, IDropHandler
         currentCardID = -1;
         isOccupied = false;
         ComboManager.Instance.OnSlotUpdated();
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        GameObject dropped = eventData.pointerDrag;
-
-        if (isOccupied) return; //슬롯에 이미 카드가 있다면 실패
-
-        if (dropped != null)
-        {
-            PlaceCard(dropped);
-        }
     }
 }

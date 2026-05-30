@@ -1,89 +1,97 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems; // À¯´ÏÆ¼ UI ÀÌº¥Æ®¸¦ Ã³¸®ÇÏ±â À§ÇØ ÇÊ¼ö!
+using UnityEngine.EventSystems;
 
-
-// CanvasGroup ÄÄÆ÷³ÍÆ® ¾øÀ¸¸é °¡Á®¿À±â
 [RequireComponent(typeof(CanvasGroup))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private RectTransform rectTransform;
     private Canvas canvas;
     private CanvasGroup canvasGroup;
+    private CardUI cardUI;
 
-    // µå·¡±× ½ÇÆĞ ½Ã µ¹¾Æ°¥ À§Ä¡
-    private Vector3 lastPosition;
-
-    public CardSlot currentSlot; // ÀÌ Ä«µå°¡ Áö±İ µé¾îÀÖ´Â ½½·Ô (¾øÀ¸¸é null)
-    private Vector3 startPosition; // µå·¡±× ½ÃÀÛ À§Ä¡
-    private RectTransform originalParent; // ¿ø·¡ ºÎ¸ğ (¼ÕÆĞ À§Ä¡ µî)
-
-    private CardUI pointerEffect;
-
+    public CardSlot currentSlot;
     public bool isDragging = false;
 
-    private void Awake()
+    // ğŸš€ Awakeì—ì„œ Startë¡œ ë³€ê²½í•˜ì—¬ ëª¨ë“  ì¤€ë¹„ê°€ ëë‚œ í›„ ì„¸íŒ…!
+    private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
-        pointerEffect = GetComponent<CardUI>();
-        originalParent = transform.parent as RectTransform;
+        cardUI = GetComponent<CardUI>();
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
+        BoxCollider2D box = GetComponent<BoxCollider2D>();
+        box.isTrigger = true; 
+        box.size = new Vector2(250, 360); // ì¹´ë“œ í¬ê¸° ê°•ì œ ê³ ì •!
     }
 
-    // 1. Ä«µå¸¦ Å¬¸¯ÇØ¼­ µå·¡±×¸¦ ½ÃÀÛÇÒ ¶§
     public void OnBeginDrag(PointerEventData eventData)
     {
         isDragging = true;
-        pointerEffect.isInSlot = false;
+        cardUI.isInSlot = false;
 
-        if (pointerEffect != null)
-        {
-            pointerEffect.OnCardFocus();
-        }
-        transform.rotation = Quaternion.identity;
-
-        //½½·Ô¿¡ ÀÖ´Â Ä«µå¶ó¸é ½½·Ô ºñ¿ì±â
         if (currentSlot != null)
         {
             currentSlot.RemoveCard();
-            currentSlot = null;       
+            currentSlot = null;
+            // ìŠ¬ë¡¯ì˜ ìì‹ì—ì„œ handAreaë¡œ ì˜¬ë ¤ì•¼ ë“œë˜ê·¸ ì¢Œí‘œê³„ê°€ Canvas ê¸°ì¤€ìœ¼ë¡œ í†µì¼ë¨
+            transform.SetParent(DataManager.Instance.handArea);
         }
 
-        canvasGroup.alpha = 0.6f;              // µå·¡±× Áß¿£ »ìÂ¦ Åõ¸íÇÏ°Ô
-        canvasGroup.blocksRaycasts = false;    // Áß¿ä: Ä«µå°¡ ¸¶¿ì½º¸¦ Åë°úÇÏ°Ô ÇÔ (½½·Ô ÀÎ½ÄÀ» À§ÇØ)
-
-        // µå·¡±×ÇÏ´Â Ä«µå°¡ ´Ù¸¥ UIº¸´Ù À§·Î ¿Ã¶ó¿À°Ô ¼³Á¤
+        canvasGroup.alpha = 0.6f;
+        canvasGroup.blocksRaycasts = false;
         transform.SetAsLastSibling();
+
+        if (cardUI.cardType == CardType.Adjective)
+            ComboManager.Instance.ShowSlots();
     }
 
-    // 2. µå·¡±× ÁßÀÏ ¶§
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("µå·¡±× Áß...");
-        // Äµ¹ö½ºÀÇ ½ºÄÉÀÏ¿¡ ¸ÂÃç¼­ ¸¶¿ì½º ÁÂÇ¥¸¦ Ä«µå ÁÂÇ¥·Î º¯È¯
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
-    // 3. µå·¡±× Áß ¸¶¿ì½º ¹öÆ°À» ¶ÃÀ» ¶§
     public void OnEndDrag(PointerEventData eventData)
     {
         isDragging = false;
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
 
-        if (pointerEffect != null)
+        // ìŠ¬ë¡¯ íŒì •: RectTransformUtilityë¡œ í™”ë©´ ì¢Œí‘œ í¬í•¨ ì—¬ë¶€ ì§ì ‘ í™•ì¸
+        // â†’ Physics2D ì¢Œí‘œê³„ í˜¼ë€ ì—†ì´ Canvas ìŠ¤ì¼€ì¼ì„ ìë™ ì²˜ë¦¬í•¨
+        CardSlot[] slots = { ComboManager.Instance.adjSlot, ComboManager.Instance.gerSlot };
+        foreach (CardSlot slot in slots)
         {
-            pointerEffect.OffCardFocus();
+            if (!slot.gameObject.activeInHierarchy) continue;
+            RectTransform slotRect = slot.GetComponent<RectTransform>();
+            if (RectTransformUtility.RectangleContainsScreenPoint(slotRect, eventData.position, canvas.worldCamera)
+                && slot.CanAcceptCard(cardUI))
+            {
+                slot.PlaceCard(gameObject);
+                return;
+            }
         }
 
-        if (!pointerEffect.isInSlot)
+        // ì  íŒì •: ì›ë˜ ë™ì‘í•˜ë˜ Physics2D ë°©ì‹ ë³µì›
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+        foreach (Collider2D hit in hits)
         {
-            transform.SetParent(originalParent);
+            EnemyTarget enemy = hit.GetComponent<EnemyTarget>();
+            if (enemy != null && (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy))
+            {
+                enemy.ReceiveCard(cardUI);
+                return;
+            }
         }
 
-        canvasGroup.alpha = 1.0f;           // Åõ¸íµµ º¹±¸
-        canvasGroup.blocksRaycasts = true;  // ¸¶¿ì½º ´Ù½Ã ÀÎ½ÄÇÏ°Ô º¹±¸
-
-        //½½·ÔÀÌ ¾Æ´Ñ ´Ù¸¥ °÷¿¡ µÑ ¶§ ¿ø·¡ À§Ä¡·Î µ¹¾Æ°¨
-        //rectTransform.position = lastPosition; 
+        // ì•„ë¬´ê²ƒë„ ëª» ë§ì·„ë‹¤ë©´ ë‹¤ì‹œ íŒ¨ë¡œ íŠ•ê²¨ëƒ…ë‹ˆë‹¤.
+        ComboManager.Instance.HideSlots();
+        transform.SetParent(DataManager.Instance.handArea);
+        DataManager.Instance.RearrangeHand();
     }
 }
