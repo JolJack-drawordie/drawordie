@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -56,5 +57,11 @@ public class UIManager : MonoBehaviour
     public void HideResult()
     {
         resultPanel.SetActive(false);
+    }
+
+    public void GoToMapAfterVictory()
+    {
+        GameFlowData.clearedNodeLevel++;
+        SceneManager.LoadScene("MapScene");
     }
 }
