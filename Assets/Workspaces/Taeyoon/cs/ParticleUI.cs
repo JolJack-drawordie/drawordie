@@ -22,6 +22,7 @@ public class ParticleUI : MonoBehaviour
         obj.transform.SetParent(transform, false);
 
         Image img = obj.AddComponent<Image>();
+        img.raycastTarget = false;
         RectTransform rect = obj.GetComponent<RectTransform>();
 
         float size = Random.Range(minSize, maxSize);

@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using TMPro;
+using DG.Tweening;
 
 public class AuthManager : MonoBehaviour
 {
@@ -17,6 +19,39 @@ public class AuthManager : MonoBehaviour
     public TMP_InputField regID;
     public TMP_InputField regPW;
     public TMP_InputField regNick;
+
+    private const string AuthSceneName = "AuthScene";
+    private const string NextSceneName = "junhaTest";
+
+    void Start()
+    {
+        // Additive 로드 시 TitleScreen을 덮지 않도록
+        // AuthScene 전용 카메라와 오디오 리스너를 비활성화
+        foreach (var root in gameObject.scene.GetRootGameObjects())
+        {
+            Camera cam = root.GetComponentInChildren<Camera>(true);
+            if (cam != null) cam.enabled = false;
+
+            AudioListener al = root.GetComponentInChildren<AudioListener>(true);
+            if (al != null) al.enabled = false;
+        }
+
+        // Canvas를 최상단에 렌더링
+        foreach (var root in gameObject.scene.GetRootGameObjects())
+        {
+            Canvas canvas = root.GetComponentInChildren<Canvas>(true);
+            if (canvas != null)
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = 100;
+            }
+        }
+    }
+
+    public void ClosePopup()
+    {
+        SceneManager.UnloadSceneAsync(AuthSceneName);
+    }
 
     // 화면 전환 기능 
     public void OpenRegister() { 
@@ -47,8 +82,11 @@ public class AuthManager : MonoBehaviour
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success) {
                 Debug.Log("<color=green>로그인 성공!</color>");
+                DOTween.KillAll();
+                SceneManager.LoadScene(NextSceneName);
             } else {
                 Debug.LogError("로그인 실패: " + www.error);
+                // 로그인 실패 시 팝업을 닫지 않고 그대로 두어 사용자가 다시 입력할 수 있게 합니다.
             }
         }
     }
@@ -65,7 +103,7 @@ public class AuthManager : MonoBehaviour
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success) {
                 Debug.Log("<color=green>회원가입 성공!</color>");
-                OpenLogin(); // 가입 성공 시 로그인 화면으로 전환
+                OpenLogin(); // 가입 성공 시 자동으로 로그인 패널로 전환
             } else {
                 Debug.LogError("회원가입 실패: " + www.error);
             }

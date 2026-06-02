@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class TitleManager : MonoBehaviour
 {
@@ -10,9 +11,32 @@ public class TitleManager : MonoBehaviour
     public CanvasGroup btnStartGroup;
     public CanvasGroup btnSettingsGroup;
 
+    private Canvas _canvas;
+    private RectTransform _btnStartRect;
+    private bool _isLoading = false;
+
+    void OnEnable()
+    {
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+
+    void OnSceneUnloaded(Scene scene)
+    {
+        if (scene.name == "AuthScene")
+            _isLoading = false;
+    }
+
     void Start()
     {
         DOTween.SetTweensCapacity(500, 200);
+
+        _canvas = GetComponent<Canvas>();
+        _btnStartRect = (RectTransform)btnStartGroup.transform;
 
         logoGroup.alpha = 0;
         btnStartGroup.alpha = 0;
@@ -32,13 +56,43 @@ public class TitleManager : MonoBehaviour
         seq.Append(btnSettingsGroup.DOFade(1f, 0.6f));
     }
 
+    void Update()
+    {
+        if (_isLoading) return;
+        if (Mouse.current == null) return;
+        if (!Mouse.current.leftButton.wasPressedThisFrame) return;
+        if (btnStartGroup.alpha < 0.1f) return;
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        if (RectTransformUtility.RectangleContainsScreenPoint(_btnStartRect, mousePos, _canvas.worldCamera))
+        {
+            OnClickStart();
+        }
+    }
+
     public void OnClickStart()
     {
-        SceneManager.LoadScene("Lobby");
+        if (_isLoading) return;
+        _isLoading = true;
+        Debug.Log("[TitleManager] OnClickStart 호출됨!");
+        StartCoroutine(LoadAuthScene());
+    }
+
+    private System.Collections.IEnumerator LoadAuthScene()
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync("AuthScene", LoadSceneMode.Additive);
+        if (op == null)
+        {
+            Debug.LogError("[TitleManager] AuthScene 로드 실패 - Build Settings 확인 필요");
+            _isLoading = false;
+            yield break;
+        }
+        yield return op;
+        Debug.Log("[TitleManager] AuthScene 로드 완료");
     }
 
     public void OnClickSettings()
     {
-        Debug.Log("���� Ŭ��");
+        Debug.Log("설정 클릭");
     }
 }
