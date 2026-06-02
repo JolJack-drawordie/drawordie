@@ -15,10 +15,10 @@ public class DataManager : MonoBehaviour
     public GameObject cardPrefab;
     public Transform handArea;
     
-    // 🚀 250x360 카드 크기에 맞춘 완벽한 부채꼴 황금비율!
-    public float cardSpacing = 160f;  
-    public float heightSpacing = 25f; 
-    public float angleSpacing = -7f;  
+    // 1920x1080 해상도 기준 부채꼴 레이아웃
+    public float cardSpacing = 200f;
+    public float heightSpacing = 35f;
+    public float angleSpacing = -9f;
 
     void Awake() { Instance = this; }
 

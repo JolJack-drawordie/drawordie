@@ -65,7 +65,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnCardFocus()
     {
         targetScale = Vector3.one * 1.2f;
-        targetPos = originPos + new Vector3(0, 40f, 0); // 선택된 카드는 위로
+        targetPos = originPos + new Vector3(0, 60f, 0); // 선택된 카드는 위로
         targetRot = Quaternion.identity;
 
         transform.SetAsLastSibling(); // 선택된 카드를 맨 앞으로
@@ -77,8 +77,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             if (sibling != null && sibling != this && !sibling.isInSlot)
             {
                 // 나보다 앞번호면 왼쪽(-40), 뒷번호면 오른쪽(+40)으로 밀어냅니다.
-                float pushAmount = (sibling.siblingIndex < this.siblingIndex) ? -40f : 40f;
-                sibling.targetPos = sibling.originPos + new Vector3(pushAmount, -10f, 0); // 살짝 옆+아래로 비켜줌
+                float pushAmount = (sibling.siblingIndex < this.siblingIndex) ? -55f : 55f;
+                sibling.targetPos = sibling.originPos + new Vector3(pushAmount, -10f, 0);
             }
         }
     }
