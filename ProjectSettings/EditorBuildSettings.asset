@@ -11,6 +11,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Workspaces/Minkyu/Scenes/MapScene.unity
     guid: c1264f897d4408c479b9c1aa67a75ee6
+    path: Assets/Workspaces/Taeyoon/Scenes/TitleScreen.unity
+    guid: 3a4bfe92ba138dd438303948167e900c
+  - enabled: 1
+    path: Assets/Workspaces/Junha/Scene/AuthScene.unity
+    guid: 76ef3a0e93496044fb3a6212b5d9833f
   - enabled: 1
     path: Assets/Workspaces/Junha/Scene/junhaTest.unity
     guid: 6ceeae05f747936438f11d59b8c3f05a
