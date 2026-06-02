@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 18898030}
   - component: {fileID: 18898029}
   - component: {fileID: 18898028}
+  - component: {fileID: 18898031}
   m_Layer: 5
   m_Name: MonsterNode_3
   m_TagString: Untagged
@@ -252,6 +253,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 18898026}
   m_CullTransparentMesh: 1
+--- !u!114 &18898031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18898026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  button: {fileID: 0}
 --- !u!1 &40399453
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,6 +737,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNodeManager
   battleSceneName: JunhaTest
+  level1Nodes:
+  - {fileID: 1777278451}
+  - {fileID: 661608014}
+  level2Nodes:
+  - {fileID: 18898031}
+  - {fileID: 641759039}
+  bossNodes:
+  - {fileID: 1183326257}
 --- !u!4 &388409206
 Transform:
   m_ObjectHideFlags: 0
@@ -825,6 +847,7 @@ GameObject:
   - component: {fileID: 641759038}
   - component: {fileID: 641759037}
   - component: {fileID: 641759036}
+  - component: {fileID: 641759039}
   m_Layer: 5
   m_Name: MonsterNode_4
   m_TagString: Untagged
@@ -946,6 +969,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 641759034}
   m_CullTransparentMesh: 1
+--- !u!114 &641759039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641759034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  button: {fileID: 0}
 --- !u!1 &661608009
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,6 +994,7 @@ GameObject:
   - component: {fileID: 661608013}
   - component: {fileID: 661608012}
   - component: {fileID: 661608011}
+  - component: {fileID: 661608014}
   m_Layer: 5
   m_Name: MonsterNode_2
   m_TagString: Untagged
@@ -1079,6 +1116,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 661608009}
   m_CullTransparentMesh: 1
+--- !u!114 &661608014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661608009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  button: {fileID: 0}
 --- !u!1 &666145944
 GameObject:
   m_ObjectHideFlags: 0
@@ -1571,6 +1621,7 @@ GameObject:
   - component: {fileID: 1183326256}
   - component: {fileID: 1183326255}
   - component: {fileID: 1183326254}
+  - component: {fileID: 1183326257}
   m_Layer: 5
   m_Name: BossNode
   m_TagString: Untagged
@@ -1692,6 +1743,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183326252}
   m_CullTransparentMesh: 1
+--- !u!114 &1183326257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183326252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  button: {fileID: 0}
 --- !u!1 &1263537911
 GameObject:
   m_ObjectHideFlags: 0
@@ -2235,6 +2299,7 @@ GameObject:
   - component: {fileID: 1777278450}
   - component: {fileID: 1777278449}
   - component: {fileID: 1777278448}
+  - component: {fileID: 1777278451}
   m_Layer: 5
   m_Name: MonsterNode_1
   m_TagString: Untagged
@@ -2356,6 +2421,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1777278446}
   m_CullTransparentMesh: 1
+--- !u!114 &1777278451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777278446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  button: {fileID: 0}
 --- !u!1 &1789887184
 GameObject:
   m_ObjectHideFlags: 0
