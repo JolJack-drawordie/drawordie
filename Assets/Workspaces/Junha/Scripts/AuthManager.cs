@@ -21,7 +21,7 @@ public class AuthManager : MonoBehaviour
     public TMP_InputField regNick;
 
     private const string AuthSceneName = "AuthScene";
-    private const string NextSceneName = "junhaTest";
+    private const string NextSceneName = "MapScene";
 
     void Start()
     {
