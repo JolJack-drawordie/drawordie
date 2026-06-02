@@ -1,38 +1,91 @@
 using UnityEngine;
-using UnityEngine.UI; // ¿ÃπÃ¡ˆ ¡¶æÓøÎ
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class LobbyManager : MonoBehaviour
 {
-    public string nextSceneName = "GameScene";
-    public Image fadeImage; // æ∆±Ó ∏∏µÁ FadeImage ø¨∞·øÎ
-    private bool isTransitioning = false;
+    [Header("Buttons")]
+    [SerializeField] private Button newGameButton;
+    [SerializeField] private Button lordGameButton;
+    [SerializeField] private Button settingsButton;
 
-    void Update()
+    [Header("Panels")]
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private Image fadeImage;
+
+    private bool isTransitioning;
+
+    void Awake()
     {
-        // ≈¨∏Ø«œ∏È Ω∫∏£∏§ ø¨√‚ Ω√¿€
-        if (Input.GetMouseButtonDown(0) && !isTransitioning)
+        if (settingsPanel != null) settingsPanel.SetActive(false);
+        if (fadeImage     != null) fadeImage.color = new Color(0f, 0f, 0f, 0f);
+    }
+
+    void Start()
+    {
+        if (newGameButton == null)
+            Debug.LogError("[LobbyManager] newGameButton ÎØ∏Ïó∞Í≤∞!");
+        else
         {
-            StartCoroutine(FadeOutAndLoad());
+            newGameButton.interactable = true;
+            newGameButton.onClick.AddListener(OnNewGameClick);
+            Debug.Log("[LobbyManager] NewGame Î≤ÑÌäº Ïù¥Î≤§Ìä∏ Îì±Î°ù ÏôÑÎ£å");
+        }
+
+        if (lordGameButton == null)
+            Debug.LogError("[LobbyManager] lordGameButton ÎØ∏Ïó∞Í≤∞!");
+        else
+        {
+            lordGameButton.interactable = true;
+            lordGameButton.onClick.AddListener(OnLordGameClick);
+            Debug.Log("[LobbyManager] LordGame Î≤ÑÌäº Ïù¥Î≤§Ìä∏ Îì±Î°ù ÏôÑÎ£å");
+        }
+
+        if (settingsButton == null)
+            Debug.LogError("[LobbyManager] settingsButton ÎØ∏Ïó∞Í≤∞!");
+        else
+        {
+            settingsButton.interactable = true;
+            settingsButton.onClick.AddListener(OnSettingsClick);
+            Debug.Log("[LobbyManager] Settings Î≤ÑÌäº Ïù¥Î≤§Ìä∏ Îì±Î°ù ÏôÑÎ£å");
         }
     }
 
-    IEnumerator FadeOutAndLoad()
+    public void OnNewGameClick()
+    {
+        Debug.Log("[LobbyManager] NewGame ÌÅ¥Î¶≠Îê®");
+        if (isTransitioning) return;
+        StartCoroutine(FadeAndLoad("TestScene"));
+    }
+
+    public void OnLordGameClick()
+    {
+        Debug.Log("[LobbyManager] LordGame ÌÅ¥Î¶≠Îê®");
+    }
+
+    public void OnSettingsClick()
+    {
+        Debug.Log("[LobbyManager] Settings ÌÅ¥Î¶≠Îê®");
+        if (settingsPanel != null)
+            settingsPanel.SetActive(!settingsPanel.activeSelf);
+    }
+
+    private IEnumerator FadeAndLoad(string sceneName)
     {
         isTransitioning = true;
-        float duration = 1.0f; // 1√  µøæ» Ω∫∏£∏§
-        float timer = 0f;
 
-        while (timer < duration)
+        if (fadeImage != null)
         {
-            timer += Time.deltaTime;
-            // ∞À¿∫ ¿ÃπÃ¡ˆ¿« ≈ı∏Ìµµ(A)∏¶ 0ø°º≠ 1∑Œ º≠º≠»˜ ø√∏≤
-            fadeImage.color = new Color(0, 0, 0, timer / duration);
-            yield return null;
+            float timer = 0f;
+            while (timer < 0.8f)
+            {
+                timer += Time.deltaTime;
+                fadeImage.color = new Color(0f, 0f, 0f, timer / 0.8f);
+                yield return null;
+            }
         }
 
-        // ø¨√‚¿Ã ≥°≥™∏È æ¿ ¿¸»Ø
-        SceneManager.LoadScene(nextSceneName);
+        SceneManager.LoadScene(sceneName);
     }
 }
