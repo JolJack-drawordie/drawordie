@@ -15,11 +15,12 @@ public class EnemyController : MonoBehaviour
 
     [Header("설정")]
     public float baseScale = 2f;
+    public bool useKeyboardInput = false; // TurnManager와 함께 쓸 때는 false
     private Vector3 originalPosition;
     private bool isAttacking = false;
-    
+
     // 핵심: 다음 행동이 무엇인지 기억하는 변수
-    private bool isNextAttack = true; 
+    private bool isNextAttack = true;
 
     void Start()
     {
@@ -36,8 +37,8 @@ public class EnemyController : MonoBehaviour
             transform.localScale = new Vector3(baseScale + bounce, baseScale - bounce, baseScale);
         }
 
-        // 스페이스바 누르면 현재 '예고된' 행동 실행
-        if (Input.GetKeyDown(KeyCode.Space)) 
+        // 스페이스바 누르면 현재 '예고된' 행동 실행 (독립 테스트용)
+        if (useKeyboardInput && Input.GetKeyDown(KeyCode.Space))
         {
             if (!isAttacking) ExecuteAction();
         }
@@ -79,6 +80,12 @@ public class EnemyController : MonoBehaviour
             intentIcon.sprite = defendSprite;
             Debug.Log("다음 행동 예고: 방어 (방패 아이콘)");
         }
+    }
+
+    // TurnManager에서 호출할 수 있는 공개 메서드
+    public IEnumerator PlayAttackAnimation()
+    {
+        yield return StartCoroutine(AttackRoutine());
     }
 
     // 공격: 왼쪽으로 슈슉 돌진했다 돌아오기

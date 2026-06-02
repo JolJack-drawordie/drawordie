@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     public Animator animator;
+    public Transform attackTarget; // 적 오브젝트 연결 (비워두면 고정 5칸 이동)
     private Vector3 originalPosition;
     private bool isActing = false;
 
@@ -35,14 +36,17 @@ public class PlayerController : MonoBehaviour
     }
 
     // 공격 동작: 빠르게 달려나가서 2번 휘두르고 천천히 뒤로 물러나기
-    IEnumerator AttackRoutine()
+    public IEnumerator AttackRoutine()
     {
         isActing = true;
-        
-        // 1️⃣ 빠르게 달려나가기 (0.15초, 5칸)
-        Vector3 targetPos = originalPosition + new Vector3(5f, 0, 0);
+
+        // attackTarget이 있으면 적 위치까지, 없으면 고정 5칸
+        Vector3 targetPos = attackTarget != null
+            ? new Vector3(attackTarget.position.x - 1f, originalPosition.y, originalPosition.z)
+            : originalPosition + new Vector3(5f, 0, 0);
+
         float timer = 0;
-        float goingDuration = 0.15f;
+        float goingDuration = 0.25f;
         
         while (timer <= goingDuration)
         {
@@ -54,13 +58,13 @@ public class PlayerController : MonoBehaviour
         
         transform.position = targetPos;
         
-        // 2️⃣ 도착하면 공격 애니메이션 시작 (2번 휘두르기, 0.6초)
+        // 2️⃣ 도착하면 공격 애니메이션 시작
         animator.SetTrigger("Attack");
-        yield return new WaitForSeconds(0.9f);
-        
-        // 3️⃣ 천천히 돌아오기 (0.4초)
+        yield return new WaitForSeconds(1.2f);
+
+        // 3️⃣ 천천히 돌아오기
         timer = 0;
-        float returningDuration = 0.4f;
+        float returningDuration = 0.6f;
         
         while (timer <= returningDuration)
         {
@@ -75,7 +79,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 방어 동작: 제자리에서 방어
-    IEnumerator DefendRoutine()
+    public IEnumerator DefendRoutine()
     {
         isActing = true;
         animator.SetTrigger("Defend");

@@ -10,6 +10,10 @@ public class TurnManager : MonoBehaviour
     public PlayerUnit player;
     public EnemyUnit enemy;
 
+    [Header("전투 애니메이션 (선택)")]
+    public PlayerController playerController;
+    public EnemyController enemyController;
+
     [Header("턴 정보")]
     public int turnCount = 0;
     public bool playerActionFinished = false;
@@ -45,23 +49,13 @@ public class TurnManager : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
 
             gameManager.currentState = BattleState.PlayerTurn;
-            Debug.Log("Player Turn Start - Waiting for input...");
+            Debug.Log("Player Turn Start - 카드를 드래그해 공격하고 턴 종료 버튼을 누르세요.");
             playerActionFinished = false;
 
+            // 카드 드래그로 공격, EndTurnButton이 EndPlayerTurn() 호출할 때까지 대기
             while (!playerActionFinished)
             {
                 if (gameManager.isGameOver) yield break;
-
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    if (enemy != null && !enemy.IsDead())
-                    {
-                        player.Attack(enemy);
-                        gameManager.CheckBattleResult();
-                        if (ShowBattleResultIfGameOver()) yield break;
-                    }
-                    playerActionFinished = true;
-                }
                 yield return null;
             }
 
@@ -70,6 +64,8 @@ public class TurnManager : MonoBehaviour
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
 
+            if (enemyController != null)
+                yield return StartCoroutine(enemyController.PlayAttackAnimation());
             enemy.Attack(player);
             gameManager.CheckBattleResult();
 
@@ -98,6 +94,8 @@ public class TurnManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
+        if (DataManager.Instance != null)
+            DataManager.Instance.ClearHand();
         playerActionFinished = true;
     }
 }

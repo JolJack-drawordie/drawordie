@@ -29,15 +29,24 @@ public class UIManager : MonoBehaviour
 
     void UpdateUI()
     {
+        if (diceManager == null || player == null || enemy == null) return;
+        if (energyText == null || playerHpText == null || enemyHpText == null) return;
+
         energyText.text = "Energy : " + diceManager.CurrentEnergy;
         playerHpText.text = "Player HP : " + player.currentHp;
         enemyHpText.text = "Enemy HP : " + enemy.currentHp;
 
-        playerHpBar.maxValue = player.maxHp;
-        playerHpBar.value = player.currentHp;
+        if (playerHpBar != null)
+        {
+            playerHpBar.maxValue = player.maxHp;
+            playerHpBar.value = player.currentHp;
+        }
 
-        enemyHpBar.maxValue = enemy.maxHp;
-        enemyHpBar.value = enemy.currentHp;
+        if (enemyHpBar != null)
+        {
+            enemyHpBar.maxValue = enemy.maxHp;
+            enemyHpBar.value = enemy.currentHp;
+        }
     }
 
     public void ShowResult(bool isVictory)

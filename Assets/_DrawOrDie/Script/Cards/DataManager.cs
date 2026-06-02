@@ -28,11 +28,15 @@ public class DataManager : MonoBehaviour
         StartCoroutine(FetchAndDrawCards());
     }
     
-    IEnumerator FetchAndDrawCards()
+    public void ClearHand()
     {
-        // 새 패 뽑기 전 슬롯에 남아있는 카드도 제거 (handArea 자식이 아니라 별도 처리 필요)
         ComboManager.Instance.ClearAllSlots();
         foreach (Transform child in handArea) Destroy(child.gameObject);
+    }
+
+    IEnumerator FetchAndDrawCards()
+    {
+        ClearHand();
 
         string url = "http://localhost:8080/api/game/start-cards";
         using (UnityWebRequest www = UnityWebRequest.Get(url))
