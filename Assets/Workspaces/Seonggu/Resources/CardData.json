@@ -1,0 +1,49 @@
+{
+    "cards": [
+        {
+            "cardID": 1,
+            "cardName": "칼",
+            "category": "NounVerb",
+
+            "effects": [
+                { "type": "None"}
+            ],
+
+            "cardIcon": "",
+
+            "power": 5,
+            "description": "",
+            "isAllTarget": false
+        },
+        {
+            "cardID": 2,
+            "cardName": "불타는",
+            "category": "Adjective",
+
+            "effects": [
+                { "type": "None"}
+            ],
+
+            "cardIcon": "",
+
+            "power": 5,
+            "description": "",
+            "isAllTarget": false
+        },
+        {
+            "cardID": 3,
+            "cardName": "불타는 칼",
+            "category": "Result",
+
+            "effects": [
+                { "type": "Burn", "effectPower": 5}
+            ],
+
+            "cardIcon": "",
+
+            "power": 5,
+            "description": "",
+            "isAllTarget": false
+        }
+    ]
+}

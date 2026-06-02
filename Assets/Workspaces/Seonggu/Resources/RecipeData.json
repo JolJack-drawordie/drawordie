@@ -1,0 +1,10 @@
+{
+  "recipes": [
+    {
+      "recipeID": "2_1",
+      "adjCardID": 2,
+      "nounCardID": 1,
+      "resultCardID": 3
+    }
+  ]
+}
