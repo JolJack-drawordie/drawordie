@@ -49,6 +49,8 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (cardUI.cardType == CardType.Adjective)
             ComboManager.Instance.ShowSlots();
+        else if (cardUI.cardType == CardType.Gerund && ComboManager.Instance.adjSlot.isOccupied)
+            ComboManager.Instance.ShowSlots();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -84,13 +86,22 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             EnemyTarget enemy = hit.GetComponent<EnemyTarget>();
             if (enemy != null && (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy))
             {
+                // 형용사 슬롯에 카드가 있으면 공격 불가 → 패로 반환
+                if (ComboManager.Instance.adjSlot.isOccupied)
+                {
+                    transform.SetParent(DataManager.Instance.handArea);
+                    DataManager.Instance.RearrangeHand();
+                    return;
+                }
                 enemy.ReceiveCard(cardUI);
                 return;
             }
         }
 
         // 아무것도 못 맞췄다면 다시 패로 튕겨냅니다.
-        ComboManager.Instance.HideSlots();
+        // 형용사 슬롯이 차있으면 슬롯 패널 유지
+        if (!ComboManager.Instance.adjSlot.isOccupied)
+            ComboManager.Instance.HideSlots();
         transform.SetParent(DataManager.Instance.handArea);
         DataManager.Instance.RearrangeHand();
     }

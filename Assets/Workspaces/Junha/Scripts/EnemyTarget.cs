@@ -43,8 +43,8 @@ public class EnemyTarget : MonoBehaviour
         GameManager.Instance.enemy.TakeDamage(card.Damage);
         GameManager.Instance.CheckBattleResult();
 
-        Destroy(card.gameObject);
         DataManager.Instance.RearrangeHand();
+        DataManager.Instance.DiscardCard(card.gameObject);
 
         if (GameManager.Instance.isGameOver)
         {

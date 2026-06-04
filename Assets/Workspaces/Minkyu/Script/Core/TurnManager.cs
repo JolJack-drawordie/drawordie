@@ -95,7 +95,7 @@ public class TurnManager : MonoBehaviour
     public void EndPlayerTurn()
     {
         if (DataManager.Instance != null)
-            DataManager.Instance.ClearHand();
+            DataManager.Instance.StartDiscardAll();
         playerActionFinished = true;
     }
 }
