@@ -8,10 +8,15 @@ public class UIManager : MonoBehaviour
     [Header("기본 UI")]
     public TextMeshProUGUI energyText;
     public TextMeshProUGUI playerHpText;
+    public TextMeshProUGUI playerShieldText;
     public TextMeshProUGUI enemyHpText;
+    public TextMeshProUGUI enemyShieldText;
 
     public Slider playerHpBar;
+    public Slider playerShieldBar;
     public Slider enemyHpBar;
+    public Slider enemyShieldBar;
+
 
     [Header("참조")]
     public DiceManager diceManager;
@@ -46,6 +51,21 @@ public class UIManager : MonoBehaviour
         {
             enemyHpBar.maxValue = enemy.maxHp;
             enemyHpBar.value = enemy.currentHp;
+        }
+
+        // 플레이어 방어도 추가
+        if (playerShieldBar != null && playerShieldText != null)
+        {
+            playerShieldBar.maxValue = player.maxHp;
+            playerShieldBar.value = player.currentShield;
+            playerShieldText.text = "Player Shield : " + player.currentShield;
+        }
+        // 적 방어도 추가
+        if (enemyShieldBar != null && enemyShieldText != null)
+        {
+            enemyShieldBar.maxValue = enemy.maxHp;
+            enemyShieldBar.value = enemy.currentShield;
+            enemyShieldText.text = "Enemy Shield : " + enemy.currentShield;
         }
     }
 

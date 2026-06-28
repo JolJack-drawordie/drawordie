@@ -13,6 +13,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public CardType cardType;
     public int Cost;
     public int Damage;
+    public int Shield;
 
     [Header("UI 연결")]
     public TMP_Text nameText;
@@ -39,7 +40,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     // 홍성구 수정 : 카드 id 추가 (카드 타입, 실제 비용, 데미지도 함께 받도록 수정)
-    public void Setup(int id, string name, string cost, string desc, CardType type, int actualCost, int actualDamage) 
+    public void Setup(int id, string name, string cost, string desc, CardType type, int actualCost, int actualDamage, int actualShield) 
     {
         CardID = id; 
         nameText.text = name;
@@ -49,6 +50,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         cardType = type;
         Cost = actualCost;
         Damage = actualDamage;
+        Shield = actualShield;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
