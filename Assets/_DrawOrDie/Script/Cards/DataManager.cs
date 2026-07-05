@@ -67,6 +67,12 @@ public class DataManager : MonoBehaviour
             RectTransform rect = newCard.GetComponent<RectTransform>();
             SpawnAtDeckPile(rect);
             RearrangeHand();
+
+            // 카드 뽑는 소리
+            if (SoundManager.Instance != null) {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.drawCardSound, true);
+            }
+
             yield return new WaitForSeconds(0.15f);
         }
 
@@ -80,6 +86,12 @@ public class DataManager : MonoBehaviour
             RectTransform rect = newCard.GetComponent<RectTransform>();
             SpawnAtDeckPile(rect);
             RearrangeHand();
+
+            // 카드 뽑는 소리
+            if (SoundManager.Instance != null) {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.drawCardSound, true);
+            }
+
             yield return new WaitForSeconds(0.15f);
         }
     }
@@ -142,6 +154,11 @@ public class DataManager : MonoBehaviour
 
         RectTransform rect = cardObj.GetComponent<RectTransform>();
         if (rect == null) { Destroy(cardObj); yield break; }
+
+        // 카드 버리는 소리
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.drawCardSound, true);
+        }
 
         Vector3 startPos = rect.position;
         Vector3 endPos = discardPile != null ? discardPile.position : startPos;

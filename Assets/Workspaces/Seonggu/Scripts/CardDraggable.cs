@@ -74,6 +74,11 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (RectTransformUtility.RectangleContainsScreenPoint(slotRect, eventData.position, canvas.worldCamera)
                 && slot.CanAcceptCard(cardUI))
             {
+                // 슬롯 장착 소리
+                if (SoundManager.Instance != null) {
+                    SoundManager.Instance.PlaySFX(SoundManager.Instance.equipSlotSound);
+                }
+
                 slot.PlaceCard(gameObject);
                 return;
             }
@@ -89,6 +94,11 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 // 형용사 슬롯에 카드가 있으면 공격 불가 → 패로 반환
                 if (ComboManager.Instance.adjSlot.isOccupied)
                 {
+                    // 사용 불가로 튕겨나가는 소리
+                    if (SoundManager.Instance != null) {
+                        SoundManager.Instance.PlaySFX(SoundManager.Instance.equipFailSound);
+                    }
+
                     transform.SetParent(DataManager.Instance.handArea);
                     DataManager.Instance.RearrangeHand();
                     return;
@@ -99,6 +109,15 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         // 아무것도 못 맞췄다면 다시 패로 튕겨냅니다.
+        // 장착 실패 소리
+        // 슬롯이 닫혀있다면(애초에 드래그해도 슬롯이 안 나왔다면) 그냥 제자리로 돌아가는 것이므로 소리를 내지 않음
+        if (ComboManager.Instance.slotPanel.activeSelf) 
+        {
+            if (SoundManager.Instance != null) {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.equipFailSound);
+            }
+        }
+
         // 형용사 슬롯이 차있으면 슬롯 패널 유지
         if (!ComboManager.Instance.adjSlot.isOccupied)
             ComboManager.Instance.HideSlots();

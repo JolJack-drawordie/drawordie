@@ -52,6 +52,7 @@ public class ComboManager : MonoBehaviour
 
         if (result != null)
         {
+
             DataManager.Instance.AddSynergyCardToHand(result);
 
             if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
