@@ -72,5 +72,9 @@ public class UIManager : MonoBehaviour
     {
         GameFlowData.clearedNodeLevel++;
         SceneManager.LoadScene("MapScene");
+        // 배경 음악 정지
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.StopBGM();
+        }
     }
 }

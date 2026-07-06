@@ -87,5 +87,9 @@ public class LobbyManager : MonoBehaviour
         }
 
         SceneManager.LoadScene(sceneName);
+        // 배경 음악 정지
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.StopBGM();
+        }
     }
 }
