@@ -58,7 +58,7 @@ public class DataManager : MonoBehaviour
             GameObject newCard = Instantiate(cardPrefab, handArea);
             CardUI ui = newCard.GetComponent<CardUI>();
             ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(), 
-                     hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod, hand.adjectives[i].shdMod);
+                     hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod, hand.adjectives[i].shdMod, hand.adjectives[i].healMod);
             
             RectTransform rect = newCard.GetComponent<RectTransform>();
             rect.localPosition = new Vector3(0, 600f, 0); 
@@ -71,7 +71,7 @@ public class DataManager : MonoBehaviour
             GameObject newCard = Instantiate(cardPrefab, handArea);
             CardUI ui = newCard.GetComponent<CardUI>();
             ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(), 
-                     hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg, hand.gerunds[i].baseShd);
+                     hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg, hand.gerunds[i].baseShd, hand.gerunds[i].baseHeal);
             
             RectTransform rect = newCard.GetComponent<RectTransform>();
             rect.localPosition = new Vector3(0, 600f, 0); 
@@ -85,7 +85,7 @@ public class DataManager : MonoBehaviour
         GameObject newCard = Instantiate(cardPrefab, handArea);
         CardUI ui = newCard.GetComponent<CardUI>();
         ui.Setup(0, comboData.skillName, comboData.finalCost.ToString(), 
-                 comboData.description, CardType.Synergy, comboData.finalCost, comboData.finalDamage, comboData.finalShield);
+                 comboData.description, CardType.Synergy, comboData.finalCost, comboData.finalDamage, comboData.finalShield, comboData.finalHeal);
         RearrangeHand();
     }
 

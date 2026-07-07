@@ -50,6 +50,11 @@ public class EnemyTarget : MonoBehaviour
         {
            GameManager.Instance.player.AddShield(card.Shield);
         }
+        
+        if(card.Heal > 0)
+        {
+            GameManager.Instance.player.Heal(card.Heal);
+        }
 
         GameManager.Instance.CheckBattleResult();
 

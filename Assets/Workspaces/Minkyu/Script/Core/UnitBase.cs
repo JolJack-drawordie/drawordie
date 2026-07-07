@@ -44,6 +44,15 @@ public class UnitBase : MonoBehaviour
         Debug.Log($"{unitName} 방어도 {amount} 증가! 현재 쉴드: {currentShield}");
     }
 
+    //회복 추가
+    public virtual void Heal(int amount)
+    {
+        currentHp += amount;
+        if(currentHp > maxHp) currentHp = maxHp;
+
+        Debug.Log($"{unitName} 체력 {amount} 회복!");
+    }
+
     public bool IsDead()
     {
         return currentHp <= 0;
