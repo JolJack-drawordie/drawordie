@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,11 +13,15 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI enemyHpText;
     public TextMeshProUGUI enemyShieldText;
 
-    public Slider playerHpBar;
-    public Slider playerShieldBar;
-    public Slider enemyHpBar;
-    public Slider enemyShieldBar;
+    public AnimatedBar playerHpBar;
+    public AnimatedBar playerShieldBar;
+    public AnimatedBar enemyHpBar;
+    public AnimatedBar enemyShieldBar;
 
+    private HpProvider playerHpProvider;
+    private HpProvider enemyHpProvider;
+    private ShieldProvider playerShieldProvider;
+    private ShieldProvider enemyShieldProvider;
 
     [Header("참조")]
     public DiceManager diceManager;
@@ -27,46 +32,34 @@ public class UIManager : MonoBehaviour
     public GameObject resultPanel;
     public TextMeshProUGUI resultText;
 
+    public static UIManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+        playerHpProvider = playerHpBar.GetComponent<HpProvider>();
+        playerShieldProvider = playerShieldBar.GetComponent<ShieldProvider>();
+        enemyHpProvider = enemyHpBar.GetComponent <HpProvider>();
+        enemyShieldProvider = enemyShieldBar.GetComponent<ShieldProvider>();
+    }
+
+    private void Start()
+    {
+        UpdateUI();
+    }
+
     void Update()
     {
         UpdateUI();
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         if (diceManager == null || player == null || enemy == null) return;
         if (energyText == null || playerHpText == null || enemyHpText == null) return;
 
         energyText.text = "Energy : " + diceManager.CurrentEnergy;
-        playerHpText.text = "Player HP : " + player.currentHp;
-        enemyHpText.text = "Enemy HP : " + enemy.currentHp;
 
-        if (playerHpBar != null)
-        {
-            playerHpBar.maxValue = player.maxHp;
-            playerHpBar.value = player.currentHp;
-        }
-
-        if (enemyHpBar != null)
-        {
-            enemyHpBar.maxValue = enemy.maxHp;
-            enemyHpBar.value = enemy.currentHp;
-        }
-
-        // 플레이어 방어도 추가
-        if (playerShieldBar != null && playerShieldText != null)
-        {
-            playerShieldBar.maxValue = player.maxHp;
-            playerShieldBar.value = player.currentShield;
-            playerShieldText.text = "Player Shield : " + player.currentShield;
-        }
-        // 적 방어도 추가
-        if (enemyShieldBar != null && enemyShieldText != null)
-        {
-            enemyShieldBar.maxValue = enemy.maxHp;
-            enemyShieldBar.value = enemy.currentShield;
-            enemyShieldText.text = "Enemy Shield : " + enemy.currentShield;
-        }
     }
 
     public void ShowResult(bool isVictory)
@@ -92,5 +85,23 @@ public class UIManager : MonoBehaviour
     {
         GameFlowData.clearedNodeLevel++;
         SceneManager.LoadScene("MapScene");
+    }
+
+    public void LinkUnitToUI(UnitBase unit)
+    {
+        if (unit is PlayerUnit) // 유닛이 플레이어라면?
+        {
+            playerHpProvider.SetTarget(unit);
+            playerShieldProvider.SetTarget(unit);
+            playerHpBar.SetProvider(playerHpProvider);
+            playerShieldBar.SetProvider(playerShieldProvider);
+        }
+        else if (unit is EnemyUnit) // 유닛이 적이라면?
+        {
+            enemyHpProvider.SetTarget(unit);
+            enemyShieldProvider.SetTarget(unit);
+            enemyHpBar.SetProvider(enemyHpProvider);
+            enemyShieldBar.SetProvider(enemyShieldProvider);
+        }
     }
 }

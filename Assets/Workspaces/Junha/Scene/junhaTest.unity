@@ -175,6 +175,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpSlider
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
       propertyPath: m_Name
       value: sprite-sheet-64x64_8
@@ -1286,6 +1294,7 @@ GameObject:
   m_Component:
   - component: {fileID: 321044406}
   - component: {fileID: 321044407}
+  - component: {fileID: 321044408}
   m_Layer: 5
   m_Name: EnemyHPBar
   m_TagString: Untagged
@@ -1359,12 +1368,26 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 30
-  m_WholeNumbers: 1
-  m_Value: 30
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &321044408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321044405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
+  bar: {fileID: 0}
+  speed: 50
 --- !u!1 &334783221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,8 +1474,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &355197716
 GameObject:
@@ -1601,6 +1624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 389020177}
   - component: {fileID: 389020178}
+  - component: {fileID: 389020179}
   m_Layer: 5
   m_Name: PlayerHPBar
   m_TagString: Untagged
@@ -1674,12 +1698,26 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 30
-  m_WholeNumbers: 1
-  m_Value: 30
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &389020179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389020176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
+  bar: {fileID: 0}
+  speed: 50
 --- !u!1 &587658142
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,6 +1728,7 @@ GameObject:
   m_Component:
   - component: {fileID: 587658143}
   - component: {fileID: 587658144}
+  - component: {fileID: 587658145}
   m_Layer: 5
   m_Name: EnemyShieldBar
   m_TagString: Untagged
@@ -1763,12 +1802,26 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 30
-  m_WholeNumbers: 1
-  m_Value: 30
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &587658145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587658142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
+  bar: {fileID: 0}
+  speed: 50
 --- !u!1 &599176794
 GameObject:
   m_ObjectHideFlags: 0
@@ -2206,10 +2259,10 @@ MonoBehaviour:
   playerShieldText: {fileID: 1330374723}
   enemyHpText: {fileID: 1776440143}
   enemyShieldText: {fileID: 2003830674}
-  playerHpBar: {fileID: 389020178}
-  playerShieldBar: {fileID: 1953532469}
-  enemyHpBar: {fileID: 321044407}
-  enemyShieldBar: {fileID: 587658144}
+  playerHpBar: {fileID: 389020179}
+  playerShieldBar: {fileID: 1953532470}
+  enemyHpBar: {fileID: 321044408}
+  enemyShieldBar: {fileID: 587658145}
   diceManager: {fileID: 80527412}
   player: {fileID: 1461680770}
   enemy: {fileID: 1858842986}
@@ -2976,8 +3029,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1461680769 stripped
 GameObject:
@@ -3001,6 +3054,8 @@ MonoBehaviour:
   currentHp: 0
   maxShield: 30
   currentShield: 0
+  hpBar: {fileID: 0}
+  shieldBar: {fileID: 0}
   attackPower: 6
 --- !u!114 &1461680771 stripped
 MonoBehaviour:
@@ -3062,8 +3117,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1582617146
 GameObject:
@@ -3311,8 +3366,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1618133026
 GameObject:
@@ -3800,7 +3855,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Enemy HP: 20'
+  m_text: 'Enemy HP: 30'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3902,6 +3957,8 @@ MonoBehaviour:
   currentHp: 0
   maxShield: 30
   currentShield: 0
+  hpBar: {fileID: 0}
+  shieldBar: {fileID: 0}
   attackPower: 4
 --- !u!114 &1858842987 stripped
 MonoBehaviour:
@@ -3999,6 +4056,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1953532468}
   - component: {fileID: 1953532469}
+  - component: {fileID: 1953532470}
   m_Layer: 5
   m_Name: PlayerShieldBar
   m_TagString: Untagged
@@ -4072,12 +4130,26 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 30
-  m_WholeNumbers: 1
-  m_Value: 30
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1953532470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953532467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
+  bar: {fileID: 0}
+  speed: 50
 --- !u!1 &2003830672
 GameObject:
   m_ObjectHideFlags: 0

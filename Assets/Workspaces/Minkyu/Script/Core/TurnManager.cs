@@ -27,6 +27,8 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator BattleLoop()
     {
+        UIManager.Instance.LinkUnitToUI(player);
+        UIManager.Instance.LinkUnitToUI(enemy);
         while (!gameManager.isGameOver)
         {
             turnCount++;
@@ -74,6 +76,11 @@ public class TurnManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.TurnEnd;
+
+            //방어도 리셋
+            player.ResetShield();
+            enemy.ResetShield();
+
             Debug.Log($"===== Turn {turnCount} End =====");
 
             yield return new WaitForSeconds(1f);
