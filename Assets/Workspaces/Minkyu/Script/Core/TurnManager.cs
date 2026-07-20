@@ -20,6 +20,21 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        if (DataManager.Instance.isDataLoaded)
+        {
+            StartGame();
+        }
+        else
+        {
+            DataManager.Instance.OnDataLoaded += StartGame;
+        }
+    }
+
+    private void StartGame()
+    {
+        DataManager.Instance.OnDataLoaded -= StartGame;
+
+        DeckManager.Instance.InitializeDeck();
         gameManager.StartBattle();
         if (uiManager != null) uiManager.HideResult();
         StartCoroutine(BattleLoop());

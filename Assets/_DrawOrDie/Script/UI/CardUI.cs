@@ -2,9 +2,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
-// 카드 타입을 구분하기 위한 열거형 추가
-public enum CardType { Adjective, Gerund, Synergy }
-
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public int CardID; // 홍성구 추가 : 카드 id 추가
