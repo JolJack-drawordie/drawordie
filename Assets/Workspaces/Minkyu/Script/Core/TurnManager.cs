@@ -20,6 +20,11 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        // 배경 음악
+        if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);
+        }
+
         gameManager.StartBattle();
         if (uiManager != null) uiManager.HideResult();
         StartCoroutine(BattleLoop());
@@ -102,7 +107,7 @@ public class TurnManager : MonoBehaviour
     public void EndPlayerTurn()
     {
         if (DataManager.Instance != null)
-            DataManager.Instance.ClearHand();
+            DataManager.Instance.StartDiscardAll();
         playerActionFinished = true;
     }
 }

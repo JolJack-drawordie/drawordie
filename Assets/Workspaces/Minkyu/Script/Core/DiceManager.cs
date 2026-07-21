@@ -39,6 +39,11 @@ public class DiceManager : MonoBehaviour
     {
         diceImageObject.SetActive(true);
         
+        // 주사위 굴리는 소리
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
+        }
+
         // 주사위 굴러가는 애니메이션
         for(int i = 0; i < 10; i++)
         {

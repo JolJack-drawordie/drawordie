@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8319783506765908766}
   - component: {fileID: 6852699086798737190}
   - component: {fileID: 8653852935050193410}
+  - component: {fileID: 6577710275656891860}
   - component: {fileID: 7369213560457717281}
   - component: {fileID: 8560097961091716083}
   - component: {fileID: 873824682428546012}
@@ -84,6 +85,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6577710275656891860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4076577216169505300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28a2cbc6ded7c7043838d3101de0889e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardHoverSound
 --- !u!114 &7369213560457717281
 MonoBehaviour:
   m_ObjectHideFlags: 0
