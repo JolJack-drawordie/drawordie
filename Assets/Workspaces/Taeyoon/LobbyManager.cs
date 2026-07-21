@@ -56,7 +56,7 @@ public class LobbyManager : MonoBehaviour
     {
         Debug.Log("[LobbyManager] NewGame 클릭됨");
         if (isTransitioning) return;
-        StartCoroutine(FadeAndLoad("TestScene"));
+        StartCoroutine(FadeAndLoad("MapScene"));
     }
 
     public void OnLordGameClick()
@@ -87,5 +87,9 @@ public class LobbyManager : MonoBehaviour
         }
 
         SceneManager.LoadScene(sceneName);
+        // 배경 음악 정지
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.StopBGM();
+        }
     }
 }
