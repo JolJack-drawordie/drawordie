@@ -20,6 +20,21 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        if (DataManager.Instance.isDataLoaded)
+        {
+            StartGame();
+        }
+        else
+        {
+            DataManager.Instance.OnDataLoaded += StartGame;
+        }
+    }
+
+    private void StartGame()
+    {
+        DataManager.Instance.OnDataLoaded -= StartGame;
+
+        DeckManager.Instance.InitializeDeck();
         // 배경 음악
         if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);
