@@ -13,11 +13,19 @@ public class MapNodeManager : MonoBehaviour
     private void Start()
     {
         UpdateNodeState();
+        // 배경음악
+        if (SoundManager.Instance != null && SoundManager.Instance.mapBackgroundSound != null) {
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.mapBackgroundSound);
+        }
     }
 
     public void GoToBattle()
     {
         SceneManager.LoadScene(battleSceneName);
+        // 배경 음악 정지
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.StopBGM();
+        }
     }
 
     private void UpdateNodeState()

@@ -25,7 +25,7 @@ public class EnemyTarget : MonoBehaviour
         if (diceManager != null && diceManager.CurrentEnergy >= card.Cost)
         {
             diceManager.UseEnergy(card.Cost);
-            StartCoroutine(AttackSequence(card));
+            StartCoroutine(ActionSequence(card));
         }
         else
         {
@@ -35,12 +35,27 @@ public class EnemyTarget : MonoBehaviour
         }
     }
 
-    private IEnumerator AttackSequence(CardUI card)
+    // 기존 AttackSequence에서 ActionSequence로 변경
+    // 방어 행동 추가
+    private IEnumerator ActionSequence(CardUI card)
     {
-        if (playerController != null)
-            yield return StartCoroutine(playerController.AttackRoutine());
+        if(card.Damage > 0)
+        {
+            if (playerController != null)
+                yield return StartCoroutine(playerController.AttackRoutine());
+            GameManager.Instance.enemy.TakeDamage(card.Damage);
+        }
 
-        GameManager.Instance.enemy.TakeDamage(card.Damage);
+        if(card.Shield > 0)
+        {
+           GameManager.Instance.player.AddShield(card.Shield);
+        }
+        
+        if(card.Heal > 0)
+        {
+            GameManager.Instance.player.Heal(card.Heal);
+        }
+
         GameManager.Instance.CheckBattleResult();
 
         DataManager.Instance.RearrangeHand();

@@ -33,6 +33,11 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
+        // 배경음악
+        if (SoundManager.Instance != null && SoundManager.Instance.mainBackgroundSound != null) {
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.mainBackgroundSound);
+        }
+
         DOTween.SetTweensCapacity(500, 200);
 
         _canvas = GetComponent<Canvas>();

@@ -35,6 +35,11 @@ public class TurnManager : MonoBehaviour
         DataManager.Instance.OnDataLoaded -= StartGame;
 
         DeckManager.Instance.InitializeDeck();
+        // 배경 음악
+        if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);
+        }
+
         gameManager.StartBattle();
         if (uiManager != null) uiManager.HideResult();
         StartCoroutine(BattleLoop());
@@ -42,6 +47,8 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator BattleLoop()
     {
+        UIManager.Instance.LinkUnitToUI(player);
+        UIManager.Instance.LinkUnitToUI(enemy);
         while (!gameManager.isGameOver)
         {
             turnCount++;
@@ -89,6 +96,11 @@ public class TurnManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.TurnEnd;
+
+            //방어도 리셋
+            player.ResetShield();
+            enemy.ResetShield();
+
             Debug.Log($"===== Turn {turnCount} End =====");
 
             yield return new WaitForSeconds(1f);
