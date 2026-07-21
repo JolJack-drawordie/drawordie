@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 1914549386018566190}
   - component: {fileID: 5850782222835383469}
   m_Layer: 0
-  m_Name: sprite-sheet-64x64_8
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -127,6 +127,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3696138251993397976, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpBar
+      value: 
+      objectReference: {fileID: 321044408}
+    - target: {fileID: -3696138251993397976, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: shieldBar
+      value: 
+      objectReference: {fileID: 587658145}
     - target: {fileID: 1735560677819569693, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -178,14 +186,14 @@ PrefabInstance:
     - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
       propertyPath: hpText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1776440143}
     - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
       propertyPath: hpSlider
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 321044407}
     - target: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
       propertyPath: m_Name
-      value: sprite-sheet-64x64_8
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -988,6 +996,7 @@ RectTransform:
   - {fileID: 1330374722}
   - {fileID: 1776440142}
   - {fileID: 2003830673}
+  - {fileID: 1328513219}
   - {fileID: 1706980920}
   - {fileID: 389020177}
   - {fileID: 1953532468}
@@ -996,9 +1005,8 @@ RectTransform:
   - {fileID: 1582617147}
   - {fileID: 29232418}
   - {fileID: 621698174}
-  - {fileID: 1328513219}
   - {fileID: 1597696386}
-  - {fileID: 1939213951}
+  - {fileID: 835206569}
   - {fileID: 722373902}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1301,6 +1309,7 @@ GameObject:
   - component: {fileID: 321044406}
   - component: {fileID: 321044407}
   - component: {fileID: 321044408}
+  - component: {fileID: 321044409}
   m_Layer: 5
   m_Name: EnemyHPBar
   m_TagString: Untagged
@@ -1392,8 +1401,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
-  bar: {fileID: 0}
+  bar: {fileID: 321044407}
+  textLabel: {fileID: 1776440143}
   speed: 50
+--- !u!114 &321044409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321044405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2ee54374abe1e439e5087ee5d1fc4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HpProvider
 --- !u!1 &334783221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,6 +1653,7 @@ GameObject:
   - component: {fileID: 389020177}
   - component: {fileID: 389020178}
   - component: {fileID: 389020179}
+  - component: {fileID: 389020180}
   m_Layer: 5
   m_Name: PlayerHPBar
   m_TagString: Untagged
@@ -1722,8 +1745,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
-  bar: {fileID: 0}
+  bar: {fileID: 389020178}
+  textLabel: {fileID: 912896569}
   speed: 50
+--- !u!114 &389020180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389020176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2ee54374abe1e439e5087ee5d1fc4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HpProvider
 --- !u!1 &587658142
 GameObject:
   m_ObjectHideFlags: 0
@@ -1735,6 +1771,7 @@ GameObject:
   - component: {fileID: 587658143}
   - component: {fileID: 587658144}
   - component: {fileID: 587658145}
+  - component: {fileID: 587658146}
   m_Layer: 5
   m_Name: EnemyShieldBar
   m_TagString: Untagged
@@ -1826,8 +1863,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
-  bar: {fileID: 0}
+  bar: {fileID: 587658144}
+  textLabel: {fileID: 2003830674}
   speed: 50
+--- !u!114 &587658146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587658142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91066eca7180de346bda4770e59bd4b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShieldProvider
 --- !u!1 &599176794
 GameObject:
   m_ObjectHideFlags: 0
@@ -2122,6 +2172,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 722373901}
   m_CullTransparentMesh: 1
+--- !u!1 &835206568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 835206569}
+  - component: {fileID: 835206571}
+  - component: {fileID: 835206570}
+  m_Layer: 5
+  m_Name: DeckPile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &835206569
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835206568}
+  m_LocalRotation: {x: 0, y: 0, z: 0.17364816, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 270338635}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 20}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 217, y: 32}
+  m_SizeDelta: {x: 80, y: 120}
+  m_Pivot: {x: 1, y: 0}
+--- !u!114 &835206570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835206568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &835206571
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835206568}
+  m_CullTransparentMesh: 1
 --- !u!1 &912896567
 GameObject:
   m_ObjectHideFlags: 0
@@ -2270,7 +2395,7 @@ GameObject:
   - component: {fileID: 950445371}
   - component: {fileID: 950445370}
   m_Layer: 0
-  m_Name: "\uC2A4\uD06C\uB9B0\uC0F7 2026-05-04 210424_0"
+  m_Name: BackgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2491,6 +2616,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7221921212828934979, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
+      propertyPath: hpBar
+      value: 
+      objectReference: {fileID: 389020179}
+    - target: {fileID: -7221921212828934979, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
+      propertyPath: shieldBar
+      value: 
+      objectReference: {fileID: 1953532470}
+    - target: {fileID: 1600543759654169373, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1461680772}
+    - target: {fileID: 1600543759654169373, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
+      propertyPath: attackTarget
+      value: 
+      objectReference: {fileID: 1858842990}
     - target: {fileID: 2790687183692999191, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
       propertyPath: m_Name
       value: Player
@@ -3179,8 +3320,8 @@ MonoBehaviour:
   currentHp: 0
   maxShield: 30
   currentShield: 0
-  hpBar: {fileID: 0}
-  shieldBar: {fileID: 0}
+  hpBar: {fileID: 389020179}
+  shieldBar: {fileID: 1953532470}
   attackPower: 6
 --- !u!114 &1461680771 stripped
 MonoBehaviour:
@@ -3193,6 +3334,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6203a959f898eb14cb5d7d315221a214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+--- !u!95 &1461680772 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7506369132564501879, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
+  m_PrefabInstance: {fileID: 1040486665}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1474777755 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4785205825621033463, guid: 398562c6fefe4894d83635b87955ae56, type: 3}
@@ -4082,8 +4228,8 @@ MonoBehaviour:
   currentHp: 0
   maxShield: 30
   currentShield: 0
-  hpBar: {fileID: 0}
-  shieldBar: {fileID: 0}
+  hpBar: {fileID: 321044408}
+  shieldBar: {fileID: 587658145}
   attackPower: 4
 --- !u!114 &1858842987 stripped
 MonoBehaviour:
@@ -4096,6 +4242,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1005575697559b84eaf82a83a29c60a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+--- !u!4 &1858842990 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+  m_PrefabInstance: {fileID: 17616666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1923697860
 GameObject:
   m_ObjectHideFlags: 0
@@ -4182,6 +4333,7 @@ GameObject:
   - component: {fileID: 1953532468}
   - component: {fileID: 1953532469}
   - component: {fileID: 1953532470}
+  - component: {fileID: 1953532471}
   m_Layer: 5
   m_Name: PlayerShieldBar
   m_TagString: Untagged
@@ -4273,8 +4425,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b35d2922b27ed8844ad4df74286a34c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedBar
-  bar: {fileID: 0}
+  bar: {fileID: 1953532469}
+  textLabel: {fileID: 1330374723}
   speed: 50
+--- !u!114 &1953532471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953532467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91066eca7180de346bda4770e59bd4b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShieldProvider
 --- !u!1 &2003830672
 GameObject:
   m_ObjectHideFlags: 0
@@ -4691,7 +4856,7 @@ MonoBehaviour:
   cardSpacing: 150
   heightSpacing: 20
   angleSpacing: -5
-  deckPile: {fileID: 1939213951}
+  deckPile: {fileID: 835206569}
   discardPile: {fileID: 722373902}
 --- !u!4 &2123465576
 Transform:
@@ -4773,14 +4938,13 @@ SceneRoots:
   - {fileID: 1673028327}
   - {fileID: 334783223}
   - {fileID: 80527413}
-  - {fileID: 270338635}
-  - {fileID: 1195653212}
   - {fileID: 958444057}
   - {fileID: 2123465576}
   - {fileID: 1331130815}
+  - {fileID: 693251033}
+  - {fileID: 270338635}
+  - {fileID: 1195653212}
   - {fileID: 950445371}
   - {fileID: 1040486665}
   - {fileID: 17616666}
-  - {fileID: 1637099178}
-  - {fileID: 693251033}
   - {fileID: 676028282017647049}
