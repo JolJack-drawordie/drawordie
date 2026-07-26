@@ -34,7 +34,7 @@ public class TurnManager : MonoBehaviour
     {
         DataManager.Instance.OnDataLoaded -= StartGame;
 
-        DeckManager.Instance.InitializeDeck();
+        DeckManager.Instance.InitializeDeck(DataManager.Instance.defaultAdjectiveIds, DataManager.Instance.defaultGerundIds);
         // 배경 음악
         if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);

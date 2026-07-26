@@ -20,25 +20,25 @@ public class DeckManager : MonoBehaviour
         Instance = this;
     }
     
-    public void InitializeDeck()
+    public void InitializeDeck(List<int> adjectiveIds, List<int> gerundIds)
     {
-        // 이미 있는 딕셔너리(예: DataManager.adjectiveTable)에서 데이터를 가져옴
-        // 101번 카드 2장
-        for (int i = 0; i < 2; i++)
+        AdjectiveDrawPile.Clear(); // 혹시 모를 기존 카드 초기화
+        GerundDrawPile.Clear();
+
+        foreach (int id in adjectiveIds)
         {
-            // 딕셔너리에서 참조(Reference)를 가져와서 카드를 생성
-            var data = DataManager.Instance.adjectiveTable[101];
+            var data = DataManager.Instance.adjectiveTable[id];
             AdjectiveDrawPile.Add(new AdjectiveCard(data));
         }
 
-        // 201번 카드 3장
-        for (int i = 0; i < 3; i++)
+        foreach (int id in gerundIds)
         {
-            var data = DataManager.Instance.gerundTable[201];
+            var data = DataManager.Instance.gerundTable[id];
             GerundDrawPile.Add(new GerundCard(data));
         }
-
-        // 3. 덱 섞기(셔플)
+    }
+    public void ShuffleDeck()
+    {
         Shuffle(AdjectiveDrawPile);
         Shuffle(GerundDrawPile);
     }

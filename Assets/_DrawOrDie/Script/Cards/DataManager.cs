@@ -13,6 +13,9 @@ public class DataManager : MonoBehaviour
     public Dictionary<int, Adjective> adjectiveTable = new Dictionary<int, Adjective>();
     public Dictionary<int, Gerund> gerundTable = new Dictionary<int, Gerund>();
 
+    public List<int> defaultAdjectiveIds = new List<int>();
+    public List<int> defaultGerundIds = new List<int>();
+
     [Header("전투 시스템")]
     public int currentMana;
     public int diceResult;
@@ -35,6 +38,7 @@ public class DataManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(LoadCards());
+        StartCoroutine(LoadDefaultDeck());
     }
 
     public void TriggerCardDraw(int diceEnergy)
@@ -276,5 +280,15 @@ public class DataManager : MonoBehaviour
                 Debug.LogError($"{url} 데이터 로딩 실패: {www.error}");
             }
         }
+    }
+
+    public IEnumerator LoadDefaultDeck()
+    {
+        string defaultDeckUrl = "http://localhost:8080/api/game/load-default-deck"; // 예시 API
+
+        yield return StartCoroutine(FetchData<DefaultDeckData>(defaultDeckUrl, (deckData) => {
+            defaultAdjectiveIds = deckData.adjectiveIds;
+            defaultGerundIds = deckData.gerundIds;
+        }));
     }
 }
