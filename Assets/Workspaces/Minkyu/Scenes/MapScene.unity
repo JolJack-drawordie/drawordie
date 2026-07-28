@@ -901,6 +901,9 @@ MonoBehaviour:
   elitePrefab: {fileID: 2810294230702250255, guid: 1f711ff19865e6546be577eec7e53f61, type: 3}
   bossPrefab: {fileID: 7045010428231821156, guid: 0ca1a832d67493249a223645d24cd556, type: 3}
   nodeParent: {fileID: 954671687}
+  floorCount: 5
+  floorSpacing: 180
+  nodeSpacing: 180
 --- !u!1 &1389775770
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,11 +20,6 @@ public class MapSeedGenerator : MonoBehaviour
             seed = Random.Range(100000, 999999);
         }
 
-        Random.InitState(seed);
-
         Debug.Log("Map Seed : " + seed);
-        Debug.Log(Random.Range(1, 100));
-        Debug.Log(Random.Range(1, 100));
-        Debug.Log(Random.Range(1, 100));
     }
 }
