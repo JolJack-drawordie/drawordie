@@ -65,7 +65,11 @@ AnimatorStateTransition:
   serializedVersion: 3
   m_TransitionDuration: 0.3445559
   m_TransitionOffset: 0
+<<<<<<< Updated upstream
   m_ExitTime: 0.49999997
+=======
+  m_ExitTime: 0.5
+>>>>>>> Stashed changes
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
