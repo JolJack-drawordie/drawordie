@@ -4,21 +4,66 @@ using UnityEngine.UI;
 
 public class MapNode : MonoBehaviour
 {
-    [Header("UI")]
-    public Button button;
+    public enum NodeType
+    {
+        Monster,
+        Elite,
+        Boss
+    }
 
     [Header("Node Info")]
-    public int floor;
-    public int nodeIndex;
+    public NodeType nodeType;
 
-    [Header("Connection")]
+    public int floor;
+
+    public int index;
+
+    [Header("Connected Nodes")]
     public List<MapNode> connectedNodes = new List<MapNode>();
+
+    public Button button;
+
+    private MapNodeManager manager;
 
     private void Awake()
     {
         if (button == null)
-        {
             button = GetComponent<Button>();
+
+        // Unity 6 권장 방식
+        manager = FindFirstObjectByType<MapNodeManager>();
+
+        if (button != null)
+            button.onClick.AddListener(OnClickNode);
+    }
+
+    public void Initialize(NodeType type, int floorIndex, int nodeIndex)
+    {
+        nodeType = type;
+        floor = floorIndex;
+        index = nodeIndex;
+    }
+
+    public void AddConnection(MapNode nextNode)
+    {
+        if (nextNode == null)
+            return;
+
+        if (!connectedNodes.Contains(nextNode))
+        {
+            connectedNodes.Add(nextNode);
+
+            Debug.Log($"{name} -> {nextNode.name}");
+        }
+    }
+
+    void OnClickNode()
+    {
+        Debug.Log($"Select Node : Floor {floor} / Index {index}");
+
+        if (manager != null)
+        {
+            manager.NodeSelected(this);
         }
     }
 

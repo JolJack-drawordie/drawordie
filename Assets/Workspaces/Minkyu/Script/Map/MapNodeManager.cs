@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,17 +6,14 @@ public class MapNodeManager : MonoBehaviour
     [Header("Battle Scene")]
     public string battleSceneName = "JunhaTest";
 
-    [Header("Map Nodes (Legacy)")]
-    public MapNode[] level1Nodes;
-    public MapNode[] level2Nodes;
-    public MapNode[] bossNodes;
-
-    [Header("Runtime Nodes")]
-    public List<MapNode> generatedNodes = new List<MapNode>();
+    private MapNode[] allNodes;
 
     private void Start()
     {
-        UpdateNodeState();
+        // 현재 맵의 모든 노드 찾기
+        allNodes = FindObjectsByType<MapNode>(FindObjectsSortMode.None);
+
+        InitializeNodes();
 
         // 배경음악
         if (SoundManager.Instance != null &&
@@ -28,49 +24,69 @@ public class MapNodeManager : MonoBehaviour
         }
     }
 
-    public void RegisterNode(MapNode node)
+    /// <summary>
+    /// 맵 진입 시 활성화할 노드 결정
+    /// </summary>
+    void InitializeNodes()
     {
-        if (!generatedNodes.Contains(node))
+        // 우선 전부 비활성화
+        foreach (MapNode node in allNodes)
         {
-            generatedNodes.Add(node);
+            node.SetInteractable(false);
+        }
+
+        // 첫 시작이면 0층만 활성화
+        if (GameFlowData.currentFloor == -1)
+        {
+            foreach (MapNode node in allNodes)
+            {
+                if (node.floor == 0)
+                {
+                    node.SetInteractable(true);
+                }
+            }
+
+            return;
+        }
+
+        // 이전에 선택했던 노드 찾기
+        MapNode currentNode = null;
+
+        foreach (MapNode node in allNodes)
+        {
+            if (node.floor == GameFlowData.currentFloor &&
+                node.index == GameFlowData.currentIndex)
+            {
+                currentNode = node;
+                break;
+            }
+        }
+
+        if (currentNode == null)
+            return;
+
+        // 연결된 노드만 활성화
+        foreach (MapNode nextNode in currentNode.connectedNodes)
+        {
+            nextNode.SetInteractable(true);
         }
     }
 
-    public void ClearNodes()
+    /// <summary>
+    /// 노드 클릭 시 호출
+    /// </summary>
+    public void NodeSelected(MapNode selectedNode)
     {
-        generatedNodes.Clear();
-    }
+        // 선택 정보 저장
+        GameFlowData.SelectNode(selectedNode);
 
-    public void GoToBattle()
-    {
+        // 전투씬 이동
+        SceneManager.LoadScene(battleSceneName);
+
+        // 배경음악 정지
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.StopBGM();
-        }
-
-        SceneManager.LoadScene(battleSceneName);
-    }
-
-    private void UpdateNodeState()
-    {
-        SetNodes(level1Nodes,
-            GameFlowData.clearedNodeLevel == 0);
-
-        SetNodes(level2Nodes,
-            GameFlowData.clearedNodeLevel == 1);
-
-        SetNodes(bossNodes,
-            GameFlowData.clearedNodeLevel >= 2);
-    }
-
-    private void SetNodes(MapNode[] nodes, bool interactable)
-    {
-        foreach (MapNode node in nodes)
-        {
-            if (node != null)
-            {
-                node.SetInteractable(interactable);
-            }
         }
     }
 }

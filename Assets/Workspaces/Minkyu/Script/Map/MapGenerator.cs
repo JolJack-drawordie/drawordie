@@ -22,9 +22,6 @@ public class MapGenerator : MonoBehaviour
 
     private MapSeedGenerator seedGenerator;
 
-    // 층별 노드 저장
-    private List<List<GameObject>> floorNodes = new List<List<GameObject>>();
-
     void Start()
     {
         seedGenerator = GetComponent<MapSeedGenerator>();
@@ -35,28 +32,36 @@ public class MapGenerator : MonoBehaviour
         }
 
         GenerateLayout();
-        GenerateConnections();
     }
 
     void GenerateLayout()
     {
         foreach (Transform child in nodeParent)
+        {
             Destroy(child.gameObject);
+        }
 
         foreach (Transform child in lineParent)
+        {
             Destroy(child.gameObject);
+        }
 
-        floorNodes.Clear();
+        List<GameObject> previousFloor = new List<GameObject>();
 
         for (int floor = 0; floor < floorCount; floor++)
         {
             List<GameObject> currentFloor = new List<GameObject>();
 
+            // 마지막 층 = Boss
             if (floor == floorCount - 1)
             {
-                GameObject boss = CreateNode(
-                    bossPrefab,
-                    new Vector2(0, floor * floorSpacing - 300f));
+                GameObject boss =
+                    CreateNode(
+                        bossPrefab,
+                        new Vector2(0, floor * floorSpacing - 300f),
+                        MapNode.NodeType.Boss,
+                        floor,
+                        0);
 
                 currentFloor.Add(boss);
             }
@@ -66,84 +71,110 @@ public class MapGenerator : MonoBehaviour
 
                 for (int i = 0; i < nodeCount; i++)
                 {
-                    float x = (i - (nodeCount - 1) / 2f) * nodeSpacing;
-                    float y = floor * floorSpacing - 300f;
+                    float x =
+                        (i - (nodeCount - 1) / 2f) * nodeSpacing;
+
+                    float y =
+                        floor * floorSpacing - 300f;
 
                     GameObject prefab = monsterPrefab;
+                    MapNode.NodeType type = MapNode.NodeType.Monster;
 
                     if (floor >= 2 && Random.value < 0.25f)
+                    {
                         prefab = elitePrefab;
+                        type = MapNode.NodeType.Elite;
+                    }
 
-                    currentFloor.Add(
-                        CreateNode(prefab, new Vector2(x, y))
-                    );
+                    GameObject node =
+                        CreateNode(
+                            prefab,
+                            new Vector2(x, y),
+                            type,
+                            floor,
+                            i);
+
+                    currentFloor.Add(node);
                 }
             }
 
-            floorNodes.Add(currentFloor);
-        }
-    }
-
-    void GenerateConnections()
-    {
-        for (int floor = 0; floor < floorNodes.Count - 1; floor++)
-        {
-            List<GameObject> currentFloor = floorNodes[floor];
-            List<GameObject> nextFloor = floorNodes[floor + 1];
-
-            foreach (GameObject currentNode in currentFloor)
+            // 이전 층과 현재 층 연결
+            if (previousFloor.Count > 0)
             {
-                // 최소 1개, 최대 2개 연결
-                int connectionCount = Random.Range(1, 3);
-
-                List<int> connectedIndex = new List<int>();
-
-                for (int i = 0; i < connectionCount; i++)
+                foreach (GameObject prev in previousFloor)
                 {
-                    int randomIndex = Random.Range(0, nextFloor.Count);
+                    MapNode prevNode = prev.GetComponent<MapNode>();
 
-                    if (connectedIndex.Contains(randomIndex))
-                        continue;
+                    foreach (GameObject current in currentFloor)
+                    {
+                        MapNode currentNode = current.GetComponent<MapNode>();
 
-                    connectedIndex.Add(randomIndex);
+                        // 연결 정보 저장
+                        prevNode.AddConnection(currentNode);
 
-                    GameObject nextNode = nextFloor[randomIndex];
-
-                    CreateLine(
-                        currentNode.GetComponent<RectTransform>(),
-                        nextNode.GetComponent<RectTransform>());
+                        // 선 생성
+                        CreateLine(
+                            prev.GetComponent<RectTransform>(),
+                            current.GetComponent<RectTransform>());
+                    }
                 }
             }
+
+            previousFloor = currentFloor;
         }
     }
 
-    GameObject CreateNode(GameObject prefab, Vector2 pos)
+    GameObject CreateNode(
+        GameObject prefab,
+        Vector2 pos,
+        MapNode.NodeType type,
+        int floor,
+        int index)
     {
-        GameObject node = Instantiate(prefab, nodeParent);
+        GameObject node =
+            Instantiate(prefab, nodeParent);
 
-        RectTransform rt = node.GetComponent<RectTransform>();
+        RectTransform rt =
+            node.GetComponent<RectTransform>();
+
         rt.anchoredPosition = pos;
+
+        // ★ 노드 정보 저장
+        MapNode mapNode = node.GetComponent<MapNode>();
+
+        if (mapNode != null)
+        {
+            mapNode.Initialize(type, floor, index);
+        }
 
         return node;
     }
 
     void CreateLine(RectTransform from, RectTransform to)
     {
-        GameObject line = Instantiate(linePrefab, lineParent);
+        GameObject line =
+            Instantiate(linePrefab, lineParent);
 
-        RectTransform lineRect = line.GetComponent<RectTransform>();
+        RectTransform lineRect =
+            line.GetComponent<RectTransform>();
 
         Vector2 start = from.anchoredPosition;
         Vector2 end = to.anchoredPosition;
 
         Vector2 direction = end - start;
 
-        lineRect.anchoredPosition = (start + end) / 2f;
+        float distance = direction.magnitude;
 
-        lineRect.sizeDelta = new Vector2(direction.magnitude, 6f);
+        lineRect.anchoredPosition =
+            (start + end) / 2f;
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        lineRect.sizeDelta =
+            new Vector2(distance, 6f);
 
-        lineRect.localRotation = Quaternion.Euler(0, 0, angle);
+        float angle =
+            Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        lineRect.localRotation =
+            Quaternion.Euler(0, 0, angle);
     }
 }
