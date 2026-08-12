@@ -16,6 +16,8 @@ public class DataManager : MonoBehaviour
     public List<int> defaultAdjectiveIds = new List<int>();
     public List<int> defaultGerundIds = new List<int>();
 
+    public List<ICard> masterCardPool = new List<ICard>(); // 동명사, 형용사 통합 카드 풀
+
     [Header("전투 시스템")]
     public int currentMana;
     public int diceResult;
@@ -56,18 +58,6 @@ public class DataManager : MonoBehaviour
     IEnumerator FetchAndDrawCards()
     {
         ClearHand();
-
-        //string url = "http://localhost:8080/api/game/start-cards";
-        //using (UnityWebRequest www = UnityWebRequest.Get(url))
-        //{
-        //    yield return www.SendWebRequest();
-        //    if (www.result == UnityWebRequest.Result.Success)
-        //    {
-        //        string json = www.downloadHandler.text;
-        //        BattleStartHand hand = JsonUtility.FromJson<BattleStartHand>(json);
-        //        StartCoroutine(DrawCardsRoutine(hand));
-        //    }
-        //}
 
         BattleStartHand hand = DeckManager.Instance.PrepareInitialHand();
 
@@ -259,6 +249,8 @@ public class DataManager : MonoBehaviour
                 gerundTable[ger.id] = ger;
         }));
 
+        BuildMasterCardPool();
+
         isDataLoaded = true;
         OnDataLoaded?.Invoke();
         Debug.Log("모든 카드 데이터 로딩 및 딕셔너리 구축 완료!");
@@ -290,5 +282,19 @@ public class DataManager : MonoBehaviour
             defaultAdjectiveIds = deckData.adjectiveIds;
             defaultGerundIds = deckData.gerundIds;
         }));
+    }
+
+    public void BuildMasterCardPool()
+    {
+        masterCardPool.Clear();
+
+        foreach (var adj in adjectiveTable.Values)
+        {
+            masterCardPool.Add(new AdjectiveCard(adj));
+        }
+        foreach (var ger in gerundTable.Values)
+        {
+            masterCardPool.Add(new GerundCard(ger));
+        }
     }
 }

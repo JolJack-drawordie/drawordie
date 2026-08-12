@@ -18,6 +18,8 @@ public class TurnManager : MonoBehaviour
     public int turnCount = 0;
     public bool playerActionFinished = false;
 
+    private bool isDeckInitialized = false;
+
     private void Start()
     {
         if (DataManager.Instance.isDataLoaded)
@@ -34,7 +36,11 @@ public class TurnManager : MonoBehaviour
     {
         DataManager.Instance.OnDataLoaded -= StartGame;
 
-        DeckManager.Instance.InitializeDeck(DataManager.Instance.defaultAdjectiveIds, DataManager.Instance.defaultGerundIds);
+        if (!DeckManager.Instance.IsDeckInitialized)
+        {
+            DeckManager.Instance.InitializeDeck(DataManager.Instance.defaultAdjectiveIds, DataManager.Instance.defaultGerundIds);
+            DeckManager.Instance.IsDeckInitialized = true; // "이제 초기화 끝났다"고 체크 박아둠
+        }
         // 배경 음악
         if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);
@@ -53,7 +59,7 @@ public class TurnManager : MonoBehaviour
         {
             turnCount++;
             gameManager.currentState = BattleState.TurnStart;
-            Debug.Log($"===== Turn {turnCount} Start =====");
+            DeckManager.Instance.DiscardHand();
 
             // 주사위 굴리기 버튼 대기
             diceManager.ShowRollButton();

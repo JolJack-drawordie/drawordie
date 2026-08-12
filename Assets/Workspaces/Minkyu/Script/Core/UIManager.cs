@@ -31,6 +31,8 @@ public class UIManager : MonoBehaviour
     [Header("전투 결과 UI")]
     public GameObject resultPanel;
     public TextMeshProUGUI resultText;
+    public GameObject rewardPanel;
+    public TextMeshProUGUI rewardText;
 
     public static UIManager Instance;
 
@@ -64,14 +66,20 @@ public class UIManager : MonoBehaviour
 
     public void ShowResult(bool isVictory)
     {
-        resultPanel.SetActive(true);
+        
 
         if (isVictory)
         {
-            resultText.text = "Victory";
+            DeckManager.Instance.DiscardHand();
+            DeckManager.Instance.RefillDeckFromDiscard(true);
+            DeckManager.Instance.RefillDeckFromDiscard(false);
+            rewardPanel.SetActive(true);
+            rewardText.text = "승리! 보상을 선택하세요.";
+            BattleRewardManager.Instance.GenerateRewardChoices();
         }
         else
         {
+            resultPanel.SetActive(true);
             resultText.text = "Defeat";
         }
     }
