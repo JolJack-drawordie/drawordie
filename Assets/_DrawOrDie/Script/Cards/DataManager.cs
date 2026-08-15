@@ -79,7 +79,7 @@ public class DataManager : MonoBehaviour
             ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(), 
                      hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod, hand.adjectives[i].shdMod, hand.adjectives[i].healMod);
             
-            // ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(),
+            //ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(),
             //         hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod);
 
             RectTransform rect = newCard.GetComponent<RectTransform>();
@@ -101,7 +101,7 @@ public class DataManager : MonoBehaviour
             ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(), 
                      hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg, hand.gerunds[i].baseShd, hand.gerunds[i].baseHeal);
             
-            // ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(),
+            //ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(),
             //         hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg);
 
             RectTransform rect = newCard.GetComponent<RectTransform>();

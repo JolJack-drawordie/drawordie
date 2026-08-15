@@ -5,11 +5,11 @@ public class DeckManager : MonoBehaviour
 {
     public static DeckManager Instance;
 
-    // Çü¿ë»ç °ü·Ã
+    // í˜•ìš©ì‚¬ ì¹´ë“œ ë”ë¯¸
     public List<ICard> AdjectiveDrawPile { get; private set; } = new List<ICard>();
     public List<ICard> AdjectiveDiscardPile { get; private set; } = new List<ICard>();
 
-    // µ¿¸í»ç °ü·Ã
+    // ë™ëª…ì‚¬ ì¹´ë“œ ë”ë¯¸
     public List<ICard> GerundDrawPile { get; private set; } = new List<ICard>();
     public List<ICard> GerundDiscardPile { get; private set; } = new List<ICard>();
 
@@ -19,25 +19,26 @@ public class DeckManager : MonoBehaviour
     {
         Instance = this;
     }
+    
     public void InitializeDeck()
     {
-        // ÀÌ¹Ì ÀÖ´Â µñ¼Å³Ê¸®(¿¹: DataManager.gerundTable)¿¡¼­ µ¥ÀÌÅÍ¸¦ °¡Á®¿È
-        // 101¹ø Ä«µå 3Àå
+        // ì´ë¯¸ ìˆëŠ” ë”•ì…”ë„ˆë¦¬(ì˜ˆ: DataManager.adjectiveTable)ì—ì„œ ë°ì´í„°ë¥¼ ê°€ì ¸ì˜´
+        // 101ë²ˆ ì¹´ë“œ 2ì¥
         for (int i = 0; i < 2; i++)
         {
-            // µñ¼Å³Ê¸®¿¡¼­ ÂüÁ¶(Reference)¸¸ °¡Á®¿Í¼­ Ä«µå¸¦ ¸¸µê
+            // ë”•ì…”ë„ˆë¦¬ì—ì„œ ì°¸ì¡°(Reference)ë¥¼ ê°€ì ¸ì™€ì„œ ì¹´ë“œë¥¼ ìƒì„±
             var data = DataManager.Instance.adjectiveTable[101];
             AdjectiveDrawPile.Add(new AdjectiveCard(data));
         }
 
-        // 201¹ø Ä«µå 2Àå
+        // 201ë²ˆ ì¹´ë“œ 3ì¥
         for (int i = 0; i < 3; i++)
         {
             var data = DataManager.Instance.gerundTable[201];
             GerundDrawPile.Add(new GerundCard(data));
         }
 
-        // 3. ¼¯±â
+        // 3. ë± ì„ê¸°(ì…”í”Œ)
         Shuffle(AdjectiveDrawPile);
         Shuffle(GerundDrawPile);
     }
@@ -55,13 +56,13 @@ public class DeckManager : MonoBehaviour
 
     public void DrawHand()
     {
-        // 1. Çü¿ë»ç 2Àå »Ì±â
+        // 1. í˜•ìš©ì‚¬ ì¹´ë“œ 2ì¥ ë½‘ê¸°
         for (int i = 0; i < 2; i++)
         {
             DrawCard(true);
         }
 
-        // 2. µ¿¸í»ç 3Àå »Ì±â
+        // 2. ë™ëª…ì‚¬ ì¹´ë“œ 3ì¥ ë½‘ê¸°
         for (int i = 0; i < 3; i++)
         {
             DrawCard(false);
@@ -73,17 +74,17 @@ public class DeckManager : MonoBehaviour
         var drawPile = isAdjective ? AdjectiveDrawPile : GerundDrawPile;
         var discardPile = isAdjective ? AdjectiveDiscardPile : GerundDiscardPile;
 
-        // µ¦ÀÌ ºñ¾úÀ¸¸é ¹«´ıÀ» ¼¯¾î¼­ ´Ù½Ã Ã¤¿ò
+        // ë½‘ì„ ë”ë¯¸ê°€ ë¹„ì—ˆìœ¼ë©´ ë²„ë¦° ë”ë¯¸ë¥¼ ì„ì–´ì„œ ë‹¤ì‹œ ì±„ì›€
         if (drawPile.Count == 0)
         {
-            if (discardPile.Count == 0) return; // µÑ ´Ù ºñ¾úÀ¸¸é »ÌÀ» Ä«µå ¾øÀ½
+            if (discardPile.Count == 0) return; // ë‘˜ ë‹¤ ë¹„ì—ˆìœ¼ë©´ ë½‘ì„ ì¹´ë“œê°€ ì—†ìŒ
 
             drawPile.AddRange(discardPile);
             discardPile.Clear();
             Shuffle(drawPile);
         }
 
-        // Ä«µå ÇÑ ÀåÀ» µ¦¿¡¼­ ²¨³» ¼Õ(Hand)À¸·Î ÀÌµ¿
+        // ì¹´ë“œ ë± ë§¨ ìœ„ì˜ ì¹´ë“œë¥¼ ë½‘ì•„ íŒ¨(Hand)ë¡œ ì´ë™
         if (drawPile.Count > 0)
         {
             ICard card = drawPile[0];
@@ -94,22 +95,22 @@ public class DeckManager : MonoBehaviour
 
     public BattleStartHand PrepareInitialHand()
     {
-        // 1. µ¦¿¡¼­ Ä«µå »Ì±â (ÀÌ¹Ì µ¦¿¡ ·ÎÁ÷ °´Ã¼ÀÎ AdjectiveCard, GerundCard°¡ µé¾îÀÖ´Ù°í °¡Á¤)
-        // Çü¿ë»ç 2Àå, µ¿¸í»ç 3Àå »Ì¾Æ¼­ Hand¿¡ ³ÖÀ½
+        // 1. ì²˜ìŒì— ì¹´ë“œ ë½‘ê¸° (ì´ë¯¸ ë±ì— ì¹´ë“œ ê°ì²´ì¸ AdjectiveCard, GerundCardê°€ ë“¤ì–´ìˆë‹¤ê³  ê°€ì •)
+        // í˜•ìš©ì‚¬ 2ì¥, ë™ëª…ì‚¬ 3ì¥ì„ ë½‘ì•„ì„œ Handì— ì €ì¥
         DrawHand();
 
-        // 2. ÆÀ¿øÀÌ ¿øÇÏ´Â Çü½ÄÀ¸·Î µ¥ÀÌÅÍ ÆĞÅ°Â¡
+        // 2. ì „íˆ¬ì— í•„ìš”í•œ ë°ì´í„° í˜•íƒœë¡œ íŒ¨í‚¤ì§•
         BattleStartHand handData = new BattleStartHand();
         handData.adjectives = new List<Adjective>();
         handData.gerunds = new List<Gerund>();
 
-        // 3. Hand¿¡ ÀÖ´Â ·ÎÁ÷ °´Ã¼µé¿¡¼­ ¾Ë¸ÍÀÌ(Data)¸¸ ½ï »©¼­ Àü´Ş
+        // 3. Handì— ìˆëŠ” ì¹´ë“œ ê°ì²´ë“¤ì—ì„œ ì•Œë§¹ì´(Data)ë§Œ ì™ ë¹¼ì„œ ì „ë‹¬
         foreach (var card in Hand)
         {
             if (card is AdjectiveCard adjCard)
             {
-                // AdjectiveCard ³»ºÎÀÇ µ¥ÀÌÅÍ(Adjective)¸¦ ²¨³»¼­ Àü´Ş
-                handData.adjectives.Add(adjCard.GetData()); // GetData ¸Ş¼­µå ÇÏ³ª Ãß°¡ÇÏ¸é ÆíÇØ
+                // AdjectiveCard ê°ì²´ì—ì„œ ë°ì´í„°(Adjective)ë¥¼ ë½‘ì•„ì„œ ì¶”ê°€
+                handData.adjectives.Add(adjCard.GetData()); // GetData ë©”ì„œë“œë¥¼ í•˜ë‚˜ ì¶”ê°€í•˜ë©´ í¸ë¦¬í•¨
             }
             else if (card is GerundCard gerCard)
             {
@@ -120,4 +121,3 @@ public class DeckManager : MonoBehaviour
         return handData;
     }
 }
-
