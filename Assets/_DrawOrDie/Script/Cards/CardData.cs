@@ -148,3 +148,10 @@ public class GerundCard : ICard
         Debug.Log($"{Name} 카드 사용! 효과 발동.");
     }
 }
+
+[Serializable]
+public class DefaultDeckData
+{
+    public List<int> adjectiveIds;
+    public List<int> gerundIds;
+}
