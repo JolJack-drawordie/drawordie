@@ -172,9 +172,10 @@ public class DeckManager : MonoBehaviour
         }
 
         // 1. 손패(Hand)에 있었다면 제거
-        if (Hand.Contains(card))
+        ICard target = Hand.Find(c => c.Id == card.Id && c.Type == card.Type);
+        if (target != null)
         {
-            Hand.Remove(card);
+            Hand.Remove(target);
         }
 
         // 2. 카드 타입에 따라 알맞은 DiscardPile로 이동
@@ -278,6 +279,24 @@ public class DeckManager : MonoBehaviour
         {
             GerundSlot = null;
             Debug.Log("[DeckManager] 동명사 슬롯 비워짐");
+        }
+    }
+
+    public List<ICard> GetPileList(PileUI.PileType pileType)
+    {
+        switch (pileType)
+        {
+            case PileUI.PileType.AdjectiveDraw:
+                return AdjectiveDrawPile;
+            case PileUI.PileType.AdjectiveDiscard:
+                return AdjectiveDiscardPile;
+            case PileUI.PileType.GerundDraw:
+                return GerundDrawPile;
+            case PileUI.PileType.GerundDiscard:
+                return GerundDiscardPile;
+            default:
+                Debug.LogWarning($"[DeckManager] 알 수 없는 PileType입니다: {pileType}");
+                return null;
         }
     }
 

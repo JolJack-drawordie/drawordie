@@ -1,8 +1,10 @@
-using UnityEngine;
+using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PileUI : MonoBehaviour
+public class PileUI : MonoBehaviour, IPointerClickHandler
 {
     public enum PileType
     {
@@ -52,11 +54,40 @@ public class PileUI : MonoBehaviour
         }
     }
 
-    // 더미 버튼을 클릭했을 때 호출될 함수 (나중에 팝업창 연결용)
-    public void OnClickPile()
+    // 3. 기존 OnClickPile 대신 이걸 사용 (유니티가 클릭할 때 알아서 실행해줌)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log($"{pileType} 더미 클릭됨!");
+        // 좌클릭일 때만 작동하게 하고 싶다면 아래 조건 추가 가능
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            Debug.Log($"{pileType} 더미 클릭됨! (IPointerClickHandler 방식)");
 
-        // TODO: 여기에 팝업창을 띄우고 해당 리스트(AdjectiveDrawPile 등)를 전달하는 로직 연결하면 됨!
+            if (DeckManager.Instance == null) return;
+
+            // 1. 타입에 따라 DeckManager에서 리스트 참조 가져오기
+            List<ICard> targetList = null;
+
+            switch (pileType)
+            {
+                case PileType.AdjectiveDraw:
+                    targetList = DeckManager.Instance.AdjectiveDrawPile;
+                    break;
+                case PileType.AdjectiveDiscard:
+                    targetList = DeckManager.Instance.AdjectiveDiscardPile;
+                    break;
+                case PileType.GerundDraw:
+                    targetList = DeckManager.Instance.GerundDrawPile;
+                    break;
+                case PileType.GerundDiscard:
+                    targetList = DeckManager.Instance.GerundDiscardPile;
+                    break;
+            }
+
+            // 2. 팝업창 열기 (DeckViewerUI가 싱글턴이거나 참조되어 있다는 가정하에)
+            if (targetList != null)
+            {
+                DeckViewerUI.Instance.OpenViewer(targetList, pileType);
+            }
+        }
     }
 }
