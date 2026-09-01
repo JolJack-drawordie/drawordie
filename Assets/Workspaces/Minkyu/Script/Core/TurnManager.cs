@@ -47,14 +47,26 @@ public class TurnManager : MonoBehaviour
         }
 
         gameManager.StartBattle();
+
+        if (GameManager.Instance != null)
+        {
+            player = GameManager.Instance.Player;
+            enemy = GameManager.Instance.Enemy;
+            playerController = PlayerController.Instance;
+
+            // 만약 EnemyController도 생성된 적 오브젝트 안에서 가져와야 한다면 이렇게!
+            if (enemy != null)
+            {
+                enemyController = enemy.GetComponent<EnemyController>();
+            }
+        }
+
         if (uiManager != null) uiManager.HideResult();
         StartCoroutine(BattleLoop());
     }
 
     private IEnumerator BattleLoop()
     {
-        UIManager.Instance.LinkUnitToUI(player);
-        UIManager.Instance.LinkUnitToUI(enemy);
         while (!gameManager.isGameOver)
         {
             turnCount++;

@@ -25,8 +25,6 @@ public class UIManager : MonoBehaviour
 
     [Header("참조")]
     public DiceManager diceManager;
-    public PlayerUnit player;
-    public EnemyUnit enemy;
 
     [Header("전투 결과 UI")]
     public GameObject resultPanel;
@@ -45,23 +43,34 @@ public class UIManager : MonoBehaviour
         enemyShieldProvider = enemyShieldBar.GetComponent<ShieldProvider>();
     }
 
+    private void OnEnable()
+    {
+        if (DiceManager.Instance != null)
+        {
+            DiceManager.Instance.OnEnergyChanged += UpdateEnergyUI;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (DiceManager.Instance != null)
+        {
+            DiceManager.Instance.OnEnergyChanged -= UpdateEnergyUI;
+        }
+    }
+
     private void Start()
     {
-        UpdateUI();
+        if (DiceManager.Instance != null)
+        {
+            UpdateEnergyUI(DiceManager.Instance.CurrentEnergy);
+        }
     }
 
-    void Update()
+    // ⭐️ int 매개변수를 받도록 수정
+    public void UpdateEnergyUI(int newEnergy)
     {
-        UpdateUI();
-    }
-
-    public void UpdateUI()
-    {
-        if (diceManager == null || player == null || enemy == null) return;
-        if (energyText == null || playerHpText == null || enemyHpText == null) return;
-
-        energyText.text = "Energy : " + diceManager.CurrentEnergy;
-
+        energyText.text = "Energy : " + newEnergy;
     }
 
     public void ShowResult(bool isVictory)
