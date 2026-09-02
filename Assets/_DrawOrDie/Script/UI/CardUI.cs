@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public ICard cardData;
     public int CardID; // 홍성구 추가 : 카드 id 추가
     
     // 추가된 카드 속성
@@ -103,6 +104,24 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 sibling.targetPos = sibling.originPos;
             }
         }
+    }
+
+    public void SetCardData(ICard card)
+    {
+        cardData = card;
+
+        // 기존 Setup 함수 호출을 여기서 알아서 처리!
+        Setup(
+            card.Id,
+            card.Name,
+            card.Cost.ToString(),
+            card.Description,
+            card.Type,
+            card.Cost,
+            card.Damage,
+            card.Shield,
+            card.Heal
+        );
     }
 
     void Update()

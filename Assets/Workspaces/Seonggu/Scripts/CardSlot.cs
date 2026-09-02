@@ -37,6 +37,8 @@ public class CardSlot : MonoBehaviour
         isOccupied = true;
         cardUI.isInSlot = true;
 
+        DeckManager.Instance.EquipCardToSlot(cardUI.cardData, slotType);
+
         RectTransform cardRect = card.GetComponent<RectTransform>();
         card.transform.SetParent(transform, false);
         cardRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -58,6 +60,7 @@ public class CardSlot : MonoBehaviour
         currentCard = null;
         currentCardID = -1;
         isOccupied = false;
+        DeckManager.Instance.ClearSlot(slotType);
         ComboManager.Instance.OnSlotUpdated();
     }
 }

@@ -17,6 +17,9 @@ public class DeckManager : MonoBehaviour
 
     public List<ICard> Hand { get; private set; } = new List<ICard>();
 
+    public ICard AdjectiveSlot; // 형용사 슬롯에 올라간 카드
+    public ICard GerundSlot;    // 동명사 슬롯에 올라간 카드 (또는 복수일 경우 List<ICard>)
+
     public void Awake()
     {
         // 싱글톤 중복 방지 로직
@@ -169,9 +172,10 @@ public class DeckManager : MonoBehaviour
         }
 
         // 1. 손패(Hand)에 있었다면 제거
-        if (Hand.Contains(card))
+        ICard target = Hand.Find(c => c.Id == card.Id && c.Type == card.Type);
+        if (target != null)
         {
-            Hand.Remove(card);
+            Hand.Remove(target);
         }
 
         // 2. 카드 타입에 따라 알맞은 DiscardPile로 이동
@@ -229,6 +233,71 @@ public class DeckManager : MonoBehaviour
         Shuffle(drawPile);
         
         Debug.Log($"[DeckManager] {(isAdjective ? "형용사" : "동명사")} 버린 덱을 섞어서 뽑을 덱으로 리필 완료!");
+    }
+
+    // 카드 조합 시 슬롯에 있는 카드들을 처리하는 메서드
+    public void UseCardsForCombination()
+    {
+        if (AdjectiveSlot != null)
+        {
+            DiscardCard(AdjectiveSlot);
+            AdjectiveSlot = null; // 혹은 ClearSlot(SlotType.Adjective);
+        }
+
+        if (GerundSlot != null)
+        {
+            DiscardCard(GerundSlot);
+            GerundSlot = null; // 혹은 ClearSlot(SlotType.Gerund);
+        }
+    }
+
+    public void EquipCardToSlot(ICard card, SlotType slotType)
+    {
+        if (card == null) return;
+
+        if (slotType == SlotType.Adjective)
+        {
+            AdjectiveSlot = card;
+            Debug.Log($"[DeckManager] 형용사 슬롯에 장착됨: {card.Name}");
+        }
+        else if (slotType == SlotType.Gerund)
+        {
+            GerundSlot = card;
+            Debug.Log($"[DeckManager] 동명사 슬롯에 장착됨: {card.Name}");
+        }
+    }
+
+    // 슬롯 타입에 따라 슬롯을 비우기만 하는 메서드
+    public void ClearSlot(SlotType slotType)
+    {
+        if (slotType == SlotType.Adjective)
+        {
+            AdjectiveSlot = null;
+            Debug.Log("[DeckManager] 형용사 슬롯 비워짐");
+        }
+        else if (slotType == SlotType.Gerund)
+        {
+            GerundSlot = null;
+            Debug.Log("[DeckManager] 동명사 슬롯 비워짐");
+        }
+    }
+
+    public List<ICard> GetPileList(PileUI.PileType pileType)
+    {
+        switch (pileType)
+        {
+            case PileUI.PileType.AdjectiveDraw:
+                return AdjectiveDrawPile;
+            case PileUI.PileType.AdjectiveDiscard:
+                return AdjectiveDiscardPile;
+            case PileUI.PileType.GerundDraw:
+                return GerundDrawPile;
+            case PileUI.PileType.GerundDiscard:
+                return GerundDiscardPile;
+            default:
+                Debug.LogWarning($"[DeckManager] 알 수 없는 PileType입니다: {pileType}");
+                return null;
+        }
     }
 
     public void DebugShowAllCards()

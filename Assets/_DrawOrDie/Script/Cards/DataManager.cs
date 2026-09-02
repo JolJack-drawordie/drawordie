@@ -70,11 +70,14 @@ public class DataManager : MonoBehaviour
         {
             GameObject newCard = Instantiate(cardPrefab, handArea);
             CardUI ui = newCard.GetComponent<CardUI>();
-            ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(), 
-                     hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod, hand.adjectives[i].shdMod, hand.adjectives[i].healMod);
-            
-            //ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(),
-            //         hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod);
+
+            ICard cardModel = new AdjectiveCard(hand.adjectives[i]);
+            ui.SetCardData(cardModel);
+
+            //ui.Setup(hand.adjectives[i].id, hand.adjectives[i].name, hand.adjectives[i].costMod.ToString(), 
+          //           hand.adjectives[i].desc, CardType.Adjective, hand.adjectives[i].costMod, hand.adjectives[i].dmgMod, hand.adjectives[i].shdMod, hand.adjectives[i].healMod);
+
+
 
             RectTransform rect = newCard.GetComponent<RectTransform>();
             SpawnAtDeckPile(rect);
@@ -92,11 +95,12 @@ public class DataManager : MonoBehaviour
         {
             GameObject newCard = Instantiate(cardPrefab, handArea);
             CardUI ui = newCard.GetComponent<CardUI>();
-            ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(), 
-                     hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg, hand.gerunds[i].baseShd, hand.gerunds[i].baseHeal);
-            
-            //ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(),
-            //         hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg);
+
+            ICard cardModel = new GerundCard(hand.gerunds[i]);
+            ui.SetCardData(cardModel);
+
+            //ui.Setup(hand.gerunds[i].id, hand.gerunds[i].name, hand.gerunds[i].baseCost.ToString(), 
+            //hand.gerunds[i].desc, CardType.Gerund, hand.gerunds[i].baseCost, hand.gerunds[i].baseDmg, hand.gerunds[i].baseShd, hand.gerunds[i].baseHeal);
 
             RectTransform rect = newCard.GetComponent<RectTransform>();
             SpawnAtDeckPile(rect);

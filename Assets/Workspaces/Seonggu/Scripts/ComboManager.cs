@@ -54,6 +54,7 @@ public class ComboManager : MonoBehaviour
         {
 
             DataManager.Instance.AddSynergyCardToHand(result);
+            DeckManager.Instance.UseCardsForCombination();
 
             if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
             if (gerSlot.currentCard != null) Destroy(gerSlot.currentCard);
