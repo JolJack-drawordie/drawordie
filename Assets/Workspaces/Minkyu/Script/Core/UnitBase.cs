@@ -1,75 +1,86 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UnitBase : MonoBehaviour
 {
-    [Header("기본 스탯")]
-    public string unitName;
-    public int maxHp = 30;
-    public int currentHp;
-    public int maxShield = 30;
-    public int currentShield;
+    public UnitStatData statData { get; private set; }
 
-    public AnimatedBar hpBar;
-    public AnimatedBar shieldBar;
+    //public AnimatedBar hpBar;
+    //public AnimatedBar shieldBar;
 
-    protected virtual void Awake()
+    // 체력과 쉴드 변경을 세상에 알릴 이벤트 추가 (기존 로직과 충돌 안 함)
+    public event Action<int, int> OnHpChanged;
+    public event Action<int, int> OnShieldChanged;
+
+    public virtual void Initialize(UnitStatData data)
     {
-        currentHp = maxHp;
-        hpBar = GetComponent<AnimatedBar>();
-        shieldBar = GetComponent<AnimatedBar>();    
+        if (data == null)
+        {
+            Debug.LogError($"{gameObject.name}: 주입된 스탯 데이터가 null입니다!");
+            return;
+        }
+
+        statData = data;
+
+        UpdateBarUI();
     }
 
     public virtual void TakeDamage(int damage)
     {
-        if (currentShield > 0)
+        if (statData.currentShield > 0)
         {
             int tempDamage = damage;
-            damage = Mathf.Max(0, damage - currentShield);
-            currentShield = Mathf.Max(0, currentShield - tempDamage);
+            damage = Mathf.Max(0, damage - statData.currentShield);
+            statData.currentShield = Mathf.Max(0, statData.currentShield - tempDamage);
         }
-        currentHp -= damage;
+        statData.currentHp -= damage;
 
-        if (currentHp < 0) currentHp = 0;
+        if (statData.currentHp < 0) statData.currentHp = 0;
 
         UpdateBarUI();
         Debug.Log("공격받는 적 이름: " + this.name + " / 인스턴스ID: " + this.GetInstanceID());
-        Debug.Log($"{unitName} 이(가) {damage} 데미지를 받음. 현재 HP: {currentHp}");
+        Debug.Log($"{statData.unitName} 이(가) {damage} 데미지를 받음. 현재 HP: {statData.currentHp}");
     }
 
     // 방어 추가
     public virtual void AddShield(int amount)
     {
-        currentShield += amount;
+        statData.currentShield += amount;
         // 쉴드 최대치 제한이 필요하면 아래처럼
-        if (currentShield > maxShield) currentShield = maxShield;
+        if (statData.currentShield > statData.maxShield) statData.currentShield = statData.maxShield;
 
         UpdateBarUI();
-        Debug.Log($"{unitName} 방어도 {amount} 증가! 현재 쉴드: {currentShield}");
+        Debug.Log($"{statData.unitName} 방어도 {amount} 증가! 현재 쉴드: {statData.currentShield}");
     }
 
     public void ResetShield()
     {
-        currentShield = 0;
+        statData.currentShield = 0;
     }
 
     //회복 추가
     public virtual void Heal(int amount)
     {
-        currentHp += amount;
-        if(currentHp > maxHp) currentHp = maxHp;
+        statData.currentHp += amount;
+        if(statData.currentHp > statData.maxHp) statData.currentHp = statData.maxHp;
 
         UpdateBarUI();
-        Debug.Log($"{unitName} 체력 {amount} 회복!");
+        Debug.Log($"{statData.unitName} 체력 {amount} 회복!");
     }
 
     protected void UpdateBarUI()
     {
-        if (hpBar != null) hpBar.SetValue(currentHp);
-        if (shieldBar != null) shieldBar.SetValue(currentShield);
+        //if (hpBar != null) hpBar.SetValue(statData.currentHp);
+        //if (shieldBar != null) shieldBar.SetValue(statData.currentShield);
+
+        // 이벤트 발행 (나중에 AnimatedBar가 이걸 구독하게 만들 예정)
+        OnHpChanged?.Invoke(statData.currentHp, statData.maxHp);
+        OnShieldChanged?.Invoke(statData.currentShield, statData.maxShield);
     }
 
     public bool IsDead()
     {
-        return currentHp <= 0;
+        return statData.currentHp <= 0;
     }
 }

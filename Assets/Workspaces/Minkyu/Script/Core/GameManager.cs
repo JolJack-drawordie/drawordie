@@ -52,17 +52,17 @@ public class GameManager : MonoBehaviour
     }
 
     // ⭐️ 유닛들이 태어날 때 알아서 여기로 찾아와서 등록함!
-    public void RegisterPlayer(PlayerUnit player)
-    {
-        currentPlayer = player;
-        Debug.Log("플레이어 등록 완료");
-    }
+    //public void RegisterPlayer(PlayerUnit player)
+    //{
+    //    currentPlayer = player;
+    //    Debug.Log("플레이어 등록 완료");
+    //}
 
-    public void RegisterEnemy(EnemyUnit enemy)
-    {
-        currentEnemy = enemy;
-        Debug.Log("적 등록 완료");
-    }
+    //public void RegisterEnemy(EnemyUnit enemy)
+    //{
+    //    currentEnemy = enemy;
+    //    Debug.Log("적 등록 완료");
+    //}
 
     public void CheckBattleResult()
     {

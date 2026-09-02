@@ -7,15 +7,15 @@ public class PlayerUnit : UnitBase
     private void Start()
     {
         // ⭐️ 씬에 생성되자마자 GameManager가 있는지 확인하고 자기 자신을 찔러넣음
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.RegisterPlayer(this);
-        }
+        //if (GameManager.Instance != null)
+        //{
+        //    GameManager.Instance.RegisterPlayer(this);
+        //}
 
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.LinkUnitToUI(this);
-        }
+        //if (UIManager.Instance != null)
+        //{
+        //    UIManager.Instance.LinkUnitToUI(this);
+        //}
     }
     public void Attack(EnemyUnit target)
     {

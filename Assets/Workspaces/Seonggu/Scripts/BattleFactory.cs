@@ -28,6 +28,23 @@ public class BattleFactory : MonoBehaviour
         Quaternion rot = spawnPoint != null ? spawnPoint.transform.rotation : Quaternion.identity;
 
         GameObject playerObj = Instantiate(playerPrefab, pos, rot);
+        playerObj.SetActive(false); // 데이터가 주입될 때까지 숨김
+
+        // 런타임 스탯 주입 (DI)
+        UnitBase playerUnit = playerObj.GetComponent<UnitBase>();
+        if (playerUnit != null && StatManager.Instance != null)
+        {
+            playerUnit.Initialize(StatManager.Instance.GetPlayerStat());
+        }
+
+        // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.LinkUnitToUI(playerUnit);
+        }
+
+        playerObj.SetActive(true);
+
         Debug.Log("팩토리가 플레이어 유닛을 생성했습니다.");
         return playerObj;
     }
@@ -44,6 +61,23 @@ public class BattleFactory : MonoBehaviour
         Quaternion rot = spawnPoint != null ? spawnPoint.transform.rotation : Quaternion.identity;
 
         GameObject enemyObj = Instantiate(enemyPrefab, pos, rot);
+        enemyObj.SetActive(false); // 데이터가 주입될 때까지 숨김
+
+        // 런타임 스탯 주입 (DI)
+        UnitBase enemyUnit = enemyObj.GetComponent<UnitBase>();
+        if (enemyUnit != null && StatManager.Instance != null)
+        {
+            enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
+        }
+
+        // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.LinkUnitToUI(enemyUnit);
+        }
+
+        enemyObj.SetActive(true); // 데이터 주입 완료 후 활성화 (Awake/Start 정상 작동)
+
         Debug.Log("팩토리가 적 유닛을 생성했습니다.");
         return enemyObj;
     }

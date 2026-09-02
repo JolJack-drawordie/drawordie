@@ -22,6 +22,7 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+
         if (DataManager.Instance.isDataLoaded)
         {
             StartGame();
@@ -54,7 +55,6 @@ public class TurnManager : MonoBehaviour
             enemy = GameManager.Instance.Enemy;
             playerController = PlayerController.Instance;
 
-            // 만약 EnemyController도 생성된 적 오브젝트 안에서 가져와야 한다면 이렇게!
             if (enemy != null)
             {
                 enemyController = enemy.GetComponent<EnemyController>();

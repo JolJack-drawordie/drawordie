@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2587843731068559952}
   - component: {fileID: 8520762805954368859}
   - component: {fileID: 7327579710574552744}
-  - component: {fileID: 8662012906478033672}
   - component: {fileID: 4142358389023915552}
   m_Layer: 0
   m_Name: Player
@@ -132,25 +131,6 @@ MonoBehaviour:
   animator: {fileID: 8520762805954368859}
   attackTarget: {fileID: 0}
   potionObject: {fileID: 0}
---- !u!114 &8662012906478033672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4944560238511240866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c7a4d05d1cac124eae10d143e078225, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitBase
-  unitName: 
-  maxHp: 30
-  currentHp: 0
-  maxShield: 30
-  currentShield: 0
-  hpBar: {fileID: 0}
-  shieldBar: {fileID: 0}
 --- !u!114 &4142358389023915552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,11 +143,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfd65938cbc6a14bbadd1aa7c73c941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUnit
-  unitName: 
-  maxHp: 30
-  currentHp: 0
-  maxShield: 30
-  currentShield: 0
   hpBar: {fileID: 0}
   shieldBar: {fileID: 0}
   attackPower: 6
