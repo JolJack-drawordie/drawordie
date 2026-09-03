@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour
 
     private MapSeedGenerator seedGenerator;
 
-    void Start()
+    private void Awake()
     {
         seedGenerator = GetComponent<MapSeedGenerator>();
 
@@ -31,16 +31,19 @@ public class MapGenerator : MonoBehaviour
             Random.InitState(seedGenerator.seed);
         }
 
+        // 맵을 먼저 생성
         GenerateLayout();
     }
 
     void GenerateLayout()
     {
+        // 기존 노드 삭제
         foreach (Transform child in nodeParent)
         {
             Destroy(child.gameObject);
         }
 
+        // 기존 선 삭제
         foreach (Transform child in lineParent)
         {
             Destroy(child.gameObject);
@@ -58,15 +61,20 @@ public class MapGenerator : MonoBehaviour
                 GameObject boss =
                     CreateNode(
                         bossPrefab,
-                        new Vector2(0, floor * floorSpacing - 300f),
-                        MapNode.NodeType.Boss,
+                        new Vector2(
+                            0,
+                            floor * floorSpacing - 300f
+                        ),
                         floor,
-                        0);
+                        0,
+                        MapNode.NodeType.Boss
+                    );
 
                 currentFloor.Add(boss);
             }
             else
             {
+                // 일반 층은 2~3개의 노드 생성
                 int nodeCount = Random.Range(2, 4);
 
                 for (int i = 0; i < nodeCount; i++)
@@ -78,21 +86,25 @@ public class MapGenerator : MonoBehaviour
                         floor * floorSpacing - 300f;
 
                     GameObject prefab = monsterPrefab;
-                    MapNode.NodeType type = MapNode.NodeType.Monster;
 
+                    MapNode.NodeType nodeType =
+                        MapNode.NodeType.Monster;
+
+                    // 3층부터 일정 확률로 Elite 생성
                     if (floor >= 2 && Random.value < 0.25f)
                     {
                         prefab = elitePrefab;
-                        type = MapNode.NodeType.Elite;
+                        nodeType = MapNode.NodeType.Elite;
                     }
 
                     GameObject node =
                         CreateNode(
                             prefab,
                             new Vector2(x, y),
-                            type,
                             floor,
-                            i);
+                            i,
+                            nodeType
+                        );
 
                     currentFloor.Add(node);
                 }
@@ -103,11 +115,13 @@ public class MapGenerator : MonoBehaviour
             {
                 foreach (GameObject prev in previousFloor)
                 {
-                    MapNode prevNode = prev.GetComponent<MapNode>();
+                    MapNode prevNode =
+                        prev.GetComponent<MapNode>();
 
                     foreach (GameObject current in currentFloor)
                     {
-                        MapNode currentNode = current.GetComponent<MapNode>();
+                        MapNode currentNode =
+                            current.GetComponent<MapNode>();
 
                         // 연결 정보 저장
                         prevNode.AddConnection(currentNode);
@@ -115,21 +129,24 @@ public class MapGenerator : MonoBehaviour
                         // 선 생성
                         CreateLine(
                             prev.GetComponent<RectTransform>(),
-                            current.GetComponent<RectTransform>());
+                            current.GetComponent<RectTransform>()
+                        );
                     }
                 }
             }
 
             previousFloor = currentFloor;
         }
+
+        Debug.Log("Map Generate Complete");
     }
 
     GameObject CreateNode(
         GameObject prefab,
         Vector2 pos,
-        MapNode.NodeType type,
         int floor,
-        int index)
+        int index,
+        MapNode.NodeType nodeType)
     {
         GameObject node =
             Instantiate(prefab, nodeParent);
@@ -139,18 +156,25 @@ public class MapGenerator : MonoBehaviour
 
         rt.anchoredPosition = pos;
 
-        // ★ 노드 정보 저장
-        MapNode mapNode = node.GetComponent<MapNode>();
+        // MapNode 정보 설정
+        MapNode mapNode =
+            node.GetComponent<MapNode>();
 
         if (mapNode != null)
         {
-            mapNode.Initialize(type, floor, index);
+            mapNode.Initialize(
+                nodeType,
+                floor,
+                index
+            );
         }
 
         return node;
     }
 
-    void CreateLine(RectTransform from, RectTransform to)
+    void CreateLine(
+        RectTransform from,
+        RectTransform to)
     {
         GameObject line =
             Instantiate(linePrefab, lineParent);
@@ -158,21 +182,30 @@ public class MapGenerator : MonoBehaviour
         RectTransform lineRect =
             line.GetComponent<RectTransform>();
 
-        Vector2 start = from.anchoredPosition;
-        Vector2 end = to.anchoredPosition;
+        Vector2 start =
+            from.anchoredPosition;
 
-        Vector2 direction = end - start;
+        Vector2 end =
+            to.anchoredPosition;
 
-        float distance = direction.magnitude;
+        Vector2 direction =
+            end - start;
 
+        float distance =
+            direction.magnitude;
+
+        // 선 위치
         lineRect.anchoredPosition =
             (start + end) / 2f;
 
+        // 선 길이
         lineRect.sizeDelta =
             new Vector2(distance, 6f);
 
+        // 선 회전
         float angle =
-            Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Mathf.Atan2(direction.y, direction.x)
+            * Mathf.Rad2Deg;
 
         lineRect.localRotation =
             Quaternion.Euler(0, 0, angle);

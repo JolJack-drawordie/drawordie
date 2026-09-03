@@ -19,47 +19,71 @@ public class MapNode : MonoBehaviour
     public int index;
 
     [Header("Connected Nodes")]
-    public List<MapNode> connectedNodes = new List<MapNode>();
+    public List<MapNode> connectedNodes =
+        new List<MapNode>();
 
+    [Header("UI")]
     public Button button;
+
+    // 이미 방문한 노드인지
+    [Header("Progress")]
+    public bool isVisited = false;
 
     private MapNodeManager manager;
 
     private void Awake()
     {
         if (button == null)
+        {
             button = GetComponent<Button>();
+        }
 
         // Unity 6 권장 방식
-        manager = FindFirstObjectByType<MapNodeManager>();
+        manager =
+            FindFirstObjectByType<MapNodeManager>();
 
         if (button != null)
+        {
             button.onClick.AddListener(OnClickNode);
+        }
     }
 
-    public void Initialize(NodeType type, int floorIndex, int nodeIndex)
+    public void Initialize(
+        NodeType type,
+        int floorIndex,
+        int nodeIndex)
     {
         nodeType = type;
         floor = floorIndex;
         index = nodeIndex;
+
+        isVisited = false;
     }
 
     public void AddConnection(MapNode nextNode)
     {
         if (nextNode == null)
+        {
             return;
+        }
 
         if (!connectedNodes.Contains(nextNode))
         {
             connectedNodes.Add(nextNode);
 
-            Debug.Log($"{name} -> {nextNode.name}");
+            Debug.Log(
+                $"{name} -> {nextNode.name}"
+            );
         }
     }
 
     void OnClickNode()
     {
-        Debug.Log($"Select Node : Floor {floor} / Index {index}");
+        Debug.Log(
+            $"Select Node : " +
+            $"Floor {floor} / " +
+            $"Index {index}"
+        );
 
         if (manager != null)
         {
@@ -73,5 +97,21 @@ public class MapNode : MonoBehaviour
         {
             button.interactable = value;
         }
+    }
+
+    /// <summary>
+    /// 방문한 노드로 설정
+    /// </summary>
+    public void SetVisited()
+    {
+        isVisited = true;
+
+        SetInteractable(false);
+
+        Debug.Log(
+            $"Visited Node : " +
+            $"Floor {floor} / " +
+            $"Index {index}"
+        );
     }
 }
