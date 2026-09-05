@@ -8,6 +8,7 @@ public class MapNode : MonoBehaviour
     {
         Monster,
         Elite,
+        Rest,
         Boss
     }
 
@@ -25,7 +26,6 @@ public class MapNode : MonoBehaviour
     [Header("UI")]
     public Button button;
 
-    // 이미 방문한 노드인지
     [Header("Progress")]
     public bool isVisited = false;
 
@@ -82,7 +82,8 @@ public class MapNode : MonoBehaviour
         Debug.Log(
             $"Select Node : " +
             $"Floor {floor} / " +
-            $"Index {index}"
+            $"Index {index} / " +
+            $"Type {nodeType}"
         );
 
         if (manager != null)

@@ -6,6 +6,7 @@ public class MapGenerator : MonoBehaviour
     [Header("Node Prefabs")]
     public GameObject monsterPrefab;
     public GameObject elitePrefab;
+    public GameObject restPrefab;
     public GameObject bossPrefab;
 
     [Header("Parents")]
@@ -20,6 +21,17 @@ public class MapGenerator : MonoBehaviour
     public float floorSpacing = 180f;
     public float nodeSpacing = 180f;
 
+    [Header("Rest Settings")]
+    [Range(0f, 1f)]
+    public float restChance = 0.2f;
+
+    [Header("Connection Settings")]
+    [Range(1, 2)]
+    public int minConnections = 1;
+
+    [Range(1, 2)]
+    public int maxConnections = 2;
+
     private MapSeedGenerator seedGenerator;
 
     private void Awake()
@@ -31,7 +43,7 @@ public class MapGenerator : MonoBehaviour
             Random.InitState(seedGenerator.seed);
         }
 
-        // 맵을 먼저 생성
+        // 맵 생성
         GenerateLayout();
     }
 
@@ -49,11 +61,13 @@ public class MapGenerator : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        List<GameObject> previousFloor = new List<GameObject>();
+        List<GameObject> previousFloor =
+            new List<GameObject>();
 
         for (int floor = 0; floor < floorCount; floor++)
         {
-            List<GameObject> currentFloor = new List<GameObject>();
+            List<GameObject> currentFloor =
+                new List<GameObject>();
 
             // 마지막 층 = Boss
             if (floor == floorCount - 1)
@@ -75,26 +89,48 @@ public class MapGenerator : MonoBehaviour
             else
             {
                 // 일반 층은 2~3개의 노드 생성
-                int nodeCount = Random.Range(2, 4);
+                int nodeCount =
+                    Random.Range(2, 4);
 
                 for (int i = 0; i < nodeCount; i++)
                 {
                     float x =
-                        (i - (nodeCount - 1) / 2f) * nodeSpacing;
+                        (i - (nodeCount - 1) / 2f)
+                        * nodeSpacing;
 
                     float y =
                         floor * floorSpacing - 300f;
 
-                    GameObject prefab = monsterPrefab;
+                    GameObject prefab =
+                        monsterPrefab;
 
                     MapNode.NodeType nodeType =
                         MapNode.NodeType.Monster;
 
-                    // 3층부터 일정 확률로 Elite 생성
-                    if (floor >= 2 && Random.value < 0.25f)
+                    // 2층부터 Rest / Elite 생성
+                    if (floor >= 2)
                     {
-                        prefab = elitePrefab;
-                        nodeType = MapNode.NodeType.Elite;
+                        float randomValue =
+                            Random.value;
+
+                        // Rest
+                        if (randomValue < restChance)
+                        {
+                            prefab = restPrefab;
+
+                            nodeType =
+                                MapNode.NodeType.Rest;
+                        }
+                        // Elite
+                        else if (
+                            randomValue <
+                            restChance + 0.25f)
+                        {
+                            prefab = elitePrefab;
+
+                            nodeType =
+                                MapNode.NodeType.Elite;
+                        }
                     }
 
                     GameObject node =
@@ -113,32 +149,165 @@ public class MapGenerator : MonoBehaviour
             // 이전 층과 현재 층 연결
             if (previousFloor.Count > 0)
             {
-                foreach (GameObject prev in previousFloor)
+                CreateConnections(
+                    previousFloor,
+                    currentFloor
+                );
+            }
+
+            previousFloor =
+                currentFloor;
+        }
+
+        Debug.Log(
+            "Map Generate Complete"
+        );
+    }
+
+    /// <summary>
+    /// 이전 층과 현재 층을 1~2개의 연결로 연결
+    /// </summary>
+    void CreateConnections(
+        List<GameObject> previousFloor,
+        List<GameObject> currentFloor)
+    {
+        // 각 현재 노드의 연결 개수 확인용
+        int[] incomingConnections =
+            new int[currentFloor.Count];
+
+        // -----------------------------
+        // 1단계
+        // 이전 층의 각 노드가
+        // 다음 층의 1~2개 노드와 연결
+        // -----------------------------
+
+        foreach (GameObject prev in previousFloor)
+        {
+            MapNode prevNode =
+                prev.GetComponent<MapNode>();
+
+            if (prevNode == null)
+                continue;
+
+            // 연결할 개수 결정
+            int connectionCount =
+                Random.Range(
+                    minConnections,
+                    maxConnections + 1
+                );
+
+            // 현재 층 노드가 1개라면 1개만 연결
+            connectionCount =
+                Mathf.Min(
+                    connectionCount,
+                    currentFloor.Count
+                );
+
+            // 중복 방지
+            List<int> selectedIndexes =
+                new List<int>();
+
+            while (
+                selectedIndexes.Count <
+                connectionCount)
+            {
+                int randomIndex =
+                    Random.Range(
+                        0,
+                        currentFloor.Count
+                    );
+
+                if (!selectedIndexes.Contains(
+                    randomIndex))
                 {
-                    MapNode prevNode =
-                        prev.GetComponent<MapNode>();
-
-                    foreach (GameObject current in currentFloor)
-                    {
-                        MapNode currentNode =
-                            current.GetComponent<MapNode>();
-
-                        // 연결 정보 저장
-                        prevNode.AddConnection(currentNode);
-
-                        // 선 생성
-                        CreateLine(
-                            prev.GetComponent<RectTransform>(),
-                            current.GetComponent<RectTransform>()
-                        );
-                    }
+                    selectedIndexes.Add(
+                        randomIndex
+                    );
                 }
             }
 
-            previousFloor = currentFloor;
+            foreach (int index
+                in selectedIndexes)
+            {
+                MapNode currentNode =
+                    currentFloor[index]
+                        .GetComponent<MapNode>();
+
+                if (currentNode == null)
+                    continue;
+
+                prevNode.AddConnection(
+                    currentNode
+                );
+
+                incomingConnections[index]++;
+
+                CreateLine(
+                    prev.GetComponent<RectTransform>(),
+                    currentFloor[index]
+                        .GetComponent<RectTransform>()
+                );
+            }
         }
 
-        Debug.Log("Map Generate Complete");
+        // -----------------------------
+        // 2단계
+        // 연결되지 않은 현재 층 노드가
+        // 있다면 이전 층의 랜덤 노드와 연결
+        // -----------------------------
+
+        for (int i = 0;
+             i < currentFloor.Count;
+             i++)
+        {
+            if (incomingConnections[i] > 0)
+                continue;
+
+            // 연결되지 않은 현재 노드
+            GameObject current =
+                currentFloor[i];
+
+            // 이전 층에서 랜덤 노드 선택
+            int previousIndex =
+                Random.Range(
+                    0,
+                    previousFloor.Count
+                );
+
+            GameObject previous =
+                previousFloor[previousIndex];
+
+            MapNode previousNode =
+                previous.GetComponent<MapNode>();
+
+            MapNode currentNode =
+                current.GetComponent<MapNode>();
+
+            if (previousNode == null ||
+                currentNode == null)
+            {
+                continue;
+            }
+
+            // 연결 추가
+            previousNode.AddConnection(
+                currentNode
+            );
+
+            incomingConnections[i]++;
+
+            // 선 생성
+            CreateLine(
+                previous.GetComponent<RectTransform>(),
+                current.GetComponent<RectTransform>()
+            );
+
+            Debug.Log(
+                $"연결되지 않은 노드 보정 : " +
+                $"Floor {currentNode.floor} / " +
+                $"Index {currentNode.index}"
+            );
+        }
     }
 
     GameObject CreateNode(
@@ -148,13 +317,30 @@ public class MapGenerator : MonoBehaviour
         int index,
         MapNode.NodeType nodeType)
     {
+        if (prefab == null)
+        {
+            Debug.LogError(
+                $"Node Prefab이 없습니다. " +
+                $"Type : {nodeType}"
+            );
+
+            return null;
+        }
+
         GameObject node =
-            Instantiate(prefab, nodeParent);
+            Instantiate(
+                prefab,
+                nodeParent
+            );
 
         RectTransform rt =
             node.GetComponent<RectTransform>();
 
-        rt.anchoredPosition = pos;
+        if (rt != null)
+        {
+            rt.anchoredPosition =
+                pos;
+        }
 
         // MapNode 정보 설정
         MapNode mapNode =
@@ -176,8 +362,17 @@ public class MapGenerator : MonoBehaviour
         RectTransform from,
         RectTransform to)
     {
+        if (from == null || to == null)
+            return;
+
+        if (linePrefab == null)
+            return;
+
         GameObject line =
-            Instantiate(linePrefab, lineParent);
+            Instantiate(
+                linePrefab,
+                lineParent
+            );
 
         RectTransform lineRect =
             line.GetComponent<RectTransform>();
@@ -200,14 +395,23 @@ public class MapGenerator : MonoBehaviour
 
         // 선 길이
         lineRect.sizeDelta =
-            new Vector2(distance, 6f);
+            new Vector2(
+                distance,
+                6f
+            );
 
         // 선 회전
         float angle =
-            Mathf.Atan2(direction.y, direction.x)
-            * Mathf.Rad2Deg;
+            Mathf.Atan2(
+                direction.y,
+                direction.x
+            ) * Mathf.Rad2Deg;
 
         lineRect.localRotation =
-            Quaternion.Euler(0, 0, angle);
+            Quaternion.Euler(
+                0,
+                0,
+                angle
+            );
     }
 }
