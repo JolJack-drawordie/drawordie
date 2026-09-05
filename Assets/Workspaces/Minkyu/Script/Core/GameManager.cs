@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
         currentState = BattleState.BattleStart;
         Debug.Log("전투 시작!");
 
+        StatManager.Instance.runtimeEnemyStat.ResetStat();
+
         if (BattleFactory.Instance != null)
         {
             // ⭐️ 팩토리가 생성해 준 오브젝트들을 받아와서 즉시 컴포넌트 추출 및 저장

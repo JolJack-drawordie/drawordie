@@ -352,8 +352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67494931813b1cc49a060d663f4e81be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatManager
-  originalPlayerStat: {fileID: 0}
-  originalEnemyStat: {fileID: 0}
+  originalPlayerStat: {fileID: 11400000, guid: 5bc82cebf90e37c47a013fce6a55590e, type: 2}
+  originalEnemyStat: {fileID: 11400000, guid: 30443057bfc9d494695a931a0c70b52c, type: 2}
 --- !u!4 &95391402
 Transform:
   m_ObjectHideFlags: 0
