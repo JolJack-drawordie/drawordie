@@ -37,10 +37,18 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        playerHpProvider = playerHpBar.GetComponent<HpProvider>();
-        playerShieldProvider = playerShieldBar.GetComponent<ShieldProvider>();
-        enemyHpProvider = enemyHpBar.GetComponent <HpProvider>();
-        enemyShieldProvider = enemyShieldBar.GetComponent<ShieldProvider>();
+
+        if (playerHpBar != null)
+            playerHpProvider = playerHpBar.GetComponent<HpProvider>();
+
+        if (playerShieldBar != null)
+            playerShieldProvider = playerShieldBar.GetComponent<ShieldProvider>();
+
+        if (enemyHpBar != null)
+            enemyHpProvider = enemyHpBar.GetComponent<HpProvider>();
+
+        if (enemyShieldBar != null)
+            enemyShieldProvider = enemyShieldBar.GetComponent<ShieldProvider>();
     }
 
     private void OnEnable()

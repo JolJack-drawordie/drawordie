@@ -12,6 +12,25 @@ public class StatManager : MonoBehaviour
     public UnitStatData runtimePlayerStat { get; private set; }
     public UnitStatData runtimeEnemyStat { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void InitializeBeforeSceneLoad()
+    {
+        // 프로젝트 폴더의 Resources 폴더 안에 "StatManager" 프리팹이 있다고 가정
+        GameObject prefab = Resources.Load<GameObject>("StatManager");
+        if (prefab != null)
+        {
+            GameObject instance = Instantiate(prefab);
+            DontDestroyOnLoad(instance);
+        }
+        else
+        {
+            // 프리팹이 없다면 빈 오브젝트를 동적으로 생성해서 부착
+            GameObject obj = new GameObject("StatManager");
+            obj.AddComponent<StatManager>();
+            DontDestroyOnLoad(obj);
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -65,5 +84,30 @@ public class StatManager : MonoBehaviour
             runtimePlayerStat.currentHp = player.statData.currentHp;
             // 필요시 추가 데이터 동기화
         }
+    }
+
+    // 고정 수치 체력 회복
+    public void HealPlayer(int amount)
+    {
+        if (runtimePlayerStat == null) return;
+
+        runtimePlayerStat.currentHp += amount;
+
+        // 최대 체력을 초과하지 않도록 제한
+        if (runtimePlayerStat.currentHp > runtimePlayerStat.maxHp)
+        {
+            runtimePlayerStat.currentHp = runtimePlayerStat.maxHp;
+        }
+
+        Debug.Log($"[StatManager] 플레이어 체력 회복 (+{amount}) -> 현재 체력: {runtimePlayerStat.currentHp}/{runtimePlayerStat.maxHp}");
+    }
+
+    // 최대 체력 대비 비율 회복
+    public void HealPlayerPercent(float ratio)
+    {
+        if (runtimePlayerStat == null) return;
+
+        int healAmount = Mathf.RoundToInt(runtimePlayerStat.maxHp * ratio);
+        HealPlayer(healAmount);
     }
 }
