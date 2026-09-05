@@ -26,15 +26,25 @@ public class AnimatedBar : MonoBehaviour
 
         if (textLabel == null) textLabel = GetComponent<TextMeshProUGUI>();
         if (textLabel == null) textLabel = GetComponentInChildren<TextMeshProUGUI>();
+
+        if (_provider == null)
+        {
+            _provider = GetComponent<IValueProvider>();
+            if (_provider == null) _provider = GetComponentInChildren<IValueProvider>();
+            if (_provider == null) _provider = GetComponentInParent<IValueProvider>();
+        }
+
+        // Provider를 찾았다면 곧바로 초기화 수행
+        if (_provider != null)
+        {
+            SetProvider(_provider);
+        }
     }
 
     void Update()
     {
-        // Debug.Log("Update 호출 확인");
-        // Debug.Log($"[Bar Debug] {gameObject.name} | Target: {_targetUnit} | Provider: {_provider}");
-
         // 추적할 대상이나 데이터 제공자가 없으면 아무것도 하지 않음
-        if (_targetUnit == null || _provider == null) return;
+        if (_provider == null) return;
 
         // 1. Provider를 통해 대상의 현재 값과 최대값을 실시간으로 가져옴
         float current = _provider.GetCurrentValue(_targetUnit);
@@ -87,7 +97,7 @@ public class AnimatedBar : MonoBehaviour
         _prefix = provider.text + " "; // 예: "HP ", "MP " 등 텍스트 앞에 붙을 글자 설정
 
         // 초기 설정 시 슬라이더 바의 값을 즉시(애니메이션 없이) 세팅
-        if (_targetUnit != null && _provider != null)
+        if (_provider != null)
         {
             float current = _provider.GetCurrentValue(_targetUnit);
             float max = _provider.GetMaxValue(_targetUnit);

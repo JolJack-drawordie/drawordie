@@ -4,8 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class EnemyTarget : MonoBehaviour
 {
-    public PlayerController playerController;
-
     private DiceManager diceManager;
 
     private void Start()
@@ -15,9 +13,6 @@ public class EnemyTarget : MonoBehaviour
         box.size = new Vector2(400, 400);
 
         diceManager = FindFirstObjectByType<DiceManager>();
-
-        if (playerController == null)
-            playerController = FindFirstObjectByType<PlayerController>();
     }
 
     public void ReceiveCard(CardUI card)
@@ -41,19 +36,19 @@ public class EnemyTarget : MonoBehaviour
     {
         if(card.Damage > 0)
         {
-            if (playerController != null)
-                yield return StartCoroutine(playerController.AttackRoutine());
-            GameManager.Instance.enemy.TakeDamage(card.Damage);
+            if (PlayerController.Instance != null)
+                yield return StartCoroutine(PlayerController.Instance.AttackRoutine());
+            GameManager.Instance.Enemy.TakeDamage(card.Damage);
         }
 
         if(card.Shield > 0)
         {
-           GameManager.Instance.player.AddShield(card.Shield);
+           GameManager.Instance.Player.AddShield(card.Shield);
         }
         
         if(card.Heal > 0)
         {
-            GameManager.Instance.player.Heal(card.Heal);
+            GameManager.Instance.Player.Heal(card.Heal);
         }
 
         GameManager.Instance.CheckBattleResult();

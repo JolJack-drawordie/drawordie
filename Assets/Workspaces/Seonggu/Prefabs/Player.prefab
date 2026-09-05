@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2790687183692999191
+--- !u!1 &4944560238511240866
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6409001216637346866}
-  - component: {fileID: 64917892647203171}
-  - component: {fileID: 7506369132564501879}
-  - component: {fileID: 1600543759654169373}
-  - component: {fileID: 965266597107990214}
-  - component: {fileID: 1635415545421144903}
+  - component: {fileID: 9062352729700938551}
+  - component: {fileID: 2587843731068559952}
+  - component: {fileID: 8520762805954368859}
+  - component: {fileID: 7327579710574552744}
+  - component: {fileID: 4142358389023915552}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -21,13 +20,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6409001216637346866
+--- !u!4 &9062352729700938551
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
+  m_GameObject: {fileID: 4944560238511240866}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.24, y: -1.3, z: 0}
@@ -36,14 +35,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &64917892647203171
+--- !u!212 &2587843731068559952
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
+  m_GameObject: {fileID: 4944560238511240866}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -95,14 +94,14 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!95 &7506369132564501879
+--- !u!95 &8520762805954368859
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
+  m_GameObject: {fileID: 4944560238511240866}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 92c7b6422d8588c4aad50f78bd640eec, type: 2}
@@ -117,57 +116,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1600543759654169373
+--- !u!114 &7327579710574552744
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
+  m_GameObject: {fileID: 4944560238511240866}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6203a959f898eb14cb5d7d315221a214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  animator: {fileID: 7506369132564501879}
+  animator: {fileID: 8520762805954368859}
   attackTarget: {fileID: 0}
   potionObject: {fileID: 0}
---- !u!114 &965266597107990214
+--- !u!114 &4142358389023915552
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c7a4d05d1cac124eae10d143e078225, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitBase
-  unitName: 
-  maxHp: 30
-  currentHp: 0
-  maxShield: 30
-  currentShield: 0
-  hpBar: {fileID: 0}
-  shieldBar: {fileID: 0}
---- !u!114 &1635415545421144903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790687183692999191}
+  m_GameObject: {fileID: 4944560238511240866}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cfd65938cbc6a14bbadd1aa7c73c941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUnit
-  unitName: 
-  maxHp: 30
-  currentHp: 0
-  maxShield: 30
-  currentShield: 0
   hpBar: {fileID: 0}
   shieldBar: {fileID: 0}
   attackPower: 6

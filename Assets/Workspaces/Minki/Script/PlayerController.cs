@@ -3,11 +3,25 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance; // 전역 접근용
+
     public Animator animator;
     public Transform attackTarget; // 적 오브젝트 연결 (비워두면 고정 5칸 이동)
     public GameObject potionObject; // 포션 오브젝트 연결 (추가)
     private Vector3 originalPosition;
     private bool isActing = false;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
