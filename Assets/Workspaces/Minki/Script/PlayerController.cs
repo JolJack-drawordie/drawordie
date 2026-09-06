@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
                 potionObj.transform.localPosition = new Vector3(0.7f, -0.5f, 0);
                 float currentZ = Mathf.Lerp(0f, 30f, progress);
                 potionObj.transform.localRotation = Quaternion.Euler(0, 0, currentZ);
-                float currentScale = Mathf.Lerp(0.7f, 1.0f, progress);
+                float currentScale = Mathf.Lerp(0.5f, 0.5f, progress);
                 potionObj.transform.localScale = Vector3.one * currentScale;
             }
 
