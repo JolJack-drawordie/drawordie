@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
 public class TitleManager : MonoBehaviour
 {
@@ -11,8 +10,6 @@ public class TitleManager : MonoBehaviour
     public CanvasGroup btnStartGroup;
     public CanvasGroup btnSettingsGroup;
 
-    private Canvas _canvas;
-    private RectTransform _btnStartRect;
     private bool _isLoading = false;
 
     void OnEnable()
@@ -33,20 +30,19 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
-        // 배경음악
+        // 배경음악 재생
         if (SoundManager.Instance != null && SoundManager.Instance.mainBackgroundSound != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.mainBackgroundSound);
         }
 
         DOTween.SetTweensCapacity(500, 200);
 
-        _canvas = GetComponent<Canvas>();
-        _btnStartRect = (RectTransform)btnStartGroup.transform;
-
+        // 초기 투명도 설정
         logoGroup.alpha = 0;
         btnStartGroup.alpha = 0;
         btnSettingsGroup.alpha = 0;
 
+        // DOTween 애니메이션 시퀀스 실행
         Sequence seq = DOTween.Sequence();
 
         seq.Append(logoGroup.DOFade(1f, 1.2f));
@@ -61,20 +57,7 @@ public class TitleManager : MonoBehaviour
         seq.Append(btnSettingsGroup.DOFade(1f, 0.6f));
     }
 
-    void Update()
-    {
-        if (_isLoading) return;
-        if (Mouse.current == null) return;
-        if (!Mouse.current.leftButton.wasPressedThisFrame) return;
-        if (btnStartGroup.alpha < 0.1f) return;
-
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        if (RectTransformUtility.RectangleContainsScreenPoint(_btnStartRect, mousePos, _canvas.worldCamera))
-        {
-            OnClickStart();
-        }
-    }
-
+    // 버튼에서 직접 호출될 시작 함수
     public void OnClickStart()
     {
         if (_isLoading) return;

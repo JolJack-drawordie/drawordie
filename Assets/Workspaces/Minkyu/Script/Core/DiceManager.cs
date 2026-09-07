@@ -4,10 +4,26 @@ using UnityEngine.UI;
 
 public class DiceManager : MonoBehaviour
 {
+    public static DiceManager Instance;
+
     [Header("에너지 설정")]
     public int baseEnergy = 3;
     public int diceValue;
-    public int CurrentEnergy { get; private set; }
+
+    // ⭐️ 1. 에너지가 변경될 때 외부에 알릴 이벤트 추가
+    public event System.Action<int> OnEnergyChanged;
+
+    private int currentEnergy;
+    public int CurrentEnergy
+    {
+        get => currentEnergy;
+        private set
+        {
+            currentEnergy = value;
+            // ⭐️ 2. 값이 바뀔 때마다 이벤트 발사!
+            OnEnergyChanged?.Invoke(currentEnergy);
+        }
+    }
 
     [Header("주사위 UI")]
     public Button rollDiceButton; // 버튼 연결
@@ -16,6 +32,18 @@ public class DiceManager : MonoBehaviour
     public Sprite[] diceSprites;
 
     public bool isRollFinished = false; // 턴매니저 대기용 플래그
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // 씬에 이미 존재한다면 중복 생성 방지
+        }
+    }
 
     void Start()
     {
@@ -52,6 +80,7 @@ public class DiceManager : MonoBehaviour
         }
 
         diceValue = Random.Range(1, 7);
+
         CurrentEnergy = baseEnergy + diceValue;
         
         if (diceImage != null && diceSprites.Length >= 6)

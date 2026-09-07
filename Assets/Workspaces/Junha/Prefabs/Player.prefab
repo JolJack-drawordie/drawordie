@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 64917892647203171}
   - component: {fileID: 7506369132564501879}
   - component: {fileID: 1600543759654169373}
+  - component: {fileID: 965266597107990214}
+  - component: {fileID: 1635415545421144903}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2790687183692999191}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: -1.3, z: 1}
+  m_LocalPosition: {x: -5.24, y: -1.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -127,4 +129,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6203a959f898eb14cb5d7d315221a214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  animator: {fileID: 0}
+  animator: {fileID: 7506369132564501879}
+  attackTarget: {fileID: 0}
+  potionObject: {fileID: 0}
+--- !u!114 &965266597107990214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2790687183692999191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c7a4d05d1cac124eae10d143e078225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitBase
+  unitName: 
+  maxHp: 30
+  currentHp: 0
+  maxShield: 30
+  currentShield: 0
+  hpBar: {fileID: 0}
+  shieldBar: {fileID: 0}
+--- !u!114 &1635415545421144903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2790687183692999191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cfd65938cbc6a14bbadd1aa7c73c941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUnit
+  unitName: 
+  maxHp: 30
+  currentHp: 0
+  maxShield: 30
+  currentShield: 0
+  hpBar: {fileID: 0}
+  shieldBar: {fileID: 0}
+  attackPower: 6

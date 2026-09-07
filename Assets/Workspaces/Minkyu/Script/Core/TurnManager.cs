@@ -23,6 +23,7 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+
         if (DataManager.Instance.isDataLoaded)
         {
             StartGame();
@@ -48,14 +49,25 @@ public class TurnManager : MonoBehaviour
         }
 
         gameManager.StartBattle();
+
+        if (GameManager.Instance != null)
+        {
+            player = GameManager.Instance.Player;
+            enemy = GameManager.Instance.Enemy;
+            playerController = PlayerController.Instance;
+
+            if (enemy != null)
+            {
+                enemyController = enemy.GetComponent<EnemyController>();
+            }
+        }
+
         if (uiManager != null) uiManager.HideResult();
         StartCoroutine(BattleLoop());
     }
 
     private IEnumerator BattleLoop()
     {
-        UIManager.Instance.LinkUnitToUI(player);
-        UIManager.Instance.LinkUnitToUI(enemy);
         while (!gameManager.isGameOver)
         {
             turnCount++;

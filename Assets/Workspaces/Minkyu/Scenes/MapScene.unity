@@ -286,15 +286,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNodeManager
   battleSceneName: JunhaTest
-  level1Nodes:
-  - {fileID: 0}
-  - {fileID: 0}
-  level2Nodes:
-  - {fileID: 0}
-  - {fileID: 0}
-  bossNodes:
-  - {fileID: 0}
-  generatedNodes: []
 --- !u!4 &388409206
 Transform:
   m_ObjectHideFlags: 0
@@ -565,6 +556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
   monsterPrefab: {fileID: 659159094608875449, guid: a2022a2ce2f325b4fa7fb73082a62c4d, type: 3}
   elitePrefab: {fileID: 2810294230702250255, guid: 1f711ff19865e6546be577eec7e53f61, type: 3}
+  restPrefab: {fileID: 659159094608875449, guid: 2a4414572ef0238498ea26dd8ea50f7a, type: 3}
   bossPrefab: {fileID: 7045010428231821156, guid: 0ca1a832d67493249a223645d24cd556, type: 3}
   nodeParent: {fileID: 954671687}
   lineParent: {fileID: 1331024149}
@@ -572,6 +564,7 @@ MonoBehaviour:
   floorCount: 5
   floorSpacing: 180
   nodeSpacing: 180
+  restChance: 0.2
 --- !u!1 &1389775770
 GameObject:
   m_ObjectHideFlags: 0
