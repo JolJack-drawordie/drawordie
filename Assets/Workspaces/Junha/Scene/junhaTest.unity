@@ -119,6 +119,98 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+<<<<<<< Updated upstream
+=======
+--- !u!1001 &17616666
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -3696138251993397976, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpBar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -3696138251993397976, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: shieldBar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1735560677819569693, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3379029250519213504, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4501863848534384856, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5850782222835383469, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: hpSlider
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 5133959901404419305, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1858842986}
+  m_SourcePrefab: {fileID: 100100000, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+>>>>>>> Stashed changes
 --- !u!1 &29232417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,7 +1672,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9038512010595349659, guid: 1beece4eac86d6044b679b19b852859e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
