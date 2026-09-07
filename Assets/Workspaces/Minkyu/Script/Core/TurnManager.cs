@@ -12,8 +12,7 @@ public class TurnManager : MonoBehaviour
 
     [Header("전투 애니메이션 (선택)")]
     public PlayerController playerController;
-    // EnemyBase 로 변경(김민기)
-    public EnemyBase enemyBase;
+    public EnemyController enemyController;
 
     [Header("턴 정보")]
     public int turnCount = 0;
@@ -104,9 +103,9 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
-            // 상속형태로 바꿔서 여기 코드 수정(김민기)
-            if (enemyBase != null)
-               enemyBase.ExecuteAction();
+
+            if (enemyController != null)
+                yield return StartCoroutine(enemyController.PlayAttackAnimation());
             enemy.Attack(player);
             gameManager.CheckBattleResult();
 
