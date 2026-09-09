@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 public class MasterSeedManager : MonoBehaviour
 {
     [Header("Master Seed")]
@@ -15,25 +16,35 @@ public class MasterSeedManager : MonoBehaviour
 
     void GenerateMasterSeed()
     {
-        // 이미 Master Seed가 존재한다면 기존 Seed 사용
         if (GameFlowData.hasMasterSeed)
         {
-            masterSeed = GameFlowData.masterSeed;
+            masterSeed =
+                GameFlowData.masterSeed;
 
-            Debug.Log("기존 Master Seed 사용 : " + masterSeed);
+            Debug.Log(
+                "기존 Master Seed 사용 : " +
+                masterSeed
+            );
         }
         else
         {
-            // 새로운 Master Seed 생성
             if (useRandomSeed)
             {
-                masterSeed = Random.Range(100000, 999999);
+                masterSeed =
+                    Random.Range(
+                        100000,
+                        999999
+                    );
             }
 
-            // GameFlowData에 저장
-            GameFlowData.SetMasterSeed(masterSeed);
+            GameFlowData.SetMasterSeed(
+                masterSeed
+            );
 
-            Debug.Log("새로운 Master Seed 생성 : " + masterSeed);
+            Debug.Log(
+                "새로운 Master Seed 생성 : " +
+                masterSeed
+            );
         }
     }
 }
