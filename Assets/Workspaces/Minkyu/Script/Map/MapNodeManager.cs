@@ -6,15 +6,17 @@ public class MapNodeManager : MonoBehaviour
     [Header("Battle Scene")]
     public string battleSceneName = "JunhaTest";
 
+    [Header("Rest Scene")]
+    public string restSceneName = "RestScene";
+
     private MapNode[] allNodes;
 
     private void Start()
     {
         // 현재 맵의 모든 노드 찾기
-        allNodes =
-            FindObjectsByType<MapNode>(
-                FindObjectsSortMode.None
-            );
+        allNodes = FindObjectsByType<MapNode>(
+            FindObjectsSortMode.None
+        );
 
         InitializeNodes();
 
@@ -29,7 +31,7 @@ public class MapNodeManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 맵 진입 시 노드 상태 초기화
+    /// 맵 진입 시 활성화할 노드 결정
     /// </summary>
     void InitializeNodes()
     {
@@ -39,16 +41,7 @@ public class MapNodeManager : MonoBehaviour
             node.SetInteractable(false);
         }
 
-        // 방문했던 노드 복원
-        foreach (MapNode node in allNodes)
-        {
-            if (GameFlowData.IsNodeVisited(node))
-            {
-                node.SetVisited();
-            }
-        }
-
-        // 아직 아무 노드도 선택하지 않은 경우
+        // 첫 시작이면 0층만 활성화
         if (GameFlowData.currentFloor == -1)
         {
             foreach (MapNode node in allNodes)
@@ -58,10 +51,6 @@ public class MapNodeManager : MonoBehaviour
                     node.SetInteractable(true);
                 }
             }
-
-            Debug.Log(
-                "맵 시작 - 0층 노드 활성화"
-            );
 
             return;
         }
@@ -79,43 +68,15 @@ public class MapNodeManager : MonoBehaviour
             }
         }
 
-        // 이전 노드를 찾지 못한 경우
         if (currentNode == null)
         {
-            Debug.LogWarning(
-                $"이전 노드를 찾을 수 없습니다. " +
-                $"Floor : {GameFlowData.currentFloor}, " +
-                $"Index : {GameFlowData.currentIndex}"
-            );
-
             return;
         }
 
-        Debug.Log(
-            $"현재 진행 위치 : " +
-            $"Floor {currentNode.floor} / " +
-            $"Index {currentNode.index}"
-        );
-
-        // 현재 노드는 방문한 상태
-        currentNode.SetVisited();
-
-        // 현재 노드와 연결된 다음 노드만 활성화
+        // 현재 노드에서 연결된 다음 노드만 활성화
         foreach (MapNode nextNode in currentNode.connectedNodes)
         {
-            // 이미 방문한 노드는 활성화하지 않음
-            if (GameFlowData.IsNodeVisited(nextNode))
-            {
-                continue;
-            }
-
             nextNode.SetInteractable(true);
-
-            Debug.Log(
-                $"다음 노드 활성화 : " +
-                $"Floor {nextNode.floor} / " +
-                $"Index {nextNode.index}"
-            );
         }
     }
 
@@ -125,25 +86,36 @@ public class MapNodeManager : MonoBehaviour
     public void NodeSelected(MapNode selectedNode)
     {
         if (selectedNode == null)
+        {
+            Debug.LogWarning("선택된 노드가 없습니다.");
             return;
+        }
 
         // 선택한 노드 정보 저장
         GameFlowData.SelectNode(selectedNode);
 
-        // 방문한 노드로 저장
-        GameFlowData.AddVisitedNode(selectedNode);
-
         Debug.Log(
-            $"노드 선택 : " +
-            $"Floor {selectedNode.floor} / " +
+            $"선택한 노드 : Floor {selectedNode.floor} / " +
             $"Index {selectedNode.index} / " +
             $"Type {selectedNode.nodeType}"
         );
 
-        // 전투씬 이동
-        SceneManager.LoadScene(battleSceneName);
+        // Rest 노드라면 RestScene으로 이동
+        if (selectedNode.nodeType == MapNode.NodeType.Rest)
+        {
+            Debug.Log("Rest 노드 선택 → RestScene 이동");
 
-        // 배경음악 정지
+            SceneManager.LoadScene(restSceneName);
+        }
+        else
+        {
+            // Monster / Elite / Boss는 기존 전투씬으로 이동
+            Debug.Log("전투 노드 선택 → Battle Scene 이동");
+
+            SceneManager.LoadScene(battleSceneName);
+        }
+
+        // 맵 배경음악 정지
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.StopBGM();
