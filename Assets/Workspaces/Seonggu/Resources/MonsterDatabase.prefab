@@ -44,25 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab6eb5ed9b1923a4e8f43d56d8764656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDatabase
-  monsterList:
+  prefabList:
   - monsterType: 100
     monsterPrefab: {fileID: 8131265570948921892, guid: e80ded3fbbe704f4e90e080861011d82, type: 3}
-    statData: {fileID: 0}
-    maxHp: 0
-    currentHp: 0
-    maxShield: 0
-    currentShield: 0
   - monsterType: 101
     monsterPrefab: {fileID: 3258946104312521184, guid: 3f64a3f3c2537c2479974f282d0b1e4b, type: 3}
-    statData: {fileID: 0}
-    maxHp: 0
-    currentHp: 0
-    maxShield: 0
-    currentShield: 0
   - monsterType: 102
     monsterPrefab: {fileID: 2862501483108332573, guid: 90e2093a666ffa8479fea9a0a78239c0, type: 3}
-    statData: {fileID: 0}
-    maxHp: 0
-    currentHp: 0
-    maxShield: 0
-    currentShield: 0

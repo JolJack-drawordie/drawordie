@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 4036384601311318739}
   - component: {fileID: 2952331283272127286}
   - component: {fileID: 7951919699987423684}
+  - component: {fileID: -4857879057206215312}
   m_Layer: 0
   m_Name: ghost
   m_TagString: Untagged
@@ -186,6 +187,19 @@ MonoBehaviour:
   defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
   baseScale: 4
   intentCanvas: {fileID: 0}
+--- !u!114 &-4857879057206215312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2862501483108332573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20dc7dcf0ef01924398963aca8d37bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyUnit
+  attackPower: 4
 --- !u!1 &7418938079287025643
 GameObject:
   m_ObjectHideFlags: 0

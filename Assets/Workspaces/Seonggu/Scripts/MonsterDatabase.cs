@@ -96,6 +96,27 @@ public class MonsterDatabase : MonoBehaviour
         return false;
     }
 
+    // 서버에 캐싱된 모든 몬스터 ID 목록을 동적으로 반환
+    public List<int> GetAllMonsterIds()
+    {
+        return new List<int>(serverStatDict.Keys);
+    }
+
+    // 서버에 있는 몬스터 중 시드 기반으로 무작위 ID 하나를 쏙 뽑아주는 함수
+    public int GetRandomMonsterId(int seed)
+    {
+        List<int> ids = GetAllMonsterIds();
+        if (ids.Count == 0)
+        {
+            Debug.LogError("서버에서 불러온 몬스터 데이터가 없습니다!");
+            return -1;
+        }
+
+        System.Random seededRandom = new System.Random(seed);
+        int randomIndex = seededRandom.Next(0, ids.Count);
+        return ids[randomIndex];
+    }
+
     // 서버에서 받은 JSON 문자열을 파싱해서 데이터베이스에 일괄 적용
     public IEnumerator LoadServerDataFromJson()
     {
@@ -118,8 +139,6 @@ public class MonsterDatabase : MonoBehaviour
 
             IsDataLoaded = true;
         }));
-
-        Debug.Log("모든 몬스터 데이터 로딩 및 데이터베이스 갱신 완료!");
     }
 
     // 2. 공통 FetchData 메서드
@@ -135,11 +154,11 @@ public class MonsterDatabase : MonoBehaviour
                 yield break;
             }
 
+            Debug.Log($"[서버 원본 응답] {request.downloadHandler.text}");
+
             string jsonString = request.downloadHandler.text;
 
-            // 만약 서버가 배열형태로 바로 준다면 래퍼 처리가 필요할 수 있음
-            string wrappedJson = "{\"monsters\":" + jsonString + "}";
-            T data = JsonUtility.FromJson<T>(wrappedJson);
+            T data = JsonUtility.FromJson<T>(jsonString);
 
             onSuccess?.Invoke(data);
         }

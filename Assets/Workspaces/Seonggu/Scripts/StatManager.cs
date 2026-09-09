@@ -72,6 +72,12 @@ public class StatManager : MonoBehaviour
 
     public void SetEnemyStat(int hp, int shield)
     {
+        if (runtimeEnemyStat == null)
+        {
+            // ScriptableObject는 반드시 CreateInstance로 생성해야 합니다
+            runtimeEnemyStat = ScriptableObject.CreateInstance<UnitStatData>();
+        }
+
         runtimeEnemyStat.maxHp = hp;
         runtimeEnemyStat.currentHp = hp;
         runtimeEnemyStat.maxShield = shield;
