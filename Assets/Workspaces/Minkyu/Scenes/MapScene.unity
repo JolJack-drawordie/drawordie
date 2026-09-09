@@ -286,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNodeManager
   battleSceneName: JunhaTest
+  restSceneName: RestScene
 --- !u!4 &388409206
 Transform:
   m_ObjectHideFlags: 0
@@ -506,6 +507,7 @@ GameObject:
   - component: {fileID: 1357794723}
   - component: {fileID: 1357794722}
   - component: {fileID: 1357794724}
+  - component: {fileID: 1357794725}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -520,13 +522,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1357794721}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2757228bbfccc7841ada57f89ee06590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapSeedGenerator
   seed: 0
-  useRandomSeed: 1
 --- !u!4 &1357794723
 Transform:
   m_ObjectHideFlags: 0
@@ -565,6 +566,22 @@ MonoBehaviour:
   floorSpacing: 180
   nodeSpacing: 180
   restChance: 0.2
+  minConnections: 1
+  maxConnections: 2
+--- !u!114 &1357794725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357794721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f856c6ead38da44a2f26be6b78dde9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MasterSeedManager
+  masterSeed: 0
+  useRandomSeed: 1
 --- !u!1 &1389775770
 GameObject:
   m_ObjectHideFlags: 0

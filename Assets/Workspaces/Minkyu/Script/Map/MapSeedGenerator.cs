@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MapSeedGenerator : MonoBehaviour
@@ -5,17 +6,27 @@ public class MapSeedGenerator : MonoBehaviour
     [Header("Seed")]
     public int seed;
 
-    [Header("랜덤 생성 여부")]
-    public bool useRandomSeed = true;
+    private MasterSeedManager masterSeedManager;
 
     private void Awake()
     {
-        GenerateSeed();
+        masterSeedManager = GetComponent<MasterSeedManager>();
+
+        GenerateMapSeed();
     }
 
-    void GenerateSeed()
+    void GenerateMapSeed()
     {
-        // 이미 저장된 Seed가 있다면 기존 Seed 사용
+        // Master Seed가 같은지 확인
+        if (masterSeedManager == null)
+        {
+            Debug.LogError("MasterSeedManager가 없습니다.");
+            return;
+        }
+
+        int masterSeed = masterSeedManager.masterSeed;
+
+        // 이미 Map Seed가 있다면 기존 Map Seed 사용
         if (GameFlowData.hasMapSeed)
         {
             seed = GameFlowData.mapSeed;
@@ -24,19 +35,19 @@ public class MapSeedGenerator : MonoBehaviour
         }
         else
         {
-            // 새로운 Seed 생성
-            if (useRandomSeed)
-            {
-                seed = Random.Range(100000, 999999);
-            }
+            // Master Seed를 기반으로 Map 전용 Seed 생성
+            System.Random random = new System.Random(masterSeed);
 
-            // GameFlowData에 Seed 저장
+            seed = random.Next(100000, 999999);
+
+            // GameFlowData에 저장
             GameFlowData.SetMapSeed(seed);
 
+            Debug.Log("Master Seed : " + masterSeed);
             Debug.Log("새로운 Map Seed 생성 : " + seed);
         }
 
-        // 해당 Seed를 기준으로 랜덤 초기화
-        Random.InitState(seed);
+        // MapGenerator에서 사용할 랜덤 상태 초기화
+        UnityEngine.Random.InitState(seed);
     }
 }
