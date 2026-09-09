@@ -6,7 +6,6 @@ public class BattleFactory : MonoBehaviour
 
     [Header("프리팹들")]
     public GameObject playerPrefab;
-    public GameObject enemyPrefab;
 
     private void Awake()
     {
@@ -51,6 +50,10 @@ public class BattleFactory : MonoBehaviour
 
     public GameObject SpawnEnemy(GameObject spawnPoint)
     {
+        int seed = 555; // 스테이지 시드값 등
+        int selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
+
+        GameObject enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
         if (enemyPrefab == null)
         {
             Debug.LogWarning("적 프리팹이 지정되지 않았습니다.");
@@ -67,7 +70,15 @@ public class BattleFactory : MonoBehaviour
         UnitBase enemyUnit = enemyObj.GetComponent<UnitBase>();
         if (enemyUnit != null && StatManager.Instance != null)
         {
-            enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
+            if (MonsterDatabase.Instance.TryInitializeMonsterStat(selectedId))
+            {
+                enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
+            }
+            else
+            {
+                Debug.Log("몬스터 스탯을 가져오지 못했습니다.");
+            }
+            
         }
 
         // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
