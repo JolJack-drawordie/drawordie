@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,16 +33,38 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 2)]
     public int maxConnections = 2;
 
-    private MapSeedGenerator seedGenerator;
+    // Master Seed를 기반으로 한
+    // Map 전용 랜덤
+    private System.Random mapRandom;
+
+    private MasterSeedManager masterSeedManager;
 
     private void Awake()
     {
-        seedGenerator = GetComponent<MapSeedGenerator>();
+        // MasterSeedManager 가져오기
+        masterSeedManager =
+            GetComponent<MasterSeedManager>();
 
-        if (seedGenerator != null)
+        if (masterSeedManager == null)
         {
-            Random.InitState(seedGenerator.seed);
+            Debug.LogError(
+                "MapGenerator : MasterSeedManager가 없습니다."
+            );
+
+            return;
         }
+
+        // Master Seed를 이용해
+        // Map 전용 Random 생성
+        mapRandom =
+            new System.Random(
+                masterSeedManager.masterSeed
+            );
+
+        Debug.Log(
+            "MapGenerator Master Seed : " +
+            masterSeedManager.masterSeed
+        );
 
         // 맵 생성
         GenerateLayout();
@@ -64,7 +87,9 @@ public class MapGenerator : MonoBehaviour
         List<GameObject> previousFloor =
             new List<GameObject>();
 
-        for (int floor = 0; floor < floorCount; floor++)
+        for (int floor = 0;
+            floor < floorCount;
+            floor++)
         {
             List<GameObject> currentFloor =
                 new List<GameObject>();
@@ -90,9 +115,11 @@ public class MapGenerator : MonoBehaviour
             {
                 // 일반 층은 2~3개의 노드 생성
                 int nodeCount =
-                    Random.Range(2, 4);
+                    mapRandom.Next(2, 4);
 
-                for (int i = 0; i < nodeCount; i++)
+                for (int i = 0;
+                    i < nodeCount;
+                    i++)
                 {
                     float x =
                         (i - (nodeCount - 1) / 2f)
@@ -110,8 +137,8 @@ public class MapGenerator : MonoBehaviour
                     // 2층부터 Rest / Elite 생성
                     if (floor >= 2)
                     {
-                        float randomValue =
-                            Random.value;
+                        double randomValue =
+                            mapRandom.NextDouble();
 
                         // Rest
                         if (randomValue < restChance)
@@ -191,7 +218,7 @@ public class MapGenerator : MonoBehaviour
 
             // 연결할 개수 결정
             int connectionCount =
-                Random.Range(
+                mapRandom.Next(
                     minConnections,
                     maxConnections + 1
                 );
@@ -212,7 +239,7 @@ public class MapGenerator : MonoBehaviour
                 connectionCount)
             {
                 int randomIndex =
-                    Random.Range(
+                    mapRandom.Next(
                         0,
                         currentFloor.Count
                     );
@@ -257,8 +284,8 @@ public class MapGenerator : MonoBehaviour
         // -----------------------------
 
         for (int i = 0;
-             i < currentFloor.Count;
-             i++)
+            i < currentFloor.Count;
+            i++)
         {
             if (incomingConnections[i] > 0)
                 continue;
@@ -269,7 +296,7 @@ public class MapGenerator : MonoBehaviour
 
             // 이전 층에서 랜덤 노드 선택
             int previousIndex =
-                Random.Range(
+                mapRandom.Next(
                     0,
                     previousFloor.Count
                 );
