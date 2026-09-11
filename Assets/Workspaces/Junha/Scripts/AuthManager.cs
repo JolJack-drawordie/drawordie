@@ -5,8 +5,21 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
 
+[System.Serializable]
+public class LoginResponseData
+{
+    public long userId;
+    public string username;
+    public string nickname;
+}
+
 public class AuthManager : MonoBehaviour
 {
+    // 로그인한 유저 정보 (씬이 전환/언로드돼도 유지되도록 static으로 보관)
+    public static long userId;
+    public static string nickname;
+    public static bool isLoggedIn = false;
+
     [Header("패널 오브젝트")]
     public GameObject loginPanel;
     public GameObject registerPanel;
@@ -81,7 +94,13 @@ public class AuthManager : MonoBehaviour
         {
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success) {
-                Debug.Log("<color=green>로그인 성공!</color>");
+                LoginResponseData response = JsonUtility.FromJson<LoginResponseData>(www.downloadHandler.text);
+
+                userId = response.userId;
+                nickname = response.nickname;
+                isLoggedIn = true;
+
+                Debug.Log($"<color=green>로그인 성공! 유저 번호: {userId}</color>");
                 DOTween.KillAll();
                 SceneManager.LoadScene(NextSceneName);
             } else {
