@@ -33,37 +33,41 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 2)]
     public int maxConnections = 2;
 
-    // Master Seed를 기반으로 한
-    // Map 전용 랜덤
+    // =========================
+    // Map Seed 기반 Random
+    // =========================
+
     private System.Random mapRandom;
 
-    private MasterSeedManager masterSeedManager;
+    private MapSeedGenerator mapSeedGenerator;
 
     private void Awake()
     {
-        // MasterSeedManager 가져오기
-        masterSeedManager =
-            GetComponent<MasterSeedManager>();
+        // MapSeedGenerator 가져오기
+        mapSeedGenerator =
+            GetComponent<MapSeedGenerator>();
 
-        if (masterSeedManager == null)
+        if (mapSeedGenerator == null)
         {
             Debug.LogError(
-                "MapGenerator : MasterSeedManager가 없습니다."
+                "MapGenerator : MapSeedGenerator가 없습니다."
             );
 
             return;
         }
 
-        // Master Seed를 이용해
+        // Map Seed 확인
+        int mapSeed =
+            mapSeedGenerator.seed;
+
+        // Map Seed를 기반으로
         // Map 전용 Random 생성
         mapRandom =
-            new System.Random(
-                masterSeedManager.masterSeed
-            );
+            new System.Random(mapSeed);
 
         Debug.Log(
-            "MapGenerator Master Seed : " +
-            masterSeedManager.masterSeed
+            "MapGenerator Map Seed : " +
+            mapSeed
         );
 
         // 맵 생성
@@ -354,6 +358,10 @@ public class MapGenerator : MonoBehaviour
             return null;
         }
 
+        // -----------------------------
+        // 노드 생성
+        // -----------------------------
+
         GameObject node =
             Instantiate(
                 prefab,
@@ -369,7 +377,17 @@ public class MapGenerator : MonoBehaviour
                 pos;
         }
 
+        // -----------------------------
+        // Node Seed 생성
+        // -----------------------------
+
+        int nodeSeed =
+            mapRandom.Next();
+
+        // -----------------------------
         // MapNode 정보 설정
+        // -----------------------------
+
         MapNode mapNode =
             node.GetComponent<MapNode>();
 
@@ -378,9 +396,18 @@ public class MapGenerator : MonoBehaviour
             mapNode.Initialize(
                 nodeType,
                 floor,
-                index
+                index,
+                nodeSeed
             );
         }
+
+        Debug.Log(
+            $"Create Node : " +
+            $"Floor {floor} / " +
+            $"Index {index} / " +
+            $"Type {nodeType} / " +
+            $"Node Seed {nodeSeed}"
+        );
 
         return node;
     }
