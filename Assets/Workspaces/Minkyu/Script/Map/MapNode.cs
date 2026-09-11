@@ -19,6 +19,13 @@ public class MapNode : MonoBehaviour
 
     public int index;
 
+    // =========================
+    // Node Seed
+    // =========================
+
+    [Header("Node Seed")]
+    public int nodeSeed;
+
     [Header("Connected Nodes")]
     public List<MapNode> connectedNodes =
         new List<MapNode>();
@@ -51,13 +58,25 @@ public class MapNode : MonoBehaviour
     public void Initialize(
         NodeType type,
         int floorIndex,
-        int nodeIndex)
+        int nodeIndex,
+        int seed)
     {
         nodeType = type;
         floor = floorIndex;
         index = nodeIndex;
 
+        // 노드 전용 Seed 저장
+        nodeSeed = seed;
+
         isVisited = false;
+
+        Debug.Log(
+            $"Node Initialized : " +
+            $"Floor {floor} / " +
+            $"Index {index} / " +
+            $"Type {nodeType} / " +
+            $"Node Seed {nodeSeed}"
+        );
     }
 
     public void AddConnection(MapNode nextNode)
@@ -83,7 +102,8 @@ public class MapNode : MonoBehaviour
             $"Select Node : " +
             $"Floor {floor} / " +
             $"Index {index} / " +
-            $"Type {nodeType}"
+            $"Type {nodeType} / " +
+            $"Node Seed {nodeSeed}"
         );
 
         if (manager != null)
