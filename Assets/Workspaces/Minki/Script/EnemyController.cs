@@ -2,136 +2,136 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyController : MonoBehaviour
+public abstract class EnemyController : MonoBehaviour
 {
-    [Header("UI 연결")]
-    public Slider hpSlider;
-    public TMPro.TextMeshProUGUI hpText;
-    public Image intentIcon; // Hierarchy의 IntentIcon 연결
+    [Header("체력 설정")]
+    public int maxHp = 30;
+    protected int currentHp;
 
-    [Header("아이콘 이미지")]
-    public Sprite attackSprite; // 검 이미지 연결
-    public Sprite defendSprite; // 갑옷/방패 이미지 연결
+    [Header("의도(Intent) UI")]
+    public Image intentIcon; 
+    public Sprite attackSprite; 
+    public Sprite defendSprite; 
+    protected bool isNextAttack = true; // 다음 행동 의도 (true: 공격, false: 방어)
 
-    [Header("설정")]
+    [Header("공통 연출 설정")]
     public float baseScale = 2f;
-    public bool useKeyboardInput = false; // TurnManager와 함께 쓸 때는 false
-    private Vector3 originalPosition;
-    private bool isAttacking = false;
+    protected Vector3 originalPosition;
+    protected bool isActing = false;
 
-    // 핵심: 다음 행동이 무엇인지 기억하는 변수
-    private bool isNextAttack = true;
+    [Header("월드 스페이스 UI 추적 설정")]
+    public Canvas intentCanvas; // 독립시킨 월드 스페이스 캔버스 연결용
 
-    void Start()
+    protected virtual void Start()
     {
+        currentHp = maxHp;
         originalPosition = transform.position;
-        UpdateIntentUI(); // 시작할 때 첫 번째 의도(검) 표시
+        
+        // 게임 시작 시 무작위로 첫 의도(공격 또는 방어)를 결정하고 아이콘 띄우기
+        isNextAttack = (Random.value > 0.5f);
+        UpdateIntentUI();
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        // 평소 숨쉬는 듯한 꿀렁임
-        if (!isAttacking)
+        // 행동 중이 아닐 때 생동감을 주는 꿀렁임(숨쉬기) 연출
+        if (!isActing)
         {
             float bounce = Mathf.Sin(Time.time * 2f) * 0.05f;
             transform.localScale = new Vector3(baseScale + bounce, baseScale - bounce, baseScale);
         }
 
-        // 스페이스바 누르면 현재 '예고된' 행동 실행 (독립 테스트용)
-        if (useKeyboardInput && Input.GetKeyDown(KeyCode.Space))
+        // 캔버스가 몬스터의 머리 위 좌표를 매 프레임 부드럽게 추적 (위치 어긋남 방지)
+        if (intentCanvas != null)
         {
-            if (!isAttacking) ExecuteAction();
+            intentCanvas.transform.position = transform.position + new Vector3(0, 2.0f, 0);
         }
     }
 
-    // 순서대로 행동을 실행하는 함수
-    void ExecuteAction()
+    // 데미지를 입는 공통 함수 (외부에서 호출 가능)
+    public virtual void TakeDamage(int damage)
+    {
+        currentHp -= damage;
+        currentHp = Mathf.Clamp(currentHp, 0, maxHp);
+        
+        Debug.Log($"{gameObject.name}이(가) {damage}의 데미지를 입었습니다. 남은 체력: {currentHp}/{maxHp}");
+
+        if (currentHp <= 0)
+        {
+            Die();
+        }
+    }
+
+    public virtual IEnumerator PlayAttackAnimation()
+    {
+        yield return StartCoroutine(PlayCustomAttack());
+    }
+    // 사망 처리
+    protected virtual void Die()
+    {
+        // 사망 시 머리 위에 떠 있던 캔버스도 함께 제거
+        if (intentCanvas != null)
+        {
+            Destroy(intentCanvas.gameObject);
+        }
+
+        Debug.Log($"{gameObject.name}이(가) 사망했습니다.");
+        Destroy(gameObject);
+    }
+
+    // 외부(또는 턴 매니저)에서 호출할 공통 행동 실행 함수
+    public virtual void ExecuteAction()
     {
         if (isNextAttack)
         {
-            // 공격 예고 상태였다면 돌진 공격!
-            StartCoroutine(AttackRoutine());
+            StartCoroutine(AttackRoutineWrapper());
         }
         else
         {
-            // 방어 예고 상태였다면 제자리 점프!
-            StartCoroutine(DefendRoutine());
+            StartCoroutine(DefendRoutineWrapper());
         }
-
-        // 중요: 행동이 시작됐으니 다음 행동은 반대로 바꿈
-        isNextAttack = !isNextAttack;
-        
-        // 아이콘도 다음 행동에 맞춰 미리 변경
-        UpdateIntentUI();
     }
 
-    void UpdateIntentUI()
+    // 공격 모션 수행 래퍼
+    IEnumerator AttackRoutineWrapper()
+    {
+        isActing = true;
+        yield return StartCoroutine(PlayCustomAttack()); 
+        
+        isNextAttack = (Random.value > 0.5f); 
+        UpdateIntentUI();
+        
+        isActing = false;
+    }
+
+    // 방어 모션 수행 래퍼
+    IEnumerator DefendRoutineWrapper()
+    {
+        isActing = true;
+        yield return StartCoroutine(PlayCustomDefend()); 
+        
+        isNextAttack = (Random.value > 0.5f); 
+        UpdateIntentUI();
+        
+        isActing = false;
+    }
+
+    // 의도 아이콘 업데이트
+    protected void UpdateIntentUI()
     {
         if (intentIcon == null) return;
 
-        // 로그를 찍어서 현재 어떤 아이콘으로 바뀌어야 하는지 콘솔창에 표시합니다.
         if (isNextAttack) 
         {
             intentIcon.sprite = attackSprite;
-            Debug.Log("다음 행동 예고: 공격 (칼 아이콘)");
         }
         else 
         {
             intentIcon.sprite = defendSprite;
-            Debug.Log("다음 행동 예고: 방어 (방패 아이콘)");
         }
     }
 
-    // TurnManager에서 호출할 수 있는 공개 메서드
-    public IEnumerator PlayAttackAnimation()
-    {
-        yield return StartCoroutine(AttackRoutine());
-    }
-
-    // 공격: 왼쪽으로 슈슉 돌진했다 돌아오기
-    IEnumerator AttackRoutine()
-    {
-        isAttacking = true;
-        Vector3 targetPos = originalPosition + new Vector3(-5f, 0, 0); 
-        
-        float timer = 0;
-        while (timer <= 0.15f)
-        {
-            transform.position = Vector3.Lerp(originalPosition, targetPos, timer / 0.15f);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(0.1f);
-
-        timer = 0;
-        while (timer <= 0.4f)
-        {
-            transform.position = Vector3.Lerp(targetPos, originalPosition, timer / 0.4f);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = originalPosition;
-        isAttacking = false;
-    }
-
-    // 방어: 제자리에서 콩 점프하기
-    IEnumerator DefendRoutine()
-    {
-        isAttacking = true;
-        Debug.Log("방어력을 얻었습니다!");
-
-        float timer = 0;
-        while (timer <= 0.3f)
-        {
-            float jump = Mathf.Sin((timer / 0.3f) * Mathf.PI) * 0.5f;
-            transform.position = originalPosition + new Vector3(0, jump, 0);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = originalPosition;
-        isAttacking = false;
-    }
+    // 몬스터마다 모션이 다르므로 자식 스크립트에서 구현(override)
+    protected abstract IEnumerator PlayCustomAttack();
+    protected abstract IEnumerator PlayCustomDefend();
 }

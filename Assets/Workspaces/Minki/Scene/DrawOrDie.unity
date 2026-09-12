@@ -517,6 +517,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1224667253 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+  m_PrefabInstance: {fileID: 1345478062084025188}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1224667258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224667253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0f0bd51a860114081e7a6fb607c757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlimeController
+  maxHp: 30
+  intentIcon: {fileID: 0}
+  attackSprite: {fileID: 21300000, guid: 4ad16adfdf2d1a441879a598de742eb6, type: 3}
+  defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
+  baseScale: 2
+  intentCanvas: {fileID: 0}
 --- !u!4 &1380673047 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6409001216637346866, guid: 253fec1f6234a5445b8316ea356dbed8, type: 3}
@@ -646,7 +669,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7864592175776110295, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1224667258}
   m_SourcePrefab: {fileID: 100100000, guid: 40a466fde264bef40ac631b2b2bb2514, type: 3}
 --- !u!1001 &5333593959949177745
 PrefabInstance:
