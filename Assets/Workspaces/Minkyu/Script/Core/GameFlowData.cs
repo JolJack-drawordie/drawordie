@@ -9,6 +9,9 @@ public static class GameFlowData
 
     public static MapNode.NodeType currentNodeType;
 
+    // 현재 선택한 노드의 전용 Seed (MapGenerator가 생성)
+    public static int currentNodeSeed = 0;
+
     // =========================
     // Master Seed
     // =========================
@@ -39,6 +42,7 @@ public static class GameFlowData
         currentFloor = node.floor;
         currentIndex = node.index;
         currentNodeType = node.nodeType;
+        currentNodeSeed = node.nodeSeed;
     }
 
 
