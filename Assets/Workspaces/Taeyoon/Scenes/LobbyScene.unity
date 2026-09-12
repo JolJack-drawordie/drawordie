@@ -2005,7 +2005,7 @@ MonoBehaviour:
   brightnessOverlay: {fileID: 1305308548}
   brightnessSlider: {fileID: 1177834884}
   brightnessLabelText: {fileID: 0}
-  soundSlider: {fileID: 0}
+  soundSlider: {fileID: 715939471}
   soundLabelText: {fileID: 0}
 --- !u!4 &1502602542
 Transform:
