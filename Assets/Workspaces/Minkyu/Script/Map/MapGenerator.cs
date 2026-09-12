@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,16 +33,42 @@ public class MapGenerator : MonoBehaviour
     [Range(1, 2)]
     public int maxConnections = 2;
 
-    private MapSeedGenerator seedGenerator;
+    // =========================
+    // Map Seed 기반 Random
+    // =========================
+
+    private System.Random mapRandom;
+
+    private MapSeedGenerator mapSeedGenerator;
 
     private void Awake()
     {
-        seedGenerator = GetComponent<MapSeedGenerator>();
+        // MapSeedGenerator 가져오기
+        mapSeedGenerator =
+            GetComponent<MapSeedGenerator>();
 
-        if (seedGenerator != null)
+        if (mapSeedGenerator == null)
         {
-            Random.InitState(seedGenerator.seed);
+            Debug.LogError(
+                "MapGenerator : MapSeedGenerator가 없습니다."
+            );
+
+            return;
         }
+
+        // Map Seed 확인
+        int mapSeed =
+            mapSeedGenerator.seed;
+
+        // Map Seed를 기반으로
+        // Map 전용 Random 생성
+        mapRandom =
+            new System.Random(mapSeed);
+
+        Debug.Log(
+            "MapGenerator Map Seed : " +
+            mapSeed
+        );
 
         // 맵 생성
         GenerateLayout();
@@ -64,7 +91,9 @@ public class MapGenerator : MonoBehaviour
         List<GameObject> previousFloor =
             new List<GameObject>();
 
-        for (int floor = 0; floor < floorCount; floor++)
+        for (int floor = 0;
+            floor < floorCount;
+            floor++)
         {
             List<GameObject> currentFloor =
                 new List<GameObject>();
@@ -90,9 +119,11 @@ public class MapGenerator : MonoBehaviour
             {
                 // 일반 층은 2~3개의 노드 생성
                 int nodeCount =
-                    Random.Range(2, 4);
+                    mapRandom.Next(2, 4);
 
-                for (int i = 0; i < nodeCount; i++)
+                for (int i = 0;
+                    i < nodeCount;
+                    i++)
                 {
                     float x =
                         (i - (nodeCount - 1) / 2f)
@@ -110,8 +141,8 @@ public class MapGenerator : MonoBehaviour
                     // 2층부터 Rest / Elite 생성
                     if (floor >= 2)
                     {
-                        float randomValue =
-                            Random.value;
+                        double randomValue =
+                            mapRandom.NextDouble();
 
                         // Rest
                         if (randomValue < restChance)
@@ -191,7 +222,7 @@ public class MapGenerator : MonoBehaviour
 
             // 연결할 개수 결정
             int connectionCount =
-                Random.Range(
+                mapRandom.Next(
                     minConnections,
                     maxConnections + 1
                 );
@@ -212,7 +243,7 @@ public class MapGenerator : MonoBehaviour
                 connectionCount)
             {
                 int randomIndex =
-                    Random.Range(
+                    mapRandom.Next(
                         0,
                         currentFloor.Count
                     );
@@ -257,8 +288,8 @@ public class MapGenerator : MonoBehaviour
         // -----------------------------
 
         for (int i = 0;
-             i < currentFloor.Count;
-             i++)
+            i < currentFloor.Count;
+            i++)
         {
             if (incomingConnections[i] > 0)
                 continue;
@@ -269,7 +300,7 @@ public class MapGenerator : MonoBehaviour
 
             // 이전 층에서 랜덤 노드 선택
             int previousIndex =
-                Random.Range(
+                mapRandom.Next(
                     0,
                     previousFloor.Count
                 );
@@ -327,6 +358,10 @@ public class MapGenerator : MonoBehaviour
             return null;
         }
 
+        // -----------------------------
+        // 노드 생성
+        // -----------------------------
+
         GameObject node =
             Instantiate(
                 prefab,
@@ -342,7 +377,17 @@ public class MapGenerator : MonoBehaviour
                 pos;
         }
 
+        // -----------------------------
+        // Node Seed 생성
+        // -----------------------------
+
+        int nodeSeed =
+            mapRandom.Next();
+
+        // -----------------------------
         // MapNode 정보 설정
+        // -----------------------------
+
         MapNode mapNode =
             node.GetComponent<MapNode>();
 
@@ -351,9 +396,18 @@ public class MapGenerator : MonoBehaviour
             mapNode.Initialize(
                 nodeType,
                 floor,
-                index
+                index,
+                nodeSeed
             );
         }
+
+        Debug.Log(
+            $"Create Node : " +
+            $"Floor {floor} / " +
+            $"Index {index} / " +
+            $"Type {nodeType} / " +
+            $"Node Seed {nodeSeed}"
+        );
 
         return node;
     }

@@ -56,12 +56,6 @@ public class StatManager : MonoBehaviour
             runtimePlayerStat = Instantiate(originalPlayerStat);
             runtimePlayerStat.ResetStat();
         }
-
-        if (originalEnemyStat != null)
-        {
-            runtimeEnemyStat = Instantiate(originalEnemyStat);
-            runtimeEnemyStat.ResetStat();
-        }
     }
 
     // BattleFactory가 호출할 스탯 제공 메서드
@@ -74,6 +68,20 @@ public class StatManager : MonoBehaviour
     public UnitStatData GetEnemyStat()
     {
         return runtimeEnemyStat;
+    }
+
+    public void SetEnemyStat(int hp, int shield)
+    {
+        if (runtimeEnemyStat == null)
+        {
+            // ScriptableObject는 반드시 CreateInstance로 생성해야 합니다
+            runtimeEnemyStat = ScriptableObject.CreateInstance<UnitStatData>();
+        }
+
+        runtimeEnemyStat.maxHp = hp;
+        runtimeEnemyStat.currentHp = hp;
+        runtimeEnemyStat.maxShield = shield;
+        runtimeEnemyStat.currentShield = 0;
     }
 
     // 전투 종료 후 플레이어 상태를 저장하거나 갱신할 때 사용
