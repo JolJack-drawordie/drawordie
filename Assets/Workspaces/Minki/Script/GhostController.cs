@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GhostController : EnemyBase
+public class GhostController : EnemyController
 {
     private SpriteRenderer spriteRenderer;
 
@@ -23,20 +23,17 @@ public class GhostController : EnemyBase
         // 부모 클래스의 기본 꿀렁임(숨쉬기) 연출 유지
         base.Update();
 
-        // 쥐와 똑같이 '3'번 키를 누르면 딜레이를 거친 뒤 행동 실행
+        // 테스트용 키 입력 (필요에 따라 유지 또는 삭제)
         if (!isActing && (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)))
         {
-            StartCoroutine(ActionWithDelay(2.0f)); // 2초 동안 머리 위 아이콘을 인지할 시간 부여
+            StartCoroutine(ActionWithDelay(2.0f)); 
         }
     }
 
     // 지정한 시간 동안 대기했다가 고스트의 의도 행동을 실행하는 코루틴
     private IEnumerator ActionWithDelay(float delayTime)
     {
-        // 플레이어가 머리 위의 의도(칼/갑옷 아이콘)를 볼 수 있도록 잠시 대기
         yield return new WaitForSeconds(delayTime);
-
-        // 부모 클래스에 정의된 행동 실행 함수 호출 (모션 종료 후 다음 의도로 자동 갱신됨)
         ExecuteAction();
     }
 
@@ -45,12 +42,9 @@ public class GhostController : EnemyBase
     {
         while (true)
         {
-            // 행동 중이 아닐 때만 은은하게 깜빡임
             if (!isActing)
             {
-                // 서서히 투명해지기 (알파 0.4까지)
                 yield return StartCoroutine(FadeAlpha(spriteRenderer.color.a, 0.4f, 1.0f));
-                // 서서히 선명해지기 (알파 1.0까지)
                 yield return StartCoroutine(FadeAlpha(spriteRenderer.color.a, 1.0f, 1.0f));
             }
             yield return null;
@@ -65,7 +59,6 @@ public class GhostController : EnemyBase
 
         while (timer < duration)
         {
-            // 행동 중에는 아이들 페이드를 잠시 멈추고 고유 모션의 알파 제어에 양보
             if (isActing) yield break;
 
             timer += Time.deltaTime;
@@ -76,13 +69,11 @@ public class GhostController : EnemyBase
         spriteRenderer.color = new Color(color.r, color.g, color.b, endAlpha);
     }
 
-    // 고스트만의 고유 공격 모션: 완전히 투명해져서 파고들었다가 덮치기
+    // 고스트만의 고유 공격 모션
     protected override IEnumerator PlayCustomAttack()
     {
-        // 1. 완전히 투명해지면서 시야에서 사라짐
         yield return StartCoroutine(ChangeAlphaInstant(0f, 0.2f));
 
-        // 2. 투명한 상태로 플레이어 쪽(왼쪽)으로 스윽 이동
         Vector3 targetPos = originalPosition + new Vector3(-3.5f, 0, 0);
         float timer = 0;
         float moveDuration = 0.3f;
@@ -95,10 +86,8 @@ public class GhostController : EnemyBase
         }
         transform.position = targetPos;
 
-        // 3. 플레이어 코앞에서 다시 선명하게 나타나며(페이드 인) 일격 찌르기
         yield return StartCoroutine(ChangeAlphaInstant(1f, 0.2f));
 
-        // 살짝 덮치는 타격 진동
         float strikeTimer = 0;
         while (strikeTimer <= 0.15f)
         {
@@ -107,7 +96,6 @@ public class GhostController : EnemyBase
             yield return null;
         }
 
-        // 4. 원래 위치로 돌아오기
         timer = 0;
         while (timer <= 0.3f)
         {
@@ -119,10 +107,9 @@ public class GhostController : EnemyBase
         transform.position = originalPosition;
     }
 
-    // 고스트만의 고유 방어 모션: 영체 장막을 두르며 투명한 방어 태세 취하기
+    // 고스트만의 고유 방어 모션
     protected override IEnumerator PlayCustomDefend()
     {
-        // 1. 제자리에서 위로 살짝 떠오르며 푸른빛/영체 형태로 변환 (반투명화)
         Vector3 floatPos = originalPosition + new Vector3(0, 0.8f, 0);
         float timer = 0;
         
@@ -133,17 +120,14 @@ public class GhostController : EnemyBase
             yield return null;
         }
 
-        // 몸이 유령 장막처럼 옅어짐 (알파 0.3)
         yield return StartCoroutine(ChangeAlphaInstant(0.3f, 0.2f));
 
-        // 2. 장막을 유지하며 영롱하게 떨리는 연출
         float defendTimer = 0;
         while (defendTimer <= 0.4f)
         {
             float floatOffset = Mathf.Sin(defendTimer * 20f) * 0.1f;
             transform.position = floatPos + new Vector3(0, floatOffset, 0);
             
-            // 크기도 살짝 커졌다가 돌아오는 부유감
             float scaleBounce = baseScale + Mathf.Sin(defendTimer * 15f) * 0.05f;
             transform.localScale = new Vector3(scaleBounce, scaleBounce, scaleBounce);
 
@@ -151,7 +135,6 @@ public class GhostController : EnemyBase
             yield return null;
         }
 
-        // 3. 원래 위치, 투명도, 크기로 복귀
         yield return StartCoroutine(ChangeAlphaInstant(1f, 0.2f));
 
         timer = 0;
