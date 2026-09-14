@@ -5,6 +5,9 @@ public class DeckManager : MonoBehaviour
 {
     public static DeckManager Instance { get; private set; }
 
+    //노드 시드 기반 셔플 난수 생성기
+    System.Random shuffleRng;
+
     public bool IsDeckInitialized { get; set; } = false;
 
     // 형용사 카드 더미
@@ -33,7 +36,15 @@ public class DeckManager : MonoBehaviour
             Destroy(gameObject); // 이미 존재하면 새로 만들어진 것은 파괴
         }
     }
-    
+
+    public void Start()
+    {
+        int nodeSeed = GameFlowData.currentNodeSeed;
+
+        // 몬스터나 카드 보상 시드와 겹치지 않도록 보상 전용 오프셋 부여
+        shuffleRng = new System.Random(nodeSeed + 3);
+    }
+
     public void InitializeDeck(List<int> adjectiveIds, List<int> gerundIds)
     {
         AdjectiveDrawPile.Clear(); // 혹시 모를 기존 카드 초기화
@@ -61,7 +72,7 @@ public class DeckManager : MonoBehaviour
     {
         for (int i = 0; i < list.Count; i++)
         {
-            int rnd = Random.Range(i, list.Count);
+            int rnd = shuffleRng.Next(i, list.Count);
             ICard temp = list[rnd];
             list[rnd] = list[i];
             list[i] = temp;

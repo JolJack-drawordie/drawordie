@@ -30,7 +30,7 @@ public class MapNodeManager : MonoBehaviour
         }
     }
 
-    /// <summary>
+    /// <summary>   
     /// 맵 진입 시 활성화할 노드 결정
     /// </summary>
     void InitializeNodes()

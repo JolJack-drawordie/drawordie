@@ -6,6 +6,9 @@ public class DiceManager : MonoBehaviour
 {
     public static DiceManager Instance;
 
+    //노드 시드 기반 주사위 난수 생성기
+    System.Random diceRng;
+
     [Header("에너지 설정")]
     public int baseEnergy = 3;
     public int diceValue;
@@ -49,6 +52,11 @@ public class DiceManager : MonoBehaviour
     {
         if (diceImageObject != null) diceImageObject.SetActive(false); 
         if (rollDiceButton != null) rollDiceButton.onClick.AddListener(OnClickRollButton);
+
+        int nodeSeed = GameFlowData.currentNodeSeed;
+
+        // 몬스터나 카드 보상 시드와 겹치지 않도록 보상 전용 오프셋 부여
+        diceRng = new System.Random(nodeSeed + 4);
     }
 
     public void ShowRollButton()
@@ -79,7 +87,7 @@ public class DiceManager : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
-        diceValue = Random.Range(1, 7);
+        diceValue = diceRng.Next(1, 7);
 
         CurrentEnergy = baseEnergy + diceValue;
         
