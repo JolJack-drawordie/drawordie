@@ -22,7 +22,7 @@ public class BattleFactory : MonoBehaviour
     { 
         // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
         int nodeSeed = GameFlowData.currentNodeSeed;
-        System.Random seedGenerator = new System.Random(nodeSeed);
+        System.Random seedGenerator = new System.Random(nodeSeed + 1);
 
         monsterSpawnSeed = seedGenerator.Next();
     }
