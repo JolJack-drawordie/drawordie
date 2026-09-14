@@ -601,8 +601,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3379029250519213504}
   - component: {fileID: 1914549386018566190}
-  - component: {fileID: 5850782222835383469}
-  - component: {fileID: -3696138251993397976}
+  - component: {fileID: 2935605740277122409}
+  - component: {fileID: 2393504853071331537}
   m_Layer: 0
   m_Name: sprite-sheet-64x64_8
   m_TagString: Untagged
@@ -685,7 +685,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &5850782222835383469
+--- !u!114 &2935605740277122409
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -694,17 +694,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7864592175776110295}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1005575697559b84eaf82a83a29c60a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 20dc7dcf0ef01924398963aca8d37bc6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  hpSlider: {fileID: 1235790576044121642}
-  hpText: {fileID: 3768922395150953100}
-  intentIcon: {fileID: 8196322337970411314}
-  attackSprite: {fileID: 21300000, guid: 4ad16adfdf2d1a441879a598de742eb6, type: 3}
-  defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
-  baseScale: 2
-  useKeyboardInput: 0
---- !u!114 &-3696138251993397976
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyUnit
+  attackPower: 4
+--- !u!114 &2393504853071331537
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -713,13 +707,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7864592175776110295}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c7a4d05d1cac124eae10d143e078225, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b0f0bd51a860114081e7a6fb607c757, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitBase
-  unitName: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlimeController
   maxHp: 30
-  currentHp: 0
-  maxShield: 30
-  currentShield: 0
-  hpBar: {fileID: 0}
-  shieldBar: {fileID: 0}
+  intentIcon: {fileID: 0}
+  attackSprite: {fileID: 0}
+  defendSprite: {fileID: 0}
+  baseScale: 2
+  intentCanvas: {fileID: 0}

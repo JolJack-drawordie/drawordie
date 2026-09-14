@@ -4,6 +4,9 @@ public class BattleFactory : MonoBehaviour
 {
     public static BattleFactory Instance;
 
+    //노드 시드 기반 몬스터 생성 시드
+    int monsterSpawnSeed;
+
     [Header("프리팹들")]
     public GameObject playerPrefab;
 
@@ -13,6 +16,15 @@ public class BattleFactory : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
+
+    private void Start()
+    { 
+        // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
+        int nodeSeed = GameFlowData.currentNodeSeed;
+        System.Random seedGenerator = new System.Random(nodeSeed + 1);
+
+        monsterSpawnSeed = seedGenerator.Next();
     }
 
     public GameObject SpawnPlayer(GameObject spawnPoint)
@@ -50,7 +62,8 @@ public class BattleFactory : MonoBehaviour
 
     public GameObject SpawnEnemy(GameObject spawnPoint)
     {
-        int seed = 555; // 스테이지 시드값 등
+        int seed = monsterSpawnSeed; // 몬스터 시드값
+        Debug.Log("몬스터 시드 : " + seed);
         int selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
 
         GameObject enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);

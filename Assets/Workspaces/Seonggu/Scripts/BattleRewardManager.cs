@@ -8,6 +8,9 @@ public class BattleRewardManager : MonoBehaviour
     // 싱글톤 인스턴스 (다른 스크립트에서 BattleRewardManager.Instance 로 쉽게 접근 가능)
     public static BattleRewardManager Instance { get; private set; }
 
+    // 노드 시드 기반 카드 보상 난수 생성기
+    System.Random rewardRng;
+
     [Header("UI References")]
     [SerializeField] private GameObject rewardCardPrefab;
     [SerializeField] private Transform rewardCardParent;
@@ -33,6 +36,14 @@ public class BattleRewardManager : MonoBehaviour
         {
             rewardUIPanel.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        int nodeSeed = GameFlowData.currentNodeSeed;
+
+        // 몬스터나 셔플 시드와 겹치지 않도록 보상 전용 오프셋 부여
+        rewardRng = new System.Random(nodeSeed + 2);
     }
 
     // [읽기 전용 프로퍼티] 내부에서는 자유롭게 쓰고, 외부에서는 함부로 수정 못 하게 막음
@@ -112,7 +123,7 @@ public class BattleRewardManager : MonoBehaviour
 
         for (int i = 0; i < targetCount; i++)
         {
-            int randomIndex = Random.Range(0, poolCopy.Count);
+            int randomIndex = rewardRng.Next(0, poolCopy.Count);
             selected.Add(poolCopy[randomIndex]);
             poolCopy.RemoveAt(randomIndex); // 중복 뽑기 방지
         }

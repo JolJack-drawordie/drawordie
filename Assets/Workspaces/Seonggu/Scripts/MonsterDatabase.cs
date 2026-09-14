@@ -53,6 +53,9 @@ public class MonsterDatabase : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // 씬이 넘어가도 파괴되지 않음
+
+            // 프리팹 리스트가 비어있다면 Resources 폴더에서 자동으로 로드 및 매핑
+            AutoPopulatePrefabs();
         }
         else
         {
@@ -63,6 +66,47 @@ public class MonsterDatabase : MonoBehaviour
     private void Start()
     {
         StartCoroutine(LoadServerDataFromJson());
+    }
+
+    // Resources/Monsters 폴더에서 프리팹을 자동으로 스캔해 맵핑하는 함수
+    private void AutoPopulatePrefabs()
+    {
+        if (prefabList == null)
+        {
+            prefabList = new List<MonsterPrefabInfo>();
+        }
+
+        // 이미 인스펙터에서 수동으로 등록해 둔 게 있다면 중복 방지를 위해 스킵하거나 보완 가능
+        if (prefabList.Count > 0) return;
+
+        // "Resources/Monsters" 경로에 있는 모든 GameObject 프리팹 로드
+        GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("Monsters");
+
+        foreach (var prefab in loadedPrefabs)
+        {
+            foreach (MonsterType type in System.Enum.GetValues(typeof(MonsterType)))
+            {
+                string typeName = type.ToString(); // 예: "Slime"
+
+                // 프리팹 이름에 타입 이름이 포함되어 있거나, 해당 컨트롤러 컴포넌트가 붙어있는지 확인
+                bool isMatch = prefab.name.Contains(typeName) ||
+                               prefab.GetComponent(typeName + "Controller") != null;
+
+                if (isMatch)
+                {
+                    // 중복 등록 방지
+                    if (!prefabList.Exists(x => x.monsterType == type))
+                    {
+                        prefabList.Add(new MonsterPrefabInfo
+                        {
+                            monsterType = type,
+                            monsterPrefab = prefab
+                        });
+                        Debug.Log($"[자동 매핑 완료] MonsterType: {type} -> Prefab: {prefab.name}");
+                    }
+                }
+            }
+        }
     }
 
     // 프리팹을 가져오는 함수
