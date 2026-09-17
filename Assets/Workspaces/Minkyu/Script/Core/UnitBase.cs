@@ -83,4 +83,14 @@ public class UnitBase : MonoBehaviour
     {
         return statData.currentHp <= 0;
     }
+
+    // ⭐ [로드 기능] 신규 메서드
+    // 세이브 로드 시 저장된 체력/쉴드로 복원
+    public void RestoreState(int hp, int shield)
+    {
+        statData.currentHp = hp;
+        statData.currentShield = shield;
+
+        UpdateBarUI();
+    }
 }

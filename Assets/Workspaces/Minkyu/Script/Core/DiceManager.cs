@@ -107,4 +107,11 @@ public class DiceManager : MonoBehaviour
         CurrentEnergy -= amount;
         if (CurrentEnergy < 0) CurrentEnergy = 0;
     }
+
+    // ⭐ [로드 기능] 신규 메서드
+    // 세이브 로드 시 주사위를 다시 굴리지 않고 저장된 코스트를 그대로 복원
+    public void SetCurrentEnergy(int amount)
+    {
+        CurrentEnergy = amount;
+    }
 }

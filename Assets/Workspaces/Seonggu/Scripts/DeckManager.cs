@@ -62,6 +62,67 @@ public class DeckManager : MonoBehaviour
             GerundDrawPile.Add(new GerundCard(data));
         }
     }
+    // ⭐ [로드 기능] 신규 메서드 3개 (LoadDeckState / FillPileFromSave / CreateCardFromSave)
+    // 세이브 로드 시 저장된 덱 상태(더미/버린덱/손패/슬롯)를 그대로 복원
+    public void LoadDeckState(string deckDataJson)
+    {
+        AdjectiveDrawPile.Clear();
+        AdjectiveDiscardPile.Clear();
+        GerundDrawPile.Clear();
+        GerundDiscardPile.Clear();
+        Hand.Clear();
+        AdjectiveSlot = null;
+        GerundSlot = null;
+
+        if (!string.IsNullOrEmpty(deckDataJson))
+        {
+            DeckSaveData saved = JsonUtility.FromJson<DeckSaveData>(deckDataJson);
+
+            FillPileFromSave(AdjectiveDrawPile, saved.adjectiveDrawPile);
+            FillPileFromSave(AdjectiveDiscardPile, saved.adjectiveDiscardPile);
+            FillPileFromSave(GerundDrawPile, saved.gerundDrawPile);
+            FillPileFromSave(GerundDiscardPile, saved.gerundDiscardPile);
+            FillPileFromSave(Hand, saved.hand);
+
+            // 슬롯에 장착 중이던 카드는 UI 슬롯 복원 없이 손패로 되돌려서 잃어버리지 않게 함
+            if (saved.hasAdjectiveSlotCard && saved.adjectiveSlotCard != null)
+                Hand.Add(CreateCardFromSave(saved.adjectiveSlotCard));
+
+            if (saved.hasGerundSlotCard && saved.gerundSlotCard != null)
+                Hand.Add(CreateCardFromSave(saved.gerundSlotCard));
+        }
+
+        IsDeckInitialized = true;
+    }
+
+    private void FillPileFromSave(List<ICard> target, List<CardSaveData> source)
+    {
+        if (source == null) return;
+
+        foreach (CardSaveData cardData in source)
+        {
+            ICard card = CreateCardFromSave(cardData);
+            if (card != null) target.Add(card);
+        }
+    }
+
+    private ICard CreateCardFromSave(CardSaveData cardData)
+    {
+        if (cardData.type == CardType.Adjective)
+        {
+            var data = DataManager.Instance.adjectiveTable[cardData.id];
+            return new AdjectiveCard(data);
+        }
+        else if (cardData.type == CardType.Gerund)
+        {
+            var data = DataManager.Instance.gerundTable[cardData.id];
+            return new GerundCard(data);
+        }
+
+        Debug.LogWarning($"[DeckManager] 세이브 카드 타입을 알 수 없음: {cardData.type}");
+        return null;
+    }
+
     public void ShuffleDeck()
     {
         Shuffle(AdjectiveDrawPile);
