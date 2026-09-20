@@ -1668,6 +1668,112 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &601999190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 601999192}
+  - component: {fileID: 601999191}
+  m_Layer: 0
+  m_Name: SkillEffectManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &601999191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601999190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f5865f7ee06bbf4b80be7aad18fcd0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillEffectManager
+  adjectiveEffects:
+  - id: 101
+    name: Fire
+    effectPrefab: {fileID: 1229073937782193206, guid: 9823f8241ce798444a7d51ed0d252b9a, type: 3}
+  - id: 102
+    name: Cold
+    effectPrefab: {fileID: 8558445127854203614, guid: 35c17a2f042ed5844bda8d109e88d805, type: 3}
+  - id: 103
+    name: Holy
+    effectPrefab: {fileID: 9066269943565510331, guid: 7ff797e8f5205eb46a95ee7d50ee9088, type: 3}
+  - id: 104
+    name: Sharp
+    effectPrefab: {fileID: 6656298261158049392, guid: 9643a291eceb2804888a657b799bef10, type: 3}
+  - id: 105
+    name: Heavy
+    effectPrefab: {fileID: 4643436474513657080, guid: d87cdfe7cb4030242858b9679fb07545, type: 3}
+  - id: 106
+    name: Light
+    effectPrefab: {fileID: 3626259152316059793, guid: 8cb364e09697dcd43b410fe6ed742c66, type: 3}
+  - id: 107
+    name: Shield
+    effectPrefab: {fileID: 9066269943565510331, guid: 7ff797e8f5205eb46a95ee7d50ee9088, type: 3}
+  - id: 108
+    name: Poison
+    effectPrefab: {fileID: 6584003006090309931, guid: dc973d4384f7f4241bca79f4f44860c9, type: 3}
+  - id: 109
+    name: Speed
+    effectPrefab: {fileID: 278955762427743172, guid: 21f714f16c3988242a0829a0f5b5e0b1, type: 3}
+  - id: 110
+    name: Miracle
+    effectPrefab: {fileID: 3389122499625005953, guid: 75fd454ef8ef10f43bc7c1dcf54b9d2b, type: 3}
+  gerundEffects:
+  - id: 201
+    name: Slash
+    effectPrefab: {fileID: 2416475076854233113, guid: 71c2ec2fe739f9643ba8d102575213dc, type: 3}
+  - id: 202
+    name: Stab
+    effectPrefab: {fileID: 740717353066942422, guid: c6b9961c50b1c344b8ca3c3619ba8e69, type: 3}
+  - id: 203
+    name: Guard
+    effectPrefab: {fileID: 9066269943565510331, guid: 7ff797e8f5205eb46a95ee7d50ee9088, type: 3}
+  - id: 204
+    name: Heal
+    effectPrefab: {fileID: 251354863343553328, guid: 9958fc7fe53588b48843bbf7d7f9fa12, type: 3}
+  - id: 205
+    name: Beam
+    effectPrefab: {fileID: 335701130982456756, guid: 6f35ccbeb00794040ac4b65146c8fd7e, type: 3}
+  - id: 206
+    name: Crouch
+    effectPrefab: {fileID: 4537947546951756447, guid: 5141cb15b3547a648af567d818323d29, type: 3}
+  - id: 207
+    name: Throw
+    effectPrefab: {fileID: 2157581094552298791, guid: f84b59052d3295c4c816879a2fabebc3, type: 3}
+  - id: 208
+    name: MultiHit
+    effectPrefab: {fileID: 8011499988070143666, guid: d01b2bc613595994f976d54ca728e205, type: 3}
+  - id: 209
+    name: Rest
+    effectPrefab: {fileID: 8544434443688463031, guid: 7fbb7b8dbd54bdf42b2b5875fe14b8bf, type: 3}
+  - id: 210
+    name: Leap
+    effectPrefab: {fileID: 3121847219011696124, guid: f5fbdd99fba33c94cba4f486a2490313, type: 3}
+--- !u!4 &601999192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601999190}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 941.46735, y: 858.35895, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &621698173
 GameObject:
   m_ObjectHideFlags: 0
@@ -5012,3 +5118,4 @@ SceneRoots:
   - {fileID: 1826100313}
   - {fileID: 786873939}
   - {fileID: 1396051993}
+  - {fileID: 601999192}
