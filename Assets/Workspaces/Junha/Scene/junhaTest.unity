@@ -4602,6 +4602,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 896080cd5716b944cb0fe6e3741e7cd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DataManager
+  defaultAdjectiveIds: 
+  defaultGerundIds: 
   currentMana: 0
   diceResult: 0
   cardPrefab: {fileID: 4076577216169505300, guid: b8d97a279cce80d45a5d7ba6a1ad859d, type: 3}

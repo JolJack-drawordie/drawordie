@@ -8,7 +8,7 @@ public class CardSlot : MonoBehaviour
     public SlotType slotType;
     public bool isOccupied = false;
     public GameObject currentCard = null;
-    public string currentCardID;
+    public int currentCardID;
 
     private void Start()
     {
@@ -17,7 +17,7 @@ public class CardSlot : MonoBehaviour
         box.size = new Vector2(200, 300);
     }
 
-    public string GetCardID() { return currentCard == null ? null : currentCardID; }
+    public int GetCardID() { return currentCard == null ? -1 : currentCardID; }
 
     public bool CanAcceptCard(CardUI card)
     {
@@ -58,7 +58,7 @@ public class CardSlot : MonoBehaviour
     public void RemoveCard()
     {
         currentCard = null;
-        currentCardID = null;
+        currentCardID = -1;
         isOccupied = false;
         DeckManager.Instance.ClearSlot(slotType);
         ComboManager.Instance.OnSlotUpdated();

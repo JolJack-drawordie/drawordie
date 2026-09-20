@@ -52,13 +52,13 @@ public class DeckManager : MonoBehaviour
 
         foreach (int id in adjectiveIds)
         {
-            var data = CardDataManager.Instance.adjectiveTable[id];
+            var data = DataManager.Instance.adjectiveTable[id];
             AdjectiveDrawPile.Add(new AdjectiveCard(data));
         }
 
         foreach (int id in gerundIds)
         {
-            var data = CardDataManager.Instance.gerundTable[id];
+            var data = DataManager.Instance.gerundTable[id];
             GerundDrawPile.Add(new GerundCard(data));
         }
     }
