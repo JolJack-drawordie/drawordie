@@ -110,12 +110,12 @@ public class DeckManager : MonoBehaviour
     {
         if (cardData.type == CardType.Adjective)
         {
-            var data = DataManager.Instance.adjectiveTable[cardData.id];
+            var data = CardDataManager.Instance.adjectiveTable[int.Parse(cardData.id)];
             return new AdjectiveCard(data);
         }
         else if (cardData.type == CardType.Gerund)
         {
-            var data = DataManager.Instance.gerundTable[cardData.id];
+            var data = CardDataManager.Instance.gerundTable[int.Parse(cardData.id)];
             return new GerundCard(data);
         }
 
