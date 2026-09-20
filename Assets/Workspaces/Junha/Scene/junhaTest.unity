@@ -3956,6 +3956,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleFactory
   playerPrefab: {fileID: 4944560238511240866, guid: 9d79d20f0d831d043b77d238369b6647, type: 3}
+  bossPrefab: {fileID: 6090681860200693100, guid: 81e28f0ed86f31b43a1f47f30e837908, type: 3}
+  bossHp: 100
+  bossMaxShield: 30
 --- !u!4 &1826100313
 Transform:
   m_ObjectHideFlags: 0
