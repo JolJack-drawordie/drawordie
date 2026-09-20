@@ -108,10 +108,49 @@ public class UIManager : MonoBehaviour
 
     public void GoToMapAfterVictory()
     {
+        // 현재 클리어한 노드가 보스인지 확인
+        bool isBossNode =
+            GameFlowData.currentNodeType == MapNode.NodeType.Boss;
+
+        // 보스 노드 클리어
+        if (isBossNode)
+        {
+            // 마지막 Act의 보스를 클리어한 경우
+            if (GameFlowData.IsFinalAct())
+            {
+                Debug.Log("최종 보스 클리어! 게임 클리어!");
+
+                // 현재 결과 UI를 게임 클리어 화면으로 사용
+                if (rewardPanel != null)
+                    rewardPanel.SetActive(false);
+
+                if (resultPanel != null)
+                    resultPanel.SetActive(true);
+
+                if (resultText != null)
+                    resultText.text = "Game Clear!";
+
+                return;
+            }
+
+            // Act 1 또는 Act 2의 보스 클리어
+            Debug.Log(
+                $"Act {GameFlowData.currentAct} 클리어! " +
+                "다음 Act로 이동합니다."
+            );
+
+            GameFlowData.MoveToNextAct();
+        }
+
+        // 일반 노드 또는 엘리트 노드 클리어
         GameFlowData.clearedNodeLevel++;
+
+        // 다음 Act 또는 현재 Act의 맵으로 이동
         SceneManager.LoadScene("MapScene");
+
         // 배경 음악 정지
-        if (SoundManager.Instance != null) {
+        if (SoundManager.Instance != null)
+        {
             SoundManager.Instance.StopBGM();
         }
     }
