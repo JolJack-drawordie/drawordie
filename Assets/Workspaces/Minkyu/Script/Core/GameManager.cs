@@ -32,7 +32,17 @@ public class GameManager : MonoBehaviour
         currentState = BattleState.BattleStart;
         Debug.Log("전투 시작!");
 
-        DeckManager.Instance.ShuffleDeck();
+        // ⭐ [로드 기능] 추가 시작
+        if (PendingLoadData.isPending)
+        {
+            // 로드된 게임: 저장된 덱 상태(순서 포함)를 그대로 복원, 새로 섞지 않음
+            DeckManager.Instance.LoadDeckState(PendingLoadData.deckDataJson);
+        }
+        else
+        {
+            DeckManager.Instance.ShuffleDeck();
+        }
+        // ⭐ [로드 기능] 추가 끝
 
         if (BattleFactory.Instance != null)
         {
@@ -46,10 +56,32 @@ public class GameManager : MonoBehaviour
                 currentEnemy = enemyObj.GetComponent<EnemyUnit>();
 
             Debug.Log($"생성 완료 - Player: {currentPlayer}, Enemy: {currentEnemy}");
+
+            // ⭐ [로드 기능] 추가
+            if (PendingLoadData.isPending)
+            {
+                RestoreLoadedUnitState();
+            }
         }
         else
         {
             Debug.LogError("씬에 BattleFactory가 없습니다!");
+        }
+    }
+
+    // ⭐ [로드 기능] 신규 메서드
+    // 로드된 게임: 플레이어/몬스터의 저장된 체력·쉴드로 덮어씀 (몬스터 종류/최대치는 nodeSeed로 이미 동일하게 재생성됨)
+    private void RestoreLoadedUnitState()
+    {
+        if (currentPlayer != null)
+        {
+            currentPlayer.RestoreState(PendingLoadData.hp, PendingLoadData.shield);
+        }
+
+        if (currentEnemy != null && !string.IsNullOrEmpty(PendingLoadData.monsterDataJson))
+        {
+            MonsterSaveData monsterSave = JsonUtility.FromJson<MonsterSaveData>(PendingLoadData.monsterDataJson);
+            currentEnemy.RestoreState(monsterSave.currentHp, monsterSave.currentShield);
         }
     }
 
