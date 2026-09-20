@@ -15,7 +15,9 @@ public class DataManager : MonoBehaviour
 
     [Header("카드 패(Hand) 시스템")]
     public GameObject cardPrefab;
+    public GameObject previewCardPrefab;
     public Transform handArea;
+    public Transform resultCard;
 
     // 1920x1080 해상도 기준 부채꼴 레이아웃
     public float cardSpacing = 200f;
@@ -178,11 +180,33 @@ public class DataManager : MonoBehaviour
     public void AddSynergyCardToHand(Combination comboData)
     {
         GameObject newCard = Instantiate(cardPrefab, handArea);
+
         CardUI ui = newCard.GetComponent<CardUI>();
         ICard cardModel = new CombinationCard(comboData);
         ui.SetCardData(cardModel);
         
         RearrangeHand();
+    }
+
+    public void CombinationPreview(Combination comboData)
+    {
+        ClearPreview();
+
+        GameObject newCard = Instantiate(previewCardPrefab, resultCard);
+
+        ICard cardModel = new CombinationCard(comboData);
+
+        PreviewCardUI cardUI = newCard.GetComponent<PreviewCardUI>();
+        cardUI.Setup(cardModel);
+
+    }
+
+    public void ClearPreview()
+    {
+        foreach (Transform child in resultCard)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     public void RearrangeHand()
