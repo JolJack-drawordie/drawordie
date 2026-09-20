@@ -8,7 +8,7 @@ public class CardDataManager : MonoBehaviour
 {
     public static CardDataManager Instance { get; private set; }
     public bool isDataLoaded { get; private set; } = false; // 상태 변수
-    public event Action OnDataLoaded; // 이벤트
+    public event Action OnDataLoaded; // 이벤트  
 
     public Dictionary<int, Adjective> adjectiveTable = new Dictionary<int, Adjective>();
     public Dictionary<int, Gerund> gerundTable = new Dictionary<int, Gerund>();
