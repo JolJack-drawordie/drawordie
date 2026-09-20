@@ -4,10 +4,10 @@ using System.Collections.Generic;
 [Serializable]
 public class CardSaveData
 {
-    public int id;
+    public string id;
     public CardType type;
 
-    public CardSaveData(int id, CardType type)
+    public CardSaveData(string id, CardType type)
     {
         this.id = id;
         this.type = type;

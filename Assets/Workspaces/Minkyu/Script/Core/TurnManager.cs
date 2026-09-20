@@ -23,25 +23,25 @@ public class TurnManager : MonoBehaviour
     private void Start()
     {
 
-        if (DataManager.Instance.isDataLoaded)
+        if (CardDataManager.Instance.isDataLoaded)
         {
             StartGame();
         }
         else
         {
-            DataManager.Instance.OnDataLoaded += StartGame;
+            CardDataManager.Instance.OnDataLoaded += StartGame;
         }
     }
 
     private void StartGame()
     {
-        DataManager.Instance.OnDataLoaded -= StartGame;
+        CardDataManager.Instance.OnDataLoaded -= StartGame;
 
         // ⭐ [로드 기능] 조건 추가 (원래는 !DeckManager.Instance.IsDeckInitialized 만 있었음)
         // 로드된 게임이면 저장된 덱으로 복원되므로 기본 덱 초기화는 건너뜀 (GameManager.StartBattle에서 처리)
         if (!PendingLoadData.isPending && !DeckManager.Instance.IsDeckInitialized)
         {
-            DeckManager.Instance.InitializeDeck(DataManager.Instance.defaultAdjectiveIds, DataManager.Instance.defaultGerundIds);
+            DeckManager.Instance.InitializeDeck(CardDataManager.Instance.defaultAdjectiveIds, CardDataManager.Instance.defaultGerundIds);
             DeckManager.Instance.IsDeckInitialized = true; // "이제 초기화 끝났다"고 체크 박아둠
         }
         // 배경 음악
