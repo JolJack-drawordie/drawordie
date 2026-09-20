@@ -39,3 +39,21 @@ public class MonsterSaveData
     public int currentShield;
     public int maxShield;
 }
+
+// ⭐ [로드 기능] 신규 추가
+// 서버 GameSave 엔티티 응답(JSON)을 그대로 받기 위한 DTO
+[Serializable]
+public class GameSaveDto
+{
+    public long userId;
+    public int masterSeed;
+    public int mapSeed;
+    public int nodeSeed;
+    public int currentHp;
+    public int currentShield;
+    public int currentCost;
+    public string deckData;
+    public string monsterData;
+    public int currentFloor;
+    public int currentIndex;
+}

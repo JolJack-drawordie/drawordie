@@ -47,12 +47,6 @@ public class SaveManager : MonoBehaviour
     private IEnumerator SaveGameRoutine()
     {
         // -----------------------------
-        // 턴 수
-        // -----------------------------
-        TurnManager turnManager = FindFirstObjectByType<TurnManager>();
-        int turnCount = turnManager != null ? turnManager.turnCount : 0;
-
-        // -----------------------------
         // 플레이어 체력 / 실드
         // -----------------------------
         PlayerUnit player =
@@ -130,7 +124,6 @@ public class SaveManager : MonoBehaviour
         form.AddField("masterSeed", GameFlowData.masterSeed);
         form.AddField("mapSeed", GameFlowData.mapSeed);
         form.AddField("nodeSeed", GameFlowData.currentNodeSeed);
-        form.AddField("turnCount", turnCount);
         form.AddField("hp", playerCurrentHp);
         form.AddField("shield", playerCurrentShield);
         form.AddField("cost", currentCost);

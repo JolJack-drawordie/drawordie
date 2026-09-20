@@ -62,6 +62,17 @@ public class LobbyManager : MonoBehaviour
     public void OnLordGameClick()
     {
         Debug.Log("[LobbyManager] LordGame 클릭됨");
+
+        // ⭐ [로드 기능] 추가
+        if (LoadManager.Instance != null)
+        {
+            LoadManager.Instance.LoadGame();
+        }
+        else
+        {
+            Debug.LogWarning("[LobbyManager] LoadManager를 찾을 수 없습니다.");
+        }
+        // ⭐ [로드 기능] 끝
     }
 
     public void OnSettingsClick()

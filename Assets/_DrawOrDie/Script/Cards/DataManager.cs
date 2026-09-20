@@ -42,6 +42,25 @@ public class DataManager : MonoBehaviour
         foreach (Transform child in handArea) Destroy(child.gameObject);
     }
 
+    // ⭐ [로드 기능] 신규 메서드
+    // 세이브 로드 시 이미 복원된 손패(Hand) 데이터로 카드 UI만 다시 생성
+    public void RestoreHand(List<ICard> hand)
+    {
+        ClearHand();
+
+        foreach (ICard card in hand)
+        {
+            GameObject newCard = Instantiate(cardPrefab, handArea);
+            CardUI ui = newCard.GetComponent<CardUI>();
+            ui.SetCardData(card);
+
+            RectTransform rect = newCard.GetComponent<RectTransform>();
+            SpawnAtDeckPile(rect);
+        }
+
+        RearrangeHand();
+    }
+
     IEnumerator FetchAndDrawCards()
     {
         ClearHand();
