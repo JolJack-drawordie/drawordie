@@ -73,7 +73,7 @@ public class GerundList
 
 public interface ICard
 {
-    int Id { get; }
+    string Id { get; }
     CardType Type { get; } // "Adjective", "Gerund", "Combination" 등 구분용
 
     // UI 표시용
@@ -103,7 +103,7 @@ public class AdjectiveCard : ICard
         return _data;
     }
 
-    public int Id => _data.id; // 서버 ID가 int라면 .ToString() 사용
+    public string Id => _data.id.ToString(); // 서버 ID가 int라면 .ToString() 사용
     public CardType Type => CardType.Adjective;
     public string Name => _data.name;
     public int Cost => _data.costMod;
@@ -133,7 +133,7 @@ public class GerundCard : ICard
         return _data;
     }
 
-    public int Id => _data.id;
+    public string Id => _data.id.ToString();
     public CardType Type => CardType.Gerund;
     public string Name => _data.name;
     public int Cost => _data.baseCost;
@@ -141,6 +141,36 @@ public class GerundCard : ICard
     public int Damage => _data.baseDmg;
     public int Shield => _data.baseShd;
     public int Heal => _data.baseHeal;
+
+    public void Play()
+    {
+        // 동명사 카드만의 로직
+        Debug.Log($"{Name} 카드 사용! 효과 발동.");
+    }
+}
+
+public class CombinationCard : ICard
+{
+    private Combination _data;
+
+    public CombinationCard(Combination data)
+    {
+        _data = data;
+    }
+
+    public Combination GetData()
+    {
+        return _data;
+    }
+
+    public string Id => _data.combinationId;
+    public CardType Type => CardType.Synergy;
+    public string Name => _data.skillName;
+    public int Cost => _data.finalCost;
+    public string Description => _data.description;
+    public int Damage => _data.finalDamage;
+    public int Shield => _data.finalShield;
+    public int Heal => _data.finalHeal;
 
     public void Play()
     {

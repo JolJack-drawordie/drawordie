@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public ICard cardData;
-    public int CardID; // 홍성구 추가 : 카드 id 추가
+    public string CardID; // 홍성구 추가 : 카드 id 추가
     
     // 추가된 카드 속성
     public CardType cardType;
@@ -39,7 +39,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     // 홍성구 수정 : 카드 id 추가 (카드 타입, 실제 비용, 데미지도 함께 받도록 수정)
-    public void Setup(int id, string name, string cost, string desc, CardType type, int actualCost, int actualDamage, int actualShield, int actualHeal) 
+    public void Setup(string id, string name, string cost, string desc, CardType type, int actualCost, int actualDamage, int actualShield, int actualHeal) 
     {
         CardID = id; 
         nameText.text = name;

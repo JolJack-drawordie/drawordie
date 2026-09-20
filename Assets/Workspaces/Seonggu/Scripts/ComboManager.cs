@@ -45,8 +45,8 @@ public class ComboManager : MonoBehaviour
 
     void TryCombination()
     {
-        int adjCardID = adjSlot.GetCardID();
-        int gerCardID = gerSlot.GetCardID();
+        string adjCardID = adjSlot.GetCardID();
+        string gerCardID = gerSlot.GetCardID();
 
         Combination result = Combine(adjCardID, gerCardID);
 
@@ -65,7 +65,7 @@ public class ComboManager : MonoBehaviour
         }
     }
 
-    public Combination Combine(int slotAdjID, int slotGerID)
+    public Combination Combine(string slotAdjID, string slotGerID)
     {
         string searchKey = $"{slotAdjID}_{slotGerID}";
         if (comboTable.TryGetValue(searchKey, out Combination result)) return result;
