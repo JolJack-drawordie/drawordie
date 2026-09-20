@@ -34,6 +34,14 @@ public class EnemyTarget : MonoBehaviour
     // 방어 행동 추가
     private IEnumerator ActionSequence(CardUI card)
     {
+        if (card.AdjectiveId != 0 && card.GerundId != 0 && SkillEffectManager.Instance != null)
+        {
+            Vector3 effectPosition = card.Damage > 0 || GameManager.Instance.Player == null
+                ? transform.position
+                : GameManager.Instance.Player.transform.position;
+            SkillEffectManager.Instance.PlaySkillEffect(card.AdjectiveId, card.GerundId, effectPosition);
+        }
+
         if(card.Damage > 0)
         {
             if (PlayerController.Instance != null)

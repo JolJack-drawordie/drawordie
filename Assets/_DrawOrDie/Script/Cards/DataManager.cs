@@ -221,8 +221,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject newCard = Instantiate(cardPrefab, handArea);
         CardUI ui = newCard.GetComponent<CardUI>();
-        ui.Setup(0, comboData.skillName, comboData.finalCost.ToString(), 
-                 comboData.description, CardType.Synergy, comboData.finalCost, comboData.finalDamage, comboData.finalShield, comboData.finalHeal);
+        ui.SetupCombination(comboData);
         RearrangeHand();
     }
 
