@@ -1,135 +1,117 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillEffectManager : MonoBehaviour
 {
     public static SkillEffectManager Instance;
-    private const int EffectLayer = 31;
-
-    private RenderTexture effectTexture;
 
     [System.Serializable]
-    public struct EffectData
+    public class EffectData
     {
-        public int id;                  // adjectiveId 또는 gerundId (예: 101, 201)
-        public string name;            // 에디터 식별용 이름 (예: "101_불타는", "201_베기")
-        public GameObject effectPrefab;// 재생할 파티클 프리팹
+        public int id;
+        public string name;
+        public GameObject effectPrefab;
     }
 
     [Header("형용사(속성) 이펙트 리스트 (101~110)")]
-    public List<EffectData> adjectiveEffects;
+    public List<EffectData> adjectiveEffects = new List<EffectData>();
 
     [Header("동명사(동작) 이펙트 리스트 (201~210)")]
-    public List<EffectData> gerundEffects;
+    public List<EffectData> gerundEffects = new List<EffectData>();
 
-    private Dictionary<int, GameObject> adjectiveDict;
-    private Dictionary<int, GameObject> gerundDict;
+    private Dictionary<int, GameObject> adjectiveDict = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> gerundDict = new Dictionary<int, GameObject>();
+
+    // 기본 슬라임 타격 위치 지정 (X: 4.93, Y: -1.73, Z: -1)
+    private readonly Vector3 defaultSlimePosition = new Vector3(4.93f, -1.73f, -1f);
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
         {
             Destroy(gameObject);
             return;
         }
 
-        // 딕셔너리 동기화로 빠른 검색
-        adjectiveDict = new Dictionary<int, GameObject>();
-        foreach (var item in adjectiveEffects)
-        {
-            if (item.effectPrefab != null && !adjectiveDict.ContainsKey(item.id))
-                adjectiveDict.Add(item.id, item.effectPrefab);
-        }
-
-        gerundDict = new Dictionary<int, GameObject>();
-        foreach (var item in gerundEffects)
-        {
-            if (item.effectPrefab != null && !gerundDict.ContainsKey(item.id))
-                gerundDict.Add(item.id, item.effectPrefab);
-        }
-
-        SetupEffectOverlay();
+        InitDictionaries();
     }
 
-    private void SetupEffectOverlay()
+    private void InitDictionaries()
     {
-        Camera mainCamera = Camera.main;
-        Canvas canvas = GameObject.Find("Canvas")?.GetComponent<Canvas>();
-        if (mainCamera == null || canvas == null)
+        adjectiveDict.Clear();
+        foreach (var data in adjectiveEffects)
         {
-            Debug.LogError("[SkillEffectManager] Main Camera or Canvas was not found.");
-            return;
+            if (data.effectPrefab != null && !adjectiveDict.ContainsKey(data.id))
+            {
+                adjectiveDict.Add(data.id, data.effectPrefab);
+            }
         }
 
-        // ponytail: layer 31 is currently unused; reserve a named layer if layer policy grows.
-        mainCamera.cullingMask &= ~(1 << EffectLayer);
-
-        GameObject cameraObject = new GameObject("SkillEffectCamera");
-        cameraObject.transform.SetParent(mainCamera.transform, false);
-        Camera effectCamera = cameraObject.AddComponent<Camera>();
-        effectCamera.CopyFrom(mainCamera);
-        effectCamera.clearFlags = CameraClearFlags.SolidColor;
-        effectCamera.backgroundColor = Color.clear;
-        effectCamera.cullingMask = 1 << EffectLayer;
-
-        effectTexture = new RenderTexture(Screen.width, Screen.height, 16, RenderTextureFormat.ARGB32)
+        gerundDict.Clear();
+        foreach (var data in gerundEffects)
         {
-            name = "SkillEffectTexture"
-        };
-        effectTexture.Create();
-        effectCamera.targetTexture = effectTexture;
-
-        GameObject overlay = new GameObject("SkillEffectOverlay", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
-        RectTransform rect = overlay.GetComponent<RectTransform>();
-        rect.SetParent(canvas.transform, false);
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
-
-        RawImage image = overlay.GetComponent<RawImage>();
-        image.texture = effectTexture;
-        image.raycastTarget = false;
-        overlay.transform.SetAsLastSibling();
+            if (data.effectPrefab != null && !gerundDict.ContainsKey(data.id))
+            {
+                gerundDict.Add(data.id, data.effectPrefab);
+            }
+        }
     }
 
     /// <summary>
-    /// 서버에서 받은 adjectiveId와 gerundId로 이펙트 합성 재생
+    /// 스킬 이펙트를 재생합니다.
+    /// 별도 좌표 지정이 없거나 UI 좌표가 오면 슬라임 위치(4.93, -1.73, -1)에서 터집니다.
     /// </summary>
-    public void PlaySkillEffect(int adjectiveId, int gerundId, Vector3 targetPosition)
+    public void PlaySkillEffect(int adjectiveId, int gerundId, Vector3 targetPosition = default)
     {
-        PlayEffect(adjectiveDict, adjectiveId, targetPosition);
-        PlayEffect(gerundDict, gerundId, targetPosition);
-    }
-
-    private void PlayEffect(Dictionary<int, GameObject> effects, int id, Vector3 position)
-    {
-        if (!effects.TryGetValue(id, out GameObject prefab))
+        if (targetPosition == default || Mathf.Abs(targetPosition.x) > 100f || Mathf.Abs(targetPosition.y) > 100f)
         {
-            Debug.LogWarning($"[SkillEffectManager] Effect ID {id} is not configured.");
-            return;
+            targetPosition = defaultSlimePosition;
+        }
+        else
+        {
+            targetPosition.z = -1f;
         }
 
-        GameObject effect = Instantiate(prefab, position, Quaternion.identity);
-        SetLayer(effect.transform, EffectLayer);
-        foreach (ParticleSystem particle in effect.GetComponentsInChildren<ParticleSystem>(true))
-            particle.Play(true);
-
-        Destroy(effect, 2.5f);
+        StartCoroutine(RoutinePlayCombinedEffect(adjectiveId, gerundId, targetPosition));
     }
 
-    private static void SetLayer(Transform root, int layer)
+    private IEnumerator RoutinePlayCombinedEffect(int adjectiveId, int gerundId, Vector3 targetPosition)
     {
-        root.gameObject.layer = layer;
-        foreach (Transform child in root)
-            SetLayer(child, layer);
+        // 1. 동작(동명사) 이펙트
+        if (gerundDict.TryGetValue(gerundId, out GameObject gerundPrefab))
+        {
+            GameObject gerundInstance = Instantiate(gerundPrefab, targetPosition, Quaternion.identity);
+            SetSortingOrderHigh(gerundInstance);
+
+            // 0.5초 뒤 자동 삭제
+            Destroy(gerundInstance, 2.5f);
+        }
+
+        yield return new WaitForSeconds(0.05f);
+
+        // 2. 속성(형용사) 이펙트
+        if (adjectiveDict.TryGetValue(adjectiveId, out GameObject adjPrefab))
+        {
+            GameObject adjInstance = Instantiate(adjPrefab, targetPosition, Quaternion.identity);
+            SetSortingOrderHigh(adjInstance);
+
+            // 0.5초 뒤 자동 삭제
+            Destroy(adjInstance, 0.5f);
+        }
     }
 
-    private void OnDestroy()
+    private void SetSortingOrderHigh(GameObject effectObj)
     {
-        if (effectTexture != null)
-            effectTexture.Release();
+        Renderer[] renderers = effectObj.GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in renderers)
+        {
+            r.sortingOrder = 1000;
+        }
     }
 }
