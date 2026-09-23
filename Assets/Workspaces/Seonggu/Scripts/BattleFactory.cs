@@ -3,12 +3,16 @@
 public class BattleFactory : MonoBehaviour
 {
     public static BattleFactory Instance;
-
-    //노드 시드 기반 몬스터 생성 시드
+    
     int monsterSpawnSeed;
 
     [Header("프리팹들")]
     public GameObject playerPrefab;
+
+    [Header("보스 (Boss 노드에서만 등장)")]
+    public GameObject bossPrefab;
+    public int bossHp = 100;
+    public int bossMaxShield = 30;
 
     private void Awake()
     {
@@ -62,11 +66,26 @@ public class BattleFactory : MonoBehaviour
 
     public GameObject SpawnEnemy(GameObject spawnPoint)
     {
-        int seed = monsterSpawnSeed; // 몬스터 시드값
-        Debug.Log("몬스터 시드 : " + seed);
-        int selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
+        // [보스 분기] 보스 노드이고 보스 프리팹이 지정되어 있으면 보스를 스폰
+        Debug.Log($"[BattleFactory] nodeType={GameFlowData.currentNodeType}, bossPrefab={(bossPrefab != null)}");
+        bool isBoss = GameFlowData.currentNodeType == MapNode.NodeType.Boss && bossPrefab != null;
 
-        GameObject enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
+        int selectedId = -1;
+        GameObject enemyPrefab;
+
+        if (isBoss)
+        {
+            enemyPrefab = bossPrefab;
+            Debug.Log("보스 노드 → 보스 스폰");
+        }
+        else
+        {
+            int seed = monsterSpawnSeed; // 몬스터 시드값
+            Debug.Log("몬스터 시드 : " + seed);
+            selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
+            enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
+        }
+
         if (enemyPrefab == null)
         {
             Debug.LogWarning("적 프리팹이 지정되지 않았습니다.");
@@ -83,7 +102,13 @@ public class BattleFactory : MonoBehaviour
         UnitBase enemyUnit = enemyObj.GetComponent<UnitBase>();
         if (enemyUnit != null && StatManager.Instance != null)
         {
-            if (MonsterDatabase.Instance.TryInitializeMonsterStat(selectedId))
+            if (isBoss)
+            {
+                // 보스는 서버 데이터 대신 인스펙터 값으로 스탯 주입
+                StatManager.Instance.SetEnemyStat(bossHp, bossMaxShield);
+                enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
+            }
+            else if (MonsterDatabase.Instance.TryInitializeMonsterStat(selectedId))
             {
                 enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
             }
@@ -91,7 +116,6 @@ public class BattleFactory : MonoBehaviour
             {
                 Debug.Log("몬스터 스탯을 가져오지 못했습니다.");
             }
-            
         }
 
         // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
