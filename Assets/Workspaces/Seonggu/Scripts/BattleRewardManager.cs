@@ -51,7 +51,7 @@ public class BattleRewardManager : MonoBehaviour
     {
         get
         {
-            return DataManager.Instance?.masterCardPool;
+            return CardDataManager.Instance?.masterCardPool;
         }
     }
 

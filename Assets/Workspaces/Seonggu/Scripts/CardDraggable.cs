@@ -104,7 +104,8 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     return;
                 }
                 enemy.ReceiveCard(cardUI);
-                DeckManager.Instance.DiscardCard(cardUI.cardData);
+                if (cardUI.cardData != null)
+                    DeckManager.Instance.DiscardCard(cardUI.cardData);
                 return;
             }
         }

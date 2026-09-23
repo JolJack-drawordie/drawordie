@@ -13,6 +13,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public int Damage;
     public int Shield;
     public int Heal;
+    public int AdjectiveId;
+    public int GerundId;
 
     [Header("UI 연결")]
     public TMP_Text nameText;
@@ -51,6 +53,14 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         Damage = actualDamage;
         Shield = actualShield;
         Heal = actualHeal;
+    }
+
+    public void SetupCombination(Combination combo)
+    {
+        Setup(0, combo.skillName, combo.finalCost.ToString(), combo.description, CardType.Synergy,
+            combo.finalCost, combo.finalDamage, combo.finalShield, combo.finalHeal);
+        AdjectiveId = combo.adjectiveId;
+        GerundId = combo.gerundId;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -40,12 +40,42 @@ public class ComboManager : MonoBehaviour
     public void OnSlotUpdated()
     {
         if (adjSlot.isOccupied && gerSlot.isOccupied)
+        {
             TryCombination();
+        }
+        else{
+            DataManager.Instance.ClearPreview();
+        }
     }
 
     void TryCombination()
     {
         int adjCardID = adjSlot.GetCardID();
+        int gerCardID = gerSlot.GetCardID();
+
+        Combination result = Combine(adjCardID, gerCardID);
+
+        if (result != null)
+        {
+
+            DataManager.Instance.CombinationPreview(result);
+            //DeckManager.Instance.UseCardsForCombination();
+
+            //if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
+            //if (gerSlot.currentCard != null) Destroy(gerSlot.currentCard);
+
+            //adjSlot.RemoveCard();
+            //gerSlot.RemoveCard();
+            //HideSlots();
+        }
+    }
+
+    public void OnClickCombination()
+    {
+        DataManager.Instance.ClearPreview();
+
+        int adjCardID = adjSlot.GetCardID();
+        
         int gerCardID = gerSlot.GetCardID();
 
         Combination result = Combine(adjCardID, gerCardID);
