@@ -52,13 +52,13 @@ public class DeckManager : MonoBehaviour
 
         foreach (int id in adjectiveIds)
         {
-            var data = DataManager.Instance.adjectiveTable[id];
+            var data = CardDataManager.Instance.adjectiveTable[id];
             AdjectiveDrawPile.Add(new AdjectiveCard(data));
         }
 
         foreach (int id in gerundIds)
         {
-            var data = DataManager.Instance.gerundTable[id];
+            var data = CardDataManager.Instance.gerundTable[id];
             GerundDrawPile.Add(new GerundCard(data));
         }
     }
@@ -110,12 +110,12 @@ public class DeckManager : MonoBehaviour
     {
         if (cardData.type == CardType.Adjective)
         {
-            var data = DataManager.Instance.adjectiveTable[cardData.id];
+            var data = CardDataManager.Instance.adjectiveTable[cardData.id];
             return new AdjectiveCard(data);
         }
         else if (cardData.type == CardType.Gerund)
         {
-            var data = DataManager.Instance.gerundTable[cardData.id];
+            var data = CardDataManager.Instance.gerundTable[cardData.id];
             return new GerundCard(data);
         }
 
@@ -125,12 +125,22 @@ public class DeckManager : MonoBehaviour
 
     public void ShuffleDeck()
     {
+        // shuffleRng가 혹시 초기화되지 않았다면 여기서 안전하게 생성
+        if (shuffleRng == null)
+        {
+            int nodeSeed = GameFlowData.currentNodeSeed;
+            shuffleRng = new System.Random(nodeSeed + 3);
+        }
+
         Shuffle(AdjectiveDrawPile);
         Shuffle(GerundDrawPile);
     }
 
     private void Shuffle(List<ICard> list)
     {
+        // 리스트가 비어있거나 null인 경우 방어
+        if (list == null) return;
+
         for (int i = 0; i < list.Count; i++)
         {
             int rnd = shuffleRng.Next(i, list.Count);
