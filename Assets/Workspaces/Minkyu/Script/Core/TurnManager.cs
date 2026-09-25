@@ -81,6 +81,13 @@ public class TurnManager : MonoBehaviour
             bool isResumedTurn = isFirstLoop && PendingLoadData.isPending;
             isFirstLoop = false;
 
+            // 주사위를 굴리기 전(손패를 이미 버렸지만 아직 새로 뽑지 않은 상태)에 저장된 경우
+            // 복원할 손패가 없으므로, 이어서 진행하지 않고 새 턴처럼 주사위 굴리기부터 다시 시작한다.
+            if (isResumedTurn && DeckManager.Instance.Hand.Count == 0)
+            {
+                isResumedTurn = false;
+            }
+
             if (isResumedTurn)
             {
                 diceManager.SetCurrentEnergy(PendingLoadData.cost);
@@ -89,8 +96,6 @@ public class TurnManager : MonoBehaviour
                 {
                     DataManager.Instance.RestoreHand(DeckManager.Instance.Hand);
                 }
-
-                PendingLoadData.Clear();
             }
             // ⭐ [로드 기능] 추가 끝
             else
@@ -112,6 +117,8 @@ public class TurnManager : MonoBehaviour
 
                 yield return new WaitForSeconds(1.5f);
             }
+
+            if (PendingLoadData.isPending) PendingLoadData.Clear();
 
             gameManager.currentState = BattleState.PlayerTurn;
             Debug.Log("Player Turn Start - 카드를 드래그해 공격하고 턴 종료 버튼을 누르세요.");
