@@ -439,6 +439,7 @@ GameObject:
   - component: {fileID: 1134262197}
   - component: {fileID: 1134262199}
   - component: {fileID: 1134262198}
+  - component: {fileID: 1134262200}
   m_Layer: 5
   m_Name: MapBackground
   m_TagString: Untagged
@@ -506,6 +507,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1134262196}
   m_CullTransparentMesh: 1
+--- !u!114 &1134262200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134262196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7100fdb14ea24494faf53ec26331bc13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActMapBackgroundManager
+  backgroundImage: {fileID: 1134262198}
+  act1Background: {fileID: 1608864150, guid: 7ab953651743ae845b89f8245c5ac13f, type: 3}
+  act2Background: {fileID: -2119364509, guid: 7ab953651743ae845b89f8245c5ac13f, type: 3}
+  act3Background: {fileID: -2127732219, guid: 7ab953651743ae845b89f8245c5ac13f, type: 3}
 --- !u!1 &1331024148
 GameObject:
   m_ObjectHideFlags: 0
