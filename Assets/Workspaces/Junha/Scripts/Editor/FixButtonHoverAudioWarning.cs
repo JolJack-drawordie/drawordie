@@ -11,6 +11,7 @@ using UnityEngine.UI;
 // 이 툴은 onClick / EventTrigger에서 AudioSource를 직접 부르는 리스너를 안전한 래퍼 호출로 "직접 필드를 덮어써서"
 // 교체하고, 소리 재생 리스너가 항상 맨 앞에 오도록 재배치한다 (UnityEventTools API의 타겟 바인딩 문제를 피하기 위함).
 // 사용법: AuthScene을 연 상태에서 Tools > Auth > 버튼 사운드 경고 수정 실행.
+//        다른 씬(예: RankingScene)은 그 씬을 연 상태에서 Tools > UI > 현재 씬 버튼 사운드 끊김 수정 실행.
 public static class FixButtonHoverAudioWarning
 {
     [MenuItem("Tools/Auth/버튼 사운드 경고 수정")]
@@ -23,12 +24,24 @@ public static class FixButtonHoverAudioWarning
             return;
         }
 
+        FixScene(authManager.gameObject.scene);
+    }
+
+    // 팝업처럼 버튼 클릭과 동시에 씬이 언로드되는 경우(RankingScene 닫기 버튼 등)에도 소리가 끊기지 않도록 함
+    [MenuItem("Tools/UI/현재 씬 버튼 사운드 끊김 수정")]
+    private static void FixActiveScene()
+    {
+        FixScene(EditorSceneManager.GetActiveScene());
+    }
+
+    private static void FixScene(UnityEngine.SceneManagement.Scene scene)
+    {
         Undo.SetCurrentGroupName("버튼 사운드 경고 수정");
         int undoGroup = Undo.GetCurrentGroup();
 
         int fixedCount = 0;
 
-        foreach (GameObject root in authManager.gameObject.scene.GetRootGameObjects())
+        foreach (GameObject root in scene.GetRootGameObjects())
         {
             foreach (AudioSource source in root.GetComponentsInChildren<AudioSource>(true))
             {
@@ -64,7 +77,7 @@ public static class FixButtonHoverAudioWarning
 
         if (fixedCount > 0)
         {
-            EditorSceneManager.MarkSceneDirty(authManager.gameObject.scene);
+            EditorSceneManager.MarkSceneDirty(scene);
             Debug.Log($"<color=green>[FixButtonHoverAudioWarning] 총 {fixedCount}개 수정 완료. 씬을 저장하세요 (Ctrl+S).</color>");
         }
         else

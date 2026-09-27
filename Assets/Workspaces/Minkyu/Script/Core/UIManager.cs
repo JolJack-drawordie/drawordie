@@ -34,6 +34,9 @@ public class UIManager : MonoBehaviour
 
     public static UIManager Instance;
 
+    // 게임 클리어 화면의 랭킹 버튼 (클리어 시 생성)
+    private Button clearRankingButton;
+
     private void Awake()
     {
         Instance = this;
@@ -129,6 +132,16 @@ public class UIManager : MonoBehaviour
 
                 if (resultText != null)
                     resultText.text = "Game Clear!";
+
+                // 클리어 화면에서 랭킹을 볼 수 있도록 Next 버튼 아래에 랭킹 버튼 추가
+                if (resultPanel != null && clearRankingButton == null)
+                {
+                    clearRankingButton = RankingUIFactory.CreateOpenButton(
+                        resultPanel.transform,
+                        new Vector2(0f, -130f),
+                        new Vector2(220f, 50f),
+                        28f);
+                }
 
                 return;
             }

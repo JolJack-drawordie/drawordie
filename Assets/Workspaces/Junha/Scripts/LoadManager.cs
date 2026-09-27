@@ -34,7 +34,8 @@ public class LoadManager : MonoBehaviour
         }
     }
 
-    public void LoadGame()
+    // onFailed: 불러오기 실패 시 플레이어에게 보여줄 메시지를 전달받는 콜백
+    public void LoadGame(System.Action<string> onFailed = null)
     {
         if (!AuthManager.isLoggedIn)
         {
@@ -42,10 +43,10 @@ public class LoadManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(LoadGameRoutine());
+        StartCoroutine(LoadGameRoutine(onFailed));
     }
 
-    private IEnumerator LoadGameRoutine()
+    private IEnumerator LoadGameRoutine(System.Action<string> onFailed)
     {
         string url = LoadUrl + "?userId=" + AuthManager.userId;
 
@@ -58,9 +59,16 @@ public class LoadManager : MonoBehaviour
                 GameSaveDto data = JsonUtility.FromJson<GameSaveDto>(www.downloadHandler.text);
                 ApplyLoadedData(data);
             }
+            else if (www.responseCode == 404)
+            {
+                // 세이브가 없음 (새 게임을 저장하지 않았거나, 게임이 끝나 세이브가 삭제됨)
+                Debug.Log("[LoadManager] 저장된 데이터가 없습니다.");
+                onFailed?.Invoke("저장된 데이터가 없습니다.");
+            }
             else
             {
                 Debug.LogError("[LoadManager] 불러오기 실패: " + www.error);
+                onFailed?.Invoke("불러오기에 실패했습니다.");
             }
         }
     }

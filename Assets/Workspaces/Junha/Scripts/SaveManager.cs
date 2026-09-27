@@ -41,6 +41,13 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
+        // 게임이 끝난 뒤에는 저장하지 않음 (결과 등록 시 서버에서 세이브가 삭제됨)
+        if (PlayTimeTracker.Instance != null && PlayTimeTracker.Instance.IsRunEnded)
+        {
+            Debug.LogWarning("[SaveManager] 이미 끝난 게임은 저장할 수 없습니다.");
+            return;
+        }
+
         StartCoroutine(SaveGameRoutine());
     }
 
