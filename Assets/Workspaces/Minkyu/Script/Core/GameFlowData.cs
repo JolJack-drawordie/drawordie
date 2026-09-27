@@ -89,6 +89,24 @@ public static class GameFlowData
         }
     }
 
+    // 지정한 Act의 맵 처음부터 시작 (테스트용, LobbyManager 테스트 설정에서 사용)
+    public static void StartAtAct(int act)
+    {
+        currentAct = act < 1 ? 1 : (act > maxAct ? maxAct : act);
+
+        clearedNodeLevel = 0;
+        currentFloor = -1;
+        currentIndex = -1;
+        currentNodeType = default;
+        currentNodeSeed = 0;
+
+        hasMapSeed = false;
+        mapSeed = 0;
+    }
+
+    // 테스트용: 맵 시작 시 0층 대신 보스 노드를 바로 선택 가능하게 함
+    public static bool debugUnlockBoss = false;
+
     // 현재 Act가 마지막 Act인지 확인
     public static bool IsFinalAct()
     {

@@ -22,6 +22,12 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private TMP_Text messageText;
     [SerializeField] private float messageDuration = 2f;
 
+    [Header("테스트 (에디터에서만 적용)")]
+    [Tooltip("새 게임을 이 Act부터 시작 (0이면 사용 안 함)")]
+    [SerializeField, Range(0, 3)] private int debugStartAct = 0;
+    [Tooltip("맵 시작 시 보스 노드를 바로 선택 가능")]
+    [SerializeField] private bool debugStartAtBoss = false;
+
     private bool isTransitioning;
     private Coroutine messageRoutine;
 
@@ -71,7 +77,29 @@ public class LobbyManager : MonoBehaviour
         if (PlayTimeTracker.Instance != null)
             PlayTimeTracker.Instance.StartNewRun();
 
+        ApplyDebugStart();
+
         StartCoroutine(FadeAndLoad("MapScene"));
+    }
+
+    // 테스트 설정 적용 (빌드에서는 항상 꺼짐)
+    private void ApplyDebugStart()
+    {
+        GameFlowData.debugUnlockBoss = false;
+
+#if UNITY_EDITOR
+        if (debugStartAct > 0)
+        {
+            GameFlowData.StartAtAct(debugStartAct);
+            Debug.LogWarning($"[LobbyManager] 테스트: Act {GameFlowData.currentAct}부터 시작");
+        }
+
+        if (debugStartAtBoss)
+        {
+            GameFlowData.debugUnlockBoss = true;
+            Debug.LogWarning("[LobbyManager] 테스트: 보스 노드 바로 선택 가능");
+        }
+#endif
     }
 
     public void OnLordGameClick()

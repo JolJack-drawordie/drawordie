@@ -44,6 +44,20 @@ public class MapNodeManager : MonoBehaviour
         // 첫 시작이면 0층만 활성화
         if (GameFlowData.currentFloor == -1)
         {
+            // 테스트용: 보스 노드 바로 활성화
+            if (GameFlowData.debugUnlockBoss)
+            {
+                foreach (MapNode node in allNodes)
+                {
+                    if (node.nodeType == MapNode.NodeType.Boss)
+                    {
+                        node.SetInteractable(true);
+                    }
+                }
+
+                return;
+            }
+
             foreach (MapNode node in allNodes)
             {
                 if (node.floor == 0)
