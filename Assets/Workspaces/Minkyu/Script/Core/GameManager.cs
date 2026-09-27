@@ -92,12 +92,23 @@ public class GameManager : MonoBehaviour
             currentState = BattleState.Victory;
             isGameOver = true;
             Debug.Log("승리!");
+
+            // 최종 Act 보스 처치 시 플레이 타임 측정 종료
+            if (GameFlowData.currentNodeType == MapNode.NodeType.Boss &&
+                GameFlowData.IsFinalAct() &&
+                PlayTimeTracker.Instance != null)
+            {
+                PlayTimeTracker.Instance.StopRun();
+            }
         }
         else if (currentPlayer != null && currentPlayer.IsDead())
         {
             currentState = BattleState.Defeat;
             isGameOver = true;
             Debug.Log("패배...");
+
+            if (PlayTimeTracker.Instance != null)
+                PlayTimeTracker.Instance.StopRun();
         }
     }
 }

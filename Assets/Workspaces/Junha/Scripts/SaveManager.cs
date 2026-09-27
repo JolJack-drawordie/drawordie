@@ -133,6 +133,8 @@ public class SaveManager : MonoBehaviour
         form.AddField("currentIndex", GameFlowData.currentIndex);
         form.AddField("act", GameFlowData.currentAct);
         form.AddField("nodeType", (int)GameFlowData.currentNodeType);
+        form.AddField("playTime",
+            PlayTimeTracker.Instance != null ? PlayTimeTracker.Instance.GetElapsedSecondsInt() : 0);
 
         using (UnityWebRequest www = UnityWebRequest.Post(SaveUrl, form))
         {
