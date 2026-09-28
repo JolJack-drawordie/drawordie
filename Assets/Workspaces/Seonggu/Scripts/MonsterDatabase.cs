@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// [Act ëŒ€ì‘] ëª¬ìŠ¤í„° id ê·œì¹™: id / 100 = ë“±ì¥í•˜ëŠ” Act (1xx = Act 1, 2xx = Act 2, 3xx = Act 3)
 public enum MonsterType
 {
+    // Act 1
     Slime = 100,
     Rat = 101,
-    Ghost = 102
+    Ghost = 102,
+
+    // Act 2
+    Zombie = 200,
+    Vampire = 201,
+    Succubus = 202,
 }
 
 [System.Serializable]
 public class MonsterPrefabInfo
 {
-    public MonsterType monsterType; // ¶Ç´Â MonsterType monsterType
+    public MonsterType monsterType; // ë˜ëŠ” MonsterType monsterType
     public GameObject monsterPrefab;
 }
 
@@ -21,10 +28,22 @@ public class MonsterDatabase : MonoBehaviour
 {
     public static MonsterDatabase Instance;
 
-    [Header("ÇÁ¸®ÆÕ ¸ÅÇÎ Àü¿ë (µµ°¨)")]
+    // [Act ëŒ€ì‘] idë¥¼ Actë¡œ ë°”ê¾¸ëŠ” ê¸°ì¤€ (id / 100)
+    public const int IdPerAct = 100;
+
+    [Header("í”„ë¦¬íŒ¹ ë§¤í•‘ ì „ìš© (ë„ê°)")]
     public List<MonsterPrefabInfo> prefabList = new List<MonsterPrefabInfo>();
 
-    // ·±Å¸ÀÓ¿¡ ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Â ½ºÅÈ µ¥ÀÌÅÍ¸¦ µû·Î º¸°ü
+    // [Act ëŒ€ì‘] ì„œë²„ì— ì•„ì§ ì—†ëŠ” ëª¬ìŠ¤í„°ì˜ ì„ì‹œ ê¸°ë³¸ ìŠ¤íƒ¯ (ì„œë²„ì— ê°™ì€ idê°€ ìˆìœ¼ë©´ ì„œë²„ ê°’ì´ ìš°ì„ )
+    // (ì„ì‹œ ìˆ˜ì¹˜: ë°¸ëŸ°ìŠ¤ì— ë§ê²Œ ì¡°ì •í•˜ì„¸ìš”)
+    private static readonly List<MonsterServerData> localMonsters = new List<MonsterServerData>
+    {
+        new MonsterServerData { id = 200, name = "Zombie",   hp = 45, shield = 30 },
+        new MonsterServerData { id = 201, name = "Vampire",  hp = 40, shield = 30 },
+        new MonsterServerData { id = 202, name = "Succubus", hp = 35, shield = 30 },
+    };
+
+    // ëŸ°íƒ€ì„ì— ì„œë²„ì—ì„œ ë°›ì•„ì˜¨ ìŠ¤íƒ¯ ë°ì´í„°ë¥¼ ë”°ë¡œ ë³´ê´€
     private Dictionary<int, MonsterServerData> serverStatDict = new Dictionary<int, MonsterServerData>();
 
     public bool IsDataLoaded { get; private set; } = false;
@@ -48,13 +67,13 @@ public class MonsterDatabase : MonoBehaviour
 
     private void Awake()
     {
-        // ÀÌ¹Ì ÀÎ½ºÅÏ½º°¡ Á¸ÀçÇÏ´Âµ¥ »õ·Î »ı¼ºµÈ °æ¿ì, Áßº¹ »ı¼º ¹æÁö
+        // ì´ë¯¸ ì¸ìŠ¤í„´ìŠ¤ê°€ ì¡´ì¬í•˜ëŠ”ë° ìƒˆë¡œ ìƒì„±ëœ ê²½ìš°, ì¤‘ë³µ ìƒì„± ë°©ì§€
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ¾ÀÀÌ ³Ñ¾î°¡µµ ÆÄ±«µÇÁö ¾ÊÀ½
+            DontDestroyOnLoad(gameObject); // ì”¬ì´ ë„˜ì–´ê°€ë„ íŒŒê´´ë˜ì§€ ì•ŠìŒ
 
-            // ÇÁ¸®ÆÕ ¸®½ºÆ®°¡ ºñ¾îÀÖ´Ù¸é Resources Æú´õ¿¡¼­ ÀÚµ¿À¸·Î ·Îµå ¹× ¸ÅÇÎ
+            // í”„ë¦¬íŒ¹ ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ìˆë‹¤ë©´ Resources í´ë”ì—ì„œ ìë™ìœ¼ë¡œ ë¡œë“œ ë° ë§¤í•‘
             AutoPopulatePrefabs();
         }
         else
@@ -68,7 +87,7 @@ public class MonsterDatabase : MonoBehaviour
         StartCoroutine(LoadServerDataFromJson());
     }
 
-    // Resources/Monsters Æú´õ¿¡¼­ ÇÁ¸®ÆÕÀ» ÀÚµ¿À¸·Î ½ºÄµÇØ ¸ÊÇÎÇÏ´Â ÇÔ¼ö
+    // Resources/Monsters í´ë”ì—ì„œ í”„ë¦¬íŒ¹ì„ ìë™ìœ¼ë¡œ ìŠ¤ìº”í•´ ë§µí•‘í•˜ëŠ” í•¨ìˆ˜
     private void AutoPopulatePrefabs()
     {
         if (prefabList == null)
@@ -76,25 +95,25 @@ public class MonsterDatabase : MonoBehaviour
             prefabList = new List<MonsterPrefabInfo>();
         }
 
-        // ÀÌ¹Ì ÀÎ½ºÆåÅÍ¿¡¼­ ¼öµ¿À¸·Î µî·ÏÇØ µĞ °Ô ÀÖ´Ù¸é Áßº¹ ¹æÁö¸¦ À§ÇØ ½ºÅµÇÏ°Å³ª º¸¿Ï °¡´É
+        // ì´ë¯¸ ì¸ìŠ¤í™í„°ì—ì„œ ìˆ˜ë™ìœ¼ë¡œ ë“±ë¡í•´ ë‘” ê²Œ ìˆë‹¤ë©´ ì¤‘ë³µ ë°©ì§€ë¥¼ ìœ„í•´ ìŠ¤í‚µí•˜ê±°ë‚˜ ë³´ì™„ ê°€ëŠ¥
         if (prefabList.Count > 0) return;
 
-        // "Resources/Monsters" °æ·Î¿¡ ÀÖ´Â ¸ğµç GameObject ÇÁ¸®ÆÕ ·Îµå
+        // "Resources/Monsters" ê²½ë¡œì— ìˆëŠ” ëª¨ë“  GameObject í”„ë¦¬íŒ¹ ë¡œë“œ
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("Monsters");
 
         foreach (var prefab in loadedPrefabs)
         {
             foreach (MonsterType type in System.Enum.GetValues(typeof(MonsterType)))
             {
-                string typeName = type.ToString(); // ¿¹: "Slime"
+                string typeName = type.ToString(); // ì˜ˆ: "Slime"
 
-                // ÇÁ¸®ÆÕ ÀÌ¸§¿¡ Å¸ÀÔ ÀÌ¸§ÀÌ Æ÷ÇÔµÇ¾î ÀÖ°Å³ª, ÇØ´ç ÄÁÆ®·Ñ·¯ ÄÄÆ÷³ÍÆ®°¡ ºÙ¾îÀÖ´ÂÁö È®ÀÎ
+                // í”„ë¦¬íŒ¹ ì´ë¦„ì— íƒ€ì… ì´ë¦„ì´ í¬í•¨ë˜ì–´ ìˆê±°ë‚˜, í•´ë‹¹ ì»¨íŠ¸ë¡¤ëŸ¬ ì»´í¬ë„ŒíŠ¸ê°€ ë¶™ì–´ìˆëŠ”ì§€ í™•ì¸
                 bool isMatch = prefab.name.Contains(typeName) ||
                                prefab.GetComponent(typeName + "Controller") != null;
 
                 if (isMatch)
                 {
-                    // Áßº¹ µî·Ï ¹æÁö
+                    // ì¤‘ë³µ ë“±ë¡ ë°©ì§€
                     if (!prefabList.Exists(x => x.monsterType == type))
                     {
                         prefabList.Add(new MonsterPrefabInfo
@@ -102,28 +121,28 @@ public class MonsterDatabase : MonoBehaviour
                             monsterType = type,
                             monsterPrefab = prefab
                         });
-                        Debug.Log($"[ÀÚµ¿ ¸ÅÇÎ ¿Ï·á] MonsterType: {type} -> Prefab: {prefab.name}");
+                        Debug.Log($"[ìë™ ë§¤í•‘ ì™„ë£Œ] MonsterType: {type} -> Prefab: {prefab.name}");
                     }
                 }
             }
         }
     }
 
-    // ÇÁ¸®ÆÕÀ» °¡Á®¿À´Â ÇÔ¼ö
+    // í”„ë¦¬íŒ¹ì„ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜
     public GameObject GetPrefab(MonsterType type)
     {
         var info = prefabList.Find(x => x.monsterType == type);
         return info?.monsterPrefab;
     }
 
-    // ¼­¹ö ½ºÅÈ¸¸ ¹İÈ¯
+    // ì„œë²„ ìŠ¤íƒ¯ë§Œ ë°˜í™˜
     public MonsterServerData GetServerStat(int id)
     {
         if (serverStatDict.TryGetValue(id, out var stat))
         {
             return stat;
         }
-        Debug.LogWarning($"ID {id}¿¡ ÇØ´çÇÏ´Â ¼­¹ö ½ºÅÈ Á¤º¸¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+        Debug.LogWarning($"ID {id}ì— í•´ë‹¹í•˜ëŠ” ì„œë²„ ìŠ¤íƒ¯ ì •ë³´ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
         return null;
     }
 
@@ -131,46 +150,75 @@ public class MonsterDatabase : MonoBehaviour
     {
         if (serverStatDict.TryGetValue(monsterId, out var serverData))
         {
-            // µ¥ÀÌÅÍº£ÀÌ½º°¡ ¾Ë¾Æ¼­ °¡Á®¿Í¼­ Å¸°Ù(½ºÅÈ ¸Å´ÏÀú)¿¡ ²È¾ÆÁÜ
+            // ë°ì´í„°ë² ì´ìŠ¤ê°€ ì•Œì•„ì„œ ê°€ì ¸ì™€ì„œ íƒ€ê²Ÿ(ìŠ¤íƒ¯ ë§¤ë‹ˆì €)ì— ê½‚ì•„ì¤Œ
             StatManager.Instance.SetEnemyStat(serverData.hp, serverData.shield);
             return true;
         }
 
-        Debug.LogError($"ID {monsterId}¿¡ ÇØ´çÇÏ´Â ¼­¹ö ½ºÅÈÀÌ ¾ø½À´Ï´Ù.");
+        Debug.LogError($"ID {monsterId}ì— í•´ë‹¹í•˜ëŠ” ì„œë²„ ìŠ¤íƒ¯ì´ ì—†ìŠµë‹ˆë‹¤.");
         return false;
     }
 
-    // ¼­¹ö¿¡ Ä³½ÌµÈ ¸ğµç ¸ó½ºÅÍ ID ¸ñ·ÏÀ» µ¿ÀûÀ¸·Î ¹İÈ¯
+    // ì„œë²„ì— ìºì‹±ëœ ëª¨ë“  ëª¬ìŠ¤í„° ID ëª©ë¡ì„ ë™ì ìœ¼ë¡œ ë°˜í™˜
     public List<int> GetAllMonsterIds()
     {
         return new List<int>(serverStatDict.Keys);
     }
 
-    // ¼­¹ö¿¡ ÀÖ´Â ¸ó½ºÅÍ Áß ½Ãµå ±â¹İÀ¸·Î ¹«ÀÛÀ§ ID ÇÏ³ª¸¦ ½ï »Ì¾ÆÁÖ´Â ÇÔ¼ö
+    // [Act ëŒ€ì‘] í•´ë‹¹ Actì— ë“±ì¥í•˜ëŠ” ëª¬ìŠ¤í„° id ëª©ë¡ (í•­ìƒ ì˜¤ë¦„ì°¨ìˆœ: ê°™ì€ ì‹œë“œë©´ ê°™ì€ ê²°ê³¼ê°€ ë‚˜ì˜¤ë„ë¡)
+    public List<int> GetMonsterIdsForAct(int act)
+    {
+        List<int> result = new List<int>();
+
+        foreach (int id in serverStatDict.Keys)
+        {
+            if (id / IdPerAct == act) result.Add(id);
+        }
+
+        result.Sort();
+        return result;
+    }
+
+    // [Act ëŒ€ì‘] ê¸°ì¡´ í˜¸ì¶œë¶€(BattleFactory ë“±)ë¥¼ ìˆ˜ì •í•˜ì§€ ì•Šì•„ë„ í˜„ì¬ Act ê¸°ì¤€ìœ¼ë¡œ ë½‘íˆë„ë¡ ìœ ì§€
     public int GetRandomMonsterId(int seed)
     {
-        List<int> ids = GetAllMonsterIds();
-        if (ids.Count == 0)
+        return GetRandomMonsterId(seed, GameFlowData.currentAct);
+    }
+
+    // [Act ëŒ€ì‘] ì‹œë“œ ê¸°ë°˜ìœ¼ë¡œ í•´ë‹¹ Actì˜ ëª¬ìŠ¤í„° ì¤‘ ë¬´ì‘ìœ„ ID í•˜ë‚˜ë¥¼ ë½‘ì•„ì£¼ëŠ” í•¨ìˆ˜
+    public int GetRandomMonsterId(int seed, int act)
+    {
+        List<int> pool = GetMonsterIdsForAct(act);
+
+        if (pool.Count == 0)
         {
-            Debug.LogError("¼­¹ö¿¡¼­ ºÒ·¯¿Â ¸ó½ºÅÍ µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù!");
+            Debug.LogWarning($"[MonsterDatabase] Act {act}ì— ë“±ë¡ëœ ëª¬ìŠ¤í„°ê°€ ì—†ì–´ Act 1 ëª¬ìŠ¤í„°ë¡œ ëŒ€ì²´í•©ë‹ˆë‹¤.");
+            pool = GetMonsterIdsForAct(1);
+        }
+
+        if (pool.Count == 0)
+        {
+            Debug.LogError("ì„œë²„ì—ì„œ ë¶ˆëŸ¬ì˜¨ ëª¬ìŠ¤í„° ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤!");
             return -1;
         }
 
         System.Random seededRandom = new System.Random(seed);
-        int randomIndex = seededRandom.Next(0, ids.Count);
-        return ids[randomIndex];
+        int picked = pool[seededRandom.Next(0, pool.Count)];
+
+        Debug.Log($"[MonsterDatabase] Act {act} ëª¬ìŠ¤í„° í’€({pool.Count}ë§ˆë¦¬) ì¤‘ ì„ íƒ: {picked}");
+        return picked;
     }
 
-    // ¼­¹ö¿¡¼­ ¹ŞÀº JSON ¹®ÀÚ¿­À» ÆÄ½ÌÇØ¼­ µ¥ÀÌÅÍº£ÀÌ½º¿¡ ÀÏ°ı Àû¿ë
+    // ì„œë²„ì—ì„œ ë°›ì€ JSON ë¬¸ìì—´ì„ íŒŒì‹±í•´ì„œ ë°ì´í„°ë² ì´ìŠ¤ì— ì¼ê´„ ì ìš©
     public IEnumerator LoadServerDataFromJson()
     {
-        // ¸ó½ºÅÍ ½ºÅÈÀ» °¡Á®¿Ã ¼­¹ö API ÁÖ¼Ò
+        // ëª¬ìŠ¤í„° ìŠ¤íƒ¯ì„ ê°€ì ¸ì˜¬ ì„œë²„ API ì£¼ì†Œ
         string monsterUrl = "http://localhost:8080/api/game/load-monsters";
 
         yield return StartCoroutine(FetchData<MonsterServerDataListWrapper>(monsterUrl, (wrapper) => {
             if (wrapper == null || wrapper.monsters == null)
             {
-                Debug.LogError("¸ó½ºÅÍ µ¥ÀÌÅÍ ¸®½ºÆ®°¡ ºñ¾îÀÖ°Å³ª ÆÄ½Ì¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                Debug.LogError("ëª¬ìŠ¤í„° ë°ì´í„° ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ìˆê±°ë‚˜ íŒŒì‹±ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -178,14 +226,24 @@ public class MonsterDatabase : MonoBehaviour
             foreach (var serverData in wrapper.monsters)
             {
                 serverStatDict[serverData.id] = serverData;
-                Debug.Log($"[¼­¹ö ½ºÅÈ Ä³½Ì ¿Ï·á] ID: {serverData.id}, ÀÌ¸§: {serverData.name}, HP: {serverData.hp}, Shield: {serverData.shield}");
+                Debug.Log($"[ì„œë²„ ìŠ¤íƒ¯ ìºì‹± ì™„ë£Œ] ID: {serverData.id}, ì´ë¦„: {serverData.name}, HP: {serverData.hp}, Shield: {serverData.shield}");
+            }
+
+            // [Act ëŒ€ì‘] ì„œë²„ì— ì—†ëŠ” idëŠ” ë¡œì»¬ ê¸°ë³¸ê°’ìœ¼ë¡œ ë³´ì¶©
+            foreach (var local in localMonsters)
+            {
+                if (!serverStatDict.ContainsKey(local.id))
+                {
+                    serverStatDict[local.id] = local;
+                    Debug.Log($"[ë¡œì»¬ ìŠ¤íƒ¯ ë³´ì¶©] ID: {local.id}, ì´ë¦„: {local.name}, HP: {local.hp}, Shield: {local.shield}");
+                }
             }
 
             IsDataLoaded = true;
         }));
     }
 
-    // 2. °øÅë FetchData ¸Ş¼­µå
+    // 2. ê³µí†µ FetchData ë©”ì„œë“œ
     private IEnumerator FetchData<T>(string url, System.Action<T> onSuccess) where T : class
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -194,11 +252,11 @@ public class MonsterDatabase : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"Åë½Å ½ÇÆĞ ({url}): {request.error}");
+                Debug.LogError($"í†µì‹  ì‹¤íŒ¨ ({url}): {request.error}");
                 yield break;
             }
 
-            Debug.Log($"[¼­¹ö ¿øº» ÀÀ´ä] {request.downloadHandler.text}");
+            Debug.Log($"[ì„œë²„ ì›ë³¸ ì‘ë‹µ] {request.downloadHandler.text}");
 
             string jsonString = request.downloadHandler.text;
 

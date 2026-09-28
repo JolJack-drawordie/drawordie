@@ -1,14 +1,10 @@
 fileFormatVersion: 2
-guid: 0d509f87200a2b942af820a20ab4090c
-AssetOrigin:
-  serializedVersion: 1
-  productId: 161886
-  packageName: 118 sprite effects bundle
-  packageVersion: 8.0
-  assetPath: Assets/118 sprite effects bundle/Water splashes sprite effects/_textures/Water_Splashes_Blue/Water_Splash_15_waterfall_straight/Water_Splash_15_02_waterfall_straight/Water_Splash_15_02_waterfall_03.png
-  uploadId: 697571
+guid: a048900121981a54494898508a611dc4
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -8137284437684544135
+    second: Water_Splash_15_02_waterfall_03_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -50,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +68,7 @@ TextureImporter:
   ignorePngGamma: 0
   applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
@@ -102,12 +98,34 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Water_Splash_15_02_waterfall_03_0
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 49
+        width: 434
+        height: 924
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97d9f77caee821f80800000000000000
+      internalID: -8137284437684544135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -116,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Water_Splash_15_02_waterfall_03_0: -8137284437684544135
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
