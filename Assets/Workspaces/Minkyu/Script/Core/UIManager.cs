@@ -75,23 +75,30 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // ⭐️ int 매개변수를 받도록 수정
+    // =========================
+    // Energy UI
+    // =========================
+
     public void UpdateEnergyUI(int newEnergy)
     {
         energyText.text = "Energy : " + newEnergy;
     }
 
+    // =========================
+    // 전투 결과
+    // =========================
+
     public void ShowResult(bool isVictory)
     {
-        
-
         if (isVictory)
         {
             DeckManager.Instance.DiscardHand();
             DeckManager.Instance.RefillDeckFromDiscard(true);
             DeckManager.Instance.RefillDeckFromDiscard(false);
+
             rewardPanel.SetActive(true);
             rewardText.text = "승리! 보상을 선택하세요.";
+
             BattleRewardManager.Instance.GenerateRewardChoices();
         }
         else
@@ -106,34 +113,57 @@ public class UIManager : MonoBehaviour
         resultPanel.SetActive(false);
     }
 
+    // =========================
+    // 승리 후 이동
+    // =========================
+
     public void GoToMapAfterVictory()
     {
         // 현재 클리어한 노드가 보스인지 확인
         bool isBossNode =
             GameFlowData.currentNodeType == MapNode.NodeType.Boss;
 
+        // =========================
         // 보스 노드 클리어
+        // =========================
+
         if (isBossNode)
         {
-            // 마지막 Act의 보스를 클리어한 경우
+            // =========================
+            // Act 3 최종 보스 클리어
+            // =========================
+
             if (GameFlowData.IsFinalAct())
             {
-                Debug.Log("최종 보스 클리어! 게임 클리어!");
+                Debug.Log(
+                    "최종 보스 클리어! " +
+                    "LobbyScene으로 이동합니다."
+                );
 
-                // 현재 결과 UI를 게임 클리어 화면으로 사용
+                // 보상 패널 닫기
                 if (rewardPanel != null)
                     rewardPanel.SetActive(false);
 
+                // 결과 패널 닫기
                 if (resultPanel != null)
-                    resultPanel.SetActive(true);
+                    resultPanel.SetActive(false);
 
-                if (resultText != null)
-                    resultText.text = "Game Clear!";
+                // 전투 BGM 정지
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.StopBGM();
+                }
+
+                // 로비 씬으로 이동
+                SceneManager.LoadScene("LobbyScene");
 
                 return;
             }
 
-            // Act 1 또는 Act 2의 보스 클리어
+            // =========================
+            // Act 1 또는 Act 2 보스 클리어
+            // =========================
+
             Debug.Log(
                 $"Act {GameFlowData.currentAct} 클리어! " +
                 "다음 Act로 이동합니다."
@@ -142,7 +172,10 @@ public class UIManager : MonoBehaviour
             GameFlowData.MoveToNextAct();
         }
 
+        // =========================
         // 일반 노드 또는 엘리트 노드 클리어
+        // =========================
+
         GameFlowData.clearedNodeLevel++;
 
         // 다음 Act 또는 현재 Act의 맵으로 이동
@@ -155,19 +188,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // =========================
+    // Unit UI 연결
+    // =========================
+
     public void LinkUnitToUI(UnitBase unit)
     {
-        if (unit is PlayerUnit) // 유닛이 플레이어라면?
+        if (unit is PlayerUnit)
         {
             playerHpProvider.SetTarget(unit);
             playerShieldProvider.SetTarget(unit);
+
             playerHpBar.SetProvider(playerHpProvider);
             playerShieldBar.SetProvider(playerShieldProvider);
         }
-        else if (unit is EnemyUnit) // 유닛이 적이라면?
+        else if (unit is EnemyUnit)
         {
             enemyHpProvider.SetTarget(unit);
             enemyShieldProvider.SetTarget(unit);
+
             enemyHpBar.SetProvider(enemyHpProvider);
             enemyShieldBar.SetProvider(enemyShieldProvider);
         }
