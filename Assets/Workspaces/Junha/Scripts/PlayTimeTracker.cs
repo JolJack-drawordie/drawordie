@@ -20,6 +20,9 @@ public class PlayTimeTracker : MonoBehaviour
     // 현재 런이 진행 중인지 (최종 보스 처치 / 사망 시 false)
     public bool IsRunning { get; private set; }
 
+    // 새 게임 / 불러오기로 시작한 런이 끝났는지 (최종 보스 처치 / 사망 후)
+    public bool IsRunEnded => hasRun && !IsRunning;
+
     // 일시정지 메뉴 등에서 설정
     public bool IsPaused { get; set; }
 
@@ -107,12 +110,14 @@ public class PlayTimeTracker : MonoBehaviour
     }
 
     // 최종 보스 처치 또는 사망 시 측정 종료
-    public void StopRun()
+    // 진행 중이던 런을 이번 호출로 종료했으면 true
+    public bool StopRun()
     {
-        if (!IsRunning) return;
+        if (!IsRunning) return false;
 
         IsRunning = false;
         Debug.Log($"[PlayTimeTracker] 런 종료. 총 플레이 타임: {GetElapsedSecondsInt()}초");
+        return true;
     }
 
     public int GetElapsedSecondsInt()
@@ -138,6 +143,9 @@ public class PlayTimeTracker : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // 랭킹 / 로그인 팝업처럼 Additive로 덧씌우는 씬은 무시
+        if (mode == LoadSceneMode.Additive) return;
+
         bool isHiddenScene = System.Array.IndexOf(HiddenScenes, scene.name) >= 0;
         timerCanvas.SetActive(hasRun && !isHiddenScene);
     }

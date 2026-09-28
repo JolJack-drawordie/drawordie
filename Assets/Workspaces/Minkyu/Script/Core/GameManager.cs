@@ -93,12 +93,12 @@ public class GameManager : MonoBehaviour
             isGameOver = true;
             Debug.Log("승리!");
 
-            // 최종 Act 보스 처치 시 플레이 타임 측정 종료
+            // 최종 Act 보스 처치 시 플레이 타임 측정 종료 및 랭킹 등록
             if (GameFlowData.currentNodeType == MapNode.NodeType.Boss &&
                 GameFlowData.IsFinalAct() &&
-                PlayTimeTracker.Instance != null)
+                GameResultManager.Instance != null)
             {
-                PlayTimeTracker.Instance.StopRun();
+                GameResultManager.Instance.EndRun(true);
             }
         }
         else if (currentPlayer != null && currentPlayer.IsDead())
@@ -107,8 +107,9 @@ public class GameManager : MonoBehaviour
             isGameOver = true;
             Debug.Log("패배...");
 
-            if (PlayTimeTracker.Instance != null)
-                PlayTimeTracker.Instance.StopRun();
+            // 사망 시 플레이 타임 측정 종료 및 랭킹 등록
+            if (GameResultManager.Instance != null)
+                GameResultManager.Instance.EndRun(false);
         }
     }
 }

@@ -60,3 +60,33 @@ public class GameSaveDto
     public int currentNodeType;
     public int playTime; // 누적 플레이 타임(초)
 }
+
+// 서버 /api/game/result 응답: 방금 등록한 기록의 순위
+[Serializable]
+public class GameResultResponse
+{
+    public long resultId;
+    public long rank;
+    public int score;
+}
+
+// 서버 /api/game/ranking 응답의 기록 한 줄
+[Serializable]
+public class RankingEntry
+{
+    public long resultId;
+    public int rank;
+    public string nickname;
+    public int score;
+    public bool cleared;
+    public int reachedAct;
+    public int reachedFloor;
+    public int playTime; // 초
+    public string endedAt; // "2026-09-27T12:34:56"
+}
+
+[Serializable]
+public class RankingListDto
+{
+    public List<RankingEntry> rankings;
+}

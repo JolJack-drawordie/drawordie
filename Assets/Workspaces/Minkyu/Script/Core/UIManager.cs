@@ -32,11 +32,21 @@ public class UIManager : MonoBehaviour
     public GameObject rewardPanel;
     public TextMeshProUGUI rewardText;
 
+    // 게임 클리어 화면의 랭킹 버튼 (Tools > Ranking > 클리어 화면 랭킹 버튼 배치 로 연결, 클리어 시에만 표시)
+    // 비워두면 클리어 시 코드로 생성
+    public Button clearRankingButton;
+
     public static UIManager Instance;
 
     private void Awake()
     {
         Instance = this;
+
+        if (clearRankingButton != null)
+        {
+            clearRankingButton.onClick.AddListener(RankingPanel.Open);
+            clearRankingButton.gameObject.SetActive(false);
+        }
 
         if (playerHpBar != null)
             playerHpProvider = playerHpBar.GetComponent<HpProvider>();
@@ -156,6 +166,20 @@ public class UIManager : MonoBehaviour
 
                 // 로비 씬으로 이동
                 SceneManager.LoadScene("LobbyScene");
+
+                // 클리어 화면에서 랭킹을 볼 수 있도록 랭킹 버튼 표시
+                if (clearRankingButton != null)
+                {
+                    clearRankingButton.gameObject.SetActive(true);
+                }
+                else if (resultPanel != null)
+                {
+                    clearRankingButton = RankingUIFactory.CreateOpenButton(
+                        resultPanel.transform,
+                        new Vector2(0f, -130f),
+                        new Vector2(220f, 50f),
+                        28f);
+                }
 
                 return;
             }
