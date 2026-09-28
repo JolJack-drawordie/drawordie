@@ -98,7 +98,10 @@ public class MapGenerator : MonoBehaviour
             List<GameObject> currentFloor =
                 new List<GameObject>();
 
+            // =========================
             // 마지막 층 = Boss
+            // =========================
+
             if (floor == floorCount - 1)
             {
                 GameObject boss =
@@ -117,9 +120,19 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
+                // =========================
                 // 일반 층은 2~3개의 노드 생성
+                // =========================
+
                 int nodeCount =
                     mapRandom.Next(2, 4);
+
+                // =========================
+                // 보스 직전 층인지 확인
+                // =========================
+
+                bool isBossBeforeFloor =
+                    floor == floorCount - 2;
 
                 for (int i = 0;
                     i < nodeCount;
@@ -138,29 +151,52 @@ public class MapGenerator : MonoBehaviour
                     MapNode.NodeType nodeType =
                         MapNode.NodeType.Monster;
 
-                    // 2층부터 Rest / Elite 생성
-                    if (floor >= 2)
+                    // =========================
+                    // 보스 직전 층
+                    // 모든 노드를 Rest로 생성
+                    // =========================
+
+                    if (isBossBeforeFloor)
                     {
-                        double randomValue =
-                            mapRandom.NextDouble();
+                        prefab = restPrefab;
 
-                        // Rest
-                        if (randomValue < restChance)
+                        nodeType =
+                            MapNode.NodeType.Rest;
+
+                        Debug.Log(
+                            $"보스 직전 휴식 노드 생성 : " +
+                            $"Floor {floor} / Index {i}"
+                        );
+                    }
+                    else
+                    {
+                        // =========================
+                        // 일반 층의 Rest / Elite 랜덤 생성
+                        // =========================
+
+                        if (floor >= 2)
                         {
-                            prefab = restPrefab;
+                            double randomValue =
+                                mapRandom.NextDouble();
 
-                            nodeType =
-                                MapNode.NodeType.Rest;
-                        }
-                        // Elite
-                        else if (
-                            randomValue <
-                            restChance + 0.25f)
-                        {
-                            prefab = elitePrefab;
+                            // Rest
+                            if (randomValue < restChance)
+                            {
+                                prefab = restPrefab;
 
-                            nodeType =
-                                MapNode.NodeType.Elite;
+                                nodeType =
+                                    MapNode.NodeType.Rest;
+                            }
+                            // Elite
+                            else if (
+                                randomValue <
+                                restChance + 0.25f)
+                            {
+                                prefab = elitePrefab;
+
+                                nodeType =
+                                    MapNode.NodeType.Elite;
+                            }
                         }
                     }
 
@@ -177,7 +213,10 @@ public class MapGenerator : MonoBehaviour
                 }
             }
 
+            // =========================
             // 이전 층과 현재 층 연결
+            // =========================
+
             if (previousFloor.Count > 0)
             {
                 CreateConnections(
