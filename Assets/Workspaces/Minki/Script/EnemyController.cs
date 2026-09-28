@@ -22,6 +22,20 @@ public abstract class EnemyController : MonoBehaviour
     [Header("월드 스페이스 UI 추적 설정")]
     public Canvas intentCanvas; // 독립시킨 월드 스페이스 캔버스 연결용
 
+    [Header("피격 이펙트 (공통)")]
+    public Color hitFlashColor = new Color(1f, 0.4f, 0.4f, 1f);   // 맞았을 때 순간적으로 바뀌는 색
+    public float hitFlashDuration = 0.1f;       // 색이 유지되는 시간
+    public GameObject hitEffectPrefab;          // 선택 사항: 타격 파티클/스프라이트 프리팹 (비워두면 색 반짝임만 재생)
+    public Vector3 hitEffectOffset = Vector3.zero;
+
+    // 실제 체력을 관리하는 유닛 (전투 씬에서 BattleFactory가 스폰한 프리팹에 붙어 있음)
+    protected EnemyUnit hitUnit;
+    protected bool hitIsDead = false;
+    protected int hitLastHp;
+
+    private SpriteRenderer hitRenderer;
+    private Coroutine hitFlashCoroutine;
+
     protected virtual void Start()
     {
         currentHp = maxHp;
@@ -30,6 +44,17 @@ public abstract class EnemyController : MonoBehaviour
         // 게임 시작 시 무작위로 첫 의도(공격 또는 방어)를 결정하고 아이콘 띄우기
         isNextAttack = (Random.value > 0.5f);
         UpdateIntentUI();
+
+        // ----- 피격 이펙트 공통 설정 -----
+        hitRenderer = GetComponent<SpriteRenderer>();
+        if (hitRenderer == null) hitRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        hitUnit = GetComponent<EnemyUnit>();
+        if (hitUnit != null)
+        {
+            hitLastHp = hitUnit.statData != null ? hitUnit.statData.currentHp : 0;
+            hitUnit.OnHpChanged += HandleHpChanged;
+        }
     }
 
     protected virtual void Update()
@@ -48,7 +73,57 @@ public abstract class EnemyController : MonoBehaviour
         }
     }
 
-    // 데미지를 입는 공통 함수 (외부에서 호출 가능)
+    private void OnDestroy()
+    {
+        if (hitUnit != null) hitUnit.OnHpChanged -= HandleHpChanged;
+    }
+
+    // 실제 체력(EnemyUnit)이 바뀔 때마다 호출됨. 자식 클래스(보스 등)에서 override해서
+    // 추가 연출(애니메이션 등)을 덧붙일 수 있음 (base.HandleHpChanged 먼저 호출해서 공통 반짝임 재생 권장)
+    protected virtual void HandleHpChanged(int current, int max)
+    {
+        if (hitIsDead) return;
+
+        bool tookDamage = current < hitLastHp;
+
+        if (tookDamage)
+        {
+            PlayHitEffect();
+        }
+
+        if (current <= 0)
+        {
+            hitIsDead = true;
+        }
+
+        hitLastHp = current;
+    }
+
+    // 맞는 순간 재생되는 공통 시각 효과: 스프라이트 색 반짝임 + (있다면) 이펙트 프리팹 생성
+    protected virtual void PlayHitEffect()
+    {
+        if (hitRenderer != null)
+        {
+            if (hitFlashCoroutine != null) StopCoroutine(hitFlashCoroutine);
+            hitFlashCoroutine = StartCoroutine(FlashRoutine());
+        }
+
+        if (hitEffectPrefab != null)
+        {
+            Instantiate(hitEffectPrefab, transform.position + hitEffectOffset, Quaternion.identity);
+        }
+    }
+
+    private IEnumerator FlashRoutine()
+    {
+        // 맞기 직전 색을 저장했다가 복원 (고스트처럼 알파값이 계속 바뀌는 연출과 충돌하지 않도록)
+        Color before = hitRenderer.color;
+        hitRenderer.color = hitFlashColor;
+        yield return new WaitForSeconds(hitFlashDuration);
+        hitRenderer.color = before;
+    }
+
+    // 데미지를 입는 공통 함수 (외부에서 호출 가능) - 기존 레거시 로직 그대로 유지
     public virtual void TakeDamage(int damage)
     {
         currentHp -= damage;
