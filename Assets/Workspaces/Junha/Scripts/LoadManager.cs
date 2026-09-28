@@ -73,6 +73,9 @@ public class LoadManager : MonoBehaviour
         GameFlowData.currentNodeSeed = data.nodeSeed;
         GameFlowData.currentFloor = data.currentFloor;
         GameFlowData.currentIndex = data.currentIndex;
+        // 구버전 세이브(act 컬럼이 없던 시절)는 0으로 내려오므로 1로 보정
+        GameFlowData.currentAct = data.currentAct > 0 ? data.currentAct : 1;
+        GameFlowData.currentNodeType = (MapNode.NodeType)data.currentNodeType;
 
         PendingLoadData.Set(data.currentHp, data.currentShield, data.currentCost, data.deckData, data.monsterData);
 

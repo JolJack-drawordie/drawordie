@@ -131,6 +131,8 @@ public class SaveManager : MonoBehaviour
         form.AddField("monsterData", monsterDataJson);
         form.AddField("currentFloor", GameFlowData.currentFloor);
         form.AddField("currentIndex", GameFlowData.currentIndex);
+        form.AddField("act", GameFlowData.currentAct);
+        form.AddField("nodeType", (int)GameFlowData.currentNodeType);
 
         using (UnityWebRequest www = UnityWebRequest.Post(SaveUrl, form))
         {

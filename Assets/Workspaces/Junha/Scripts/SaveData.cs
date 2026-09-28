@@ -56,4 +56,6 @@ public class GameSaveDto
     public string monsterData;
     public int currentFloor;
     public int currentIndex;
+    public int currentAct;
+    public int currentNodeType;
 }

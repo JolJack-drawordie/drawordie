@@ -50,8 +50,12 @@ public class DiceManager : MonoBehaviour
 
     void Start()
     {
-        if (diceImageObject != null) diceImageObject.SetActive(false); 
-        if (rollDiceButton != null) rollDiceButton.onClick.AddListener(OnClickRollButton);
+        if (diceImageObject != null) diceImageObject.SetActive(false);
+        if (rollDiceButton != null)
+        {
+            rollDiceButton.gameObject.SetActive(false);
+            rollDiceButton.onClick.AddListener(OnClickRollButton);
+        }
 
         int nodeSeed = GameFlowData.currentNodeSeed;
 
