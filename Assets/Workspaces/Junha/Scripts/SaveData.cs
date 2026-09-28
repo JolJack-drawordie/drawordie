@@ -58,4 +58,5 @@ public class GameSaveDto
     public int currentIndex;
     public int currentAct;
     public int currentNodeType;
+    public int playTime; // 누적 플레이 타임(초)
 }

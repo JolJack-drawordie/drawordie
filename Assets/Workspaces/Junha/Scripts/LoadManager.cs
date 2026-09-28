@@ -77,6 +77,10 @@ public class LoadManager : MonoBehaviour
         GameFlowData.currentAct = data.currentAct > 0 ? data.currentAct : 1;
         GameFlowData.currentNodeType = (MapNode.NodeType)data.currentNodeType;
 
+        // 저장 시점의 플레이 타임부터 이어서 측정 (구버전 세이브는 0)
+        if (PlayTimeTracker.Instance != null)
+            PlayTimeTracker.Instance.ResumeRun(data.playTime);
+
         PendingLoadData.Set(data.currentHp, data.currentShield, data.currentCost, data.deckData, data.monsterData);
 
         Debug.Log("<color=green>[LoadManager] 세이브 데이터 불러오기 완료! 전투 씬으로 이동합니다.</color>");

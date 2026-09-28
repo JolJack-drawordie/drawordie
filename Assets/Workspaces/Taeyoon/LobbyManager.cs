@@ -56,6 +56,10 @@ public class LobbyManager : MonoBehaviour
     {
         Debug.Log("[LobbyManager] NewGame 클릭됨");
         if (isTransitioning) return;
+
+        if (PlayTimeTracker.Instance != null)
+            PlayTimeTracker.Instance.StartNewRun();
+
         StartCoroutine(FadeAndLoad("MapScene"));
     }
 
