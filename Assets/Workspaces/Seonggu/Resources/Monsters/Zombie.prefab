@@ -844,7 +844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &482627873043646856
 Transform:
   m_ObjectHideFlags: 0
@@ -930,7 +930,7 @@ MonoBehaviour:
   crossFadeTime: 0.05
   maxActionTime: 4
   fallbackDuration: 0.6
-  applyIntentEffects: 0
+  defendSkipsDamage: 1
   useTestKey: 0
   testKey: 51
 --- !u!1 &6167121717674877525
