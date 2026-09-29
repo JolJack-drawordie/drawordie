@@ -4,7 +4,7 @@ public class BattleFactory : MonoBehaviour
 {
     public static BattleFactory Instance;
     
-    int monsterSpawnSeed;
+    //int monsterSpawnSeed;
 
     [Header("프리팹들")]
     public GameObject playerPrefab;
@@ -22,14 +22,16 @@ public class BattleFactory : MonoBehaviour
             Destroy(gameObject);
     }
 
-    private void Start()
-    { 
-        // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
-        int nodeSeed = GameFlowData.currentNodeSeed;
-        System.Random seedGenerator = new System.Random(nodeSeed + 1);
+    //private void Start()
+    //{
+    //    Debug.Log($"[BattleFactory Start] 현재 GameFlowData.currentNodeSeed 값: {GameFlowData.currentNodeSeed}");
+    //    // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
+    //    int nodeSeed = GameFlowData.currentNodeSeed;
+    //    System.Random seedGenerator = new System.Random(nodeSeed + 1);
 
-        monsterSpawnSeed = seedGenerator.Next();
-    }
+    //    monsterSpawnSeed = seedGenerator.Next();
+    //    Debug.Log($"[BattleFactory Start] 생성된 monsterSpawnSeed: {monsterSpawnSeed}");
+    //}
 
     public GameObject SpawnPlayer(GameObject spawnPoint)
     {
@@ -80,7 +82,10 @@ public class BattleFactory : MonoBehaviour
         }
         else
         {
-            int seed = monsterSpawnSeed; // 몬스터 시드값
+            int nodeSeed = GameFlowData.currentNodeSeed;
+            System.Random seedGenerator = new System.Random(nodeSeed + 1);
+            int seed = seedGenerator.Next(); // 몬스터 시드값
+
             Debug.Log("몬스터 시드 : " + seed);
             selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
             enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
