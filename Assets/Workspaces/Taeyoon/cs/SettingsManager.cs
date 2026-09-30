@@ -62,11 +62,15 @@ public class SettingsManager : MonoBehaviour
 
     public void SetBrightness(float value)
     {
-        if (brightnessOverlay != null)
+        Image overlay = DontDestroyCanvas.Instance != null
+            ? DontDestroyCanvas.Instance.Overlay
+            : brightnessOverlay;
+
+        if (overlay != null)
         {
-            Color color = brightnessOverlay.color;
+            Color color = overlay.color;
             color.a = (1.0f - value) * 0.8f;
-            brightnessOverlay.color = color;
+            overlay.color = color;
         }
 
         PlayerPrefs.SetFloat("Brightness", value);

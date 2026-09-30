@@ -7,6 +7,18 @@ public class DontDestroyCanvas : MonoBehaviour
     private static DontDestroyCanvas instance;
     [SerializeField] private Image brightnessOverlay;
 
+    public static DontDestroyCanvas Instance => instance;
+
+    public Image Overlay
+    {
+        get
+        {
+            if (brightnessOverlay == null)
+                brightnessOverlay = GetComponentInChildren<Image>();
+            return brightnessOverlay;
+        }
+    }
+
     private void Awake()
     {
         if (instance == null)
