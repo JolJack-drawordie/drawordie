@@ -127,7 +127,7 @@ public static class AuthRegisterUISetup
         // -----------------------------
         Undo.RecordObject(authManager, "AuthManager 참조 연결");
         authManager.regPWConfirm = regPWConfirm;
-        authManager.regMessage = messageText;
+        authManager.regSubmitMessage = messageText; // 회원가입 버튼 위 메시지 (y=-215)
         authManager.togglePasswordButtonLabel = toggleButton.GetComponentInChildren<TextMeshProUGUI>();
 
         Undo.CollapseUndoOperations(undoGroup);

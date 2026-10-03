@@ -48,10 +48,10 @@ public class LoadManager : MonoBehaviour
 
     private IEnumerator LoadGameRoutine(System.Action<string> onFailed)
     {
-        string url = LoadUrl + "?userId=" + AuthManager.userId;
-
-        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        using (UnityWebRequest www = UnityWebRequest.Get(LoadUrl))
         {
+            // 유저 번호는 서버가 토큰에서 꺼내 씀
+            AuthManager.SetAuthHeader(www);
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
@@ -64,6 +64,11 @@ public class LoadManager : MonoBehaviour
                 // 세이브가 없음 (새 게임을 저장하지 않았거나, 게임이 끝나 세이브가 삭제됨)
                 Debug.Log("[LoadManager] 저장된 데이터가 없습니다.");
                 onFailed?.Invoke("저장된 데이터가 없습니다.");
+            }
+            else if (www.responseCode == 401)
+            {
+                Debug.LogError("[LoadManager] 불러오기 실패: 로그인이 만료되었습니다.");
+                onFailed?.Invoke("로그인이 만료되었습니다. 다시 로그인해 주세요.");
             }
             else
             {

@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 using TMPro;
 using DG.Tweening;
 
@@ -13,6 +14,7 @@ public class LoginResponseData
     public long userId;
     public string username;
     public string nickname;
+    public string token; // 서버가 발급한 JWT
 }
 
 public class AuthManager : MonoBehaviour
@@ -20,7 +22,15 @@ public class AuthManager : MonoBehaviour
     // 로그인한 유저 정보 (씬이 전환/언로드돼도 유지되도록 static으로 보관)
     public static long userId;
     public static string nickname;
+    public static string token; // 세이브/로드/결과 요청 시 Authorization 헤더로 보냄
     public static bool isLoggedIn = false;
+
+    // 로그인 토큰이 필요한 서버 요청에 "Authorization: Bearer <토큰>" 헤더를 붙임
+    public static void SetAuthHeader(UnityWebRequest request)
+    {
+        if (!string.IsNullOrEmpty(token))
+            request.SetRequestHeader("Authorization", "Bearer " + token);
+    }
 
     [Header("패널 오브젝트")]
     public GameObject loginPanel;
@@ -37,7 +47,10 @@ public class AuthManager : MonoBehaviour
     public TMP_InputField regNick;
 
     [Header("회원가입 보조 UI")]
-    public TMP_Text regMessage;
+    [FormerlySerializedAs("regMessage")]
+    public TMP_Text regIdMessage;     // 아이디 입력칸 아래 (중복 확인 결과 등)
+    public TMP_Text regPwMessage;     // 비밀번호 입력칸 아래 (비밀번호 불일치)
+    public TMP_Text regSubmitMessage; // 회원가입 버튼 위 (빈 항목, 가입 실패)
     public TMP_Text togglePasswordButtonLabel;
 
     private bool isUsernameChecked = false;
@@ -54,8 +67,16 @@ public class AuthManager : MonoBehaviour
         // 아이디를 다시 수정하면 중복확인을 다시 받아야 함
         if (regID != null)
         {
-            regID.onValueChanged.AddListener(_ => isUsernameChecked = false);
+            regID.onValueChanged.AddListener(_ =>
+            {
+                isUsernameChecked = false;
+                ShowRegMessage(regIdMessage, "", true); // 이전 중복 확인 결과는 더 이상 유효하지 않음
+            });
         }
+
+        // 비밀번호를 다시 입력하면 불일치 메시지 지움
+        if (regPW != null) regPW.onValueChanged.AddListener(_ => ShowRegMessage(regPwMessage, "", true));
+        if (regPWConfirm != null) regPWConfirm.onValueChanged.AddListener(_ => ShowRegMessage(regPwMessage, "", true));
 
         // 로그인 비밀번호도 마스킹
         if (loginPW != null)
@@ -171,7 +192,7 @@ public class AuthManager : MonoBehaviour
 
         isUsernameChecked = false;
         checkedUsername = "";
-        ShowRegMessage("", true);
+        ClearRegMessages();
 
         if (isPasswordVisible) TogglePasswordVisibilityClick();
     }
@@ -201,13 +222,15 @@ public class AuthManager : MonoBehaviour
         StartCoroutine(LoginAction()); 
     }
     public void RegisterClick() {
+        ShowRegMessage(regPwMessage, "", true);
+        ShowRegMessage(regSubmitMessage, "", true);
         if (!ValidateRegisterInput()) return;
         StartCoroutine(RegisterAction());
     }
 
     public void CheckUsernameDuplicateClick() {
         if (string.IsNullOrWhiteSpace(regID.text)) {
-            ShowRegMessage("아이디를 입력해주세요.", false);
+            ShowRegMessage(regIdMessage, "아이디를 입력해주세요.", false);
             return;
         }
         StartCoroutine(CheckUsernameDuplicateAction());
@@ -248,6 +271,7 @@ public class AuthManager : MonoBehaviour
 
                 userId = response.userId;
                 nickname = response.nickname;
+                token = response.token;
                 isLoggedIn = true;
 
                 Debug.Log($"<color=green>로그인 성공! 유저 번호: {userId}</color>");
@@ -283,7 +307,7 @@ public class AuthManager : MonoBehaviour
                 loginPW.ActivateInputField();
             } else {
                 Debug.LogError("회원가입 실패: " + www.error);
-                ShowRegMessage("회원가입에 실패했습니다.", false);
+                ShowRegMessage(regSubmitMessage, "회원가입에 실패했습니다.", false);
             }
         }
     }
@@ -300,15 +324,15 @@ public class AuthManager : MonoBehaviour
 
                 if (isDuplicate) {
                     isUsernameChecked = false;
-                    ShowRegMessage("이미 사용중인 아이디입니다.", false);
+                    ShowRegMessage(regIdMessage, "이미 사용중인 아이디입니다.", false);
                 } else {
                     isUsernameChecked = true;
                     checkedUsername = regID.text;
-                    ShowRegMessage("사용 가능한 아이디입니다.", true);
+                    ShowRegMessage(regIdMessage, "사용 가능한 아이디입니다.", true);
                 }
             } else {
                 Debug.LogError("아이디 중복 확인 실패: " + www.error);
-                ShowRegMessage("중복 확인에 실패했습니다.", false);
+                ShowRegMessage(regIdMessage, "중복 확인에 실패했습니다.", false);
             }
         }
     }
@@ -316,27 +340,34 @@ public class AuthManager : MonoBehaviour
     private bool ValidateRegisterInput()
     {
         if (string.IsNullOrWhiteSpace(regID.text) || string.IsNullOrWhiteSpace(regPW.text) || string.IsNullOrWhiteSpace(regNick.text)) {
-            ShowRegMessage("모든 항목을 입력해주세요.", false);
+            ShowRegMessage(regSubmitMessage, "모든 항목을 입력해주세요.", false);
             return false;
         }
 
         if (!isUsernameChecked || checkedUsername != regID.text) {
-            ShowRegMessage("아이디 중복 확인을 해주세요.", false);
+            ShowRegMessage(regIdMessage, "아이디 중복 확인을 해주세요.", false);
             return false;
         }
 
         if (regPWConfirm != null && regPW.text != regPWConfirm.text) {
-            ShowRegMessage("비밀번호가 일치하지 않습니다.", false);
+            ShowRegMessage(regPwMessage, "비밀번호가 일치하지 않습니다.", false);
             return false;
         }
 
         return true;
     }
 
-    private void ShowRegMessage(string message, bool success)
+    private void ShowRegMessage(TMP_Text target, string message, bool success)
     {
-        if (regMessage == null) return;
-        regMessage.text = message;
-        regMessage.color = success ? new Color(0.35f, 0.85f, 0.35f) : new Color(0.9f, 0.3f, 0.25f);
+        if (target == null) return;
+        target.text = message;
+        target.color = success ? new Color(0.35f, 0.85f, 0.35f) : new Color(0.9f, 0.3f, 0.25f);
+    }
+
+    private void ClearRegMessages()
+    {
+        ShowRegMessage(regIdMessage, "", true);
+        ShowRegMessage(regPwMessage, "", true);
+        ShowRegMessage(regSubmitMessage, "", true);
     }
 }
