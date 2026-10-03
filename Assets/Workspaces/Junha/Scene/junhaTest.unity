@@ -1350,6 +1350,8 @@ MonoBehaviour:
   enemy: {fileID: 0}
   playerController: {fileID: 0}
   enemyController: {fileID: 0}
+  endTurnButton: {fileID: 0}
+  alignEndTurnWithRollButton: 1
   turnCount: 0
   playerActionFinished: 0
 --- !u!4 &334783223
@@ -3325,7 +3327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1037397016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3854,8 +3856,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 780.7204, y: -251.74551}
-  m_SizeDelta: {x: 202.5589, y: 61.2544}
+  m_AnchoredPosition: {x: 780, y: -251}
+  m_SizeDelta: {x: 203, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1328513220
 MonoBehaviour:
@@ -5053,8 +5055,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 780.72046, y: -313}
-  m_SizeDelta: {x: 202.5589, y: 61.2544}
+  m_AnchoredPosition: {x: 780, y: -251}
+  m_SizeDelta: {x: 203, y: 61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1706980921
 MonoBehaviour:
