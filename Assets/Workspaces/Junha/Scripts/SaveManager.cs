@@ -127,7 +127,6 @@ public class SaveManager : MonoBehaviour
         // (Seed는 MasterSeedManager / MapSeedGenerator / MapGenerator가 생성한 값)
         // -----------------------------
         WWWForm form = new WWWForm();
-        form.AddField("userId", AuthManager.userId.ToString());
         form.AddField("masterSeed", GameFlowData.masterSeed);
         form.AddField("mapSeed", GameFlowData.mapSeed);
         form.AddField("nodeSeed", GameFlowData.currentNodeSeed);
@@ -145,11 +144,17 @@ public class SaveManager : MonoBehaviour
 
         using (UnityWebRequest www = UnityWebRequest.Post(SaveUrl, form))
         {
+            // 유저 번호는 서버가 토큰에서 꺼내 씀
+            AuthManager.SetAuthHeader(www);
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
             {
                 Debug.Log("<color=green>[SaveManager] 서버에 저장 완료!</color>");
+            }
+            else if (www.responseCode == 401)
+            {
+                Debug.LogError("[SaveManager] 저장 실패: 로그인이 만료되었습니다. 다시 로그인해 주세요.");
             }
             else
             {
