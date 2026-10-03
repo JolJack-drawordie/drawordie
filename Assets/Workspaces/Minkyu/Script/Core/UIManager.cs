@@ -6,8 +6,12 @@ using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("에너지 UI")]
+    public Slider energySlider;               // 원형 게이지 (남은 에너지 / 이번 턴 에너지)
+    public TextMeshProUGUI energySliderText;  // 게이지 가운데 숫자
+    public TextMeshProUGUI energyText;        // 예전 텍스트 UI (게이지가 없는 씬용)
+
     [Header("기본 UI")]
-    public TextMeshProUGUI energyText;
     public TextMeshProUGUI playerHpText;
     public TextMeshProUGUI playerShieldText;
     public TextMeshProUGUI enemyHpText;
@@ -91,7 +95,21 @@ public class UIManager : MonoBehaviour
 
     public void UpdateEnergyUI(int newEnergy)
     {
-        energyText.text = "Energy : " + newEnergy;
+        int maxEnergy = DiceManager.Instance != null ? DiceManager.Instance.MaxEnergy : newEnergy;
+
+        if (energySlider != null)
+        {
+            energySlider.interactable = false; // 표시 전용 (드래그로 값 변경 방지)
+            energySlider.minValue = 0;
+            energySlider.maxValue = Mathf.Max(1, maxEnergy);
+            energySlider.value = newEnergy;
+        }
+
+        if (energySliderText != null)
+            energySliderText.text = $"{newEnergy} / {maxEnergy}";
+
+        if (energyText != null)
+            energyText.text = "Energy : " + newEnergy;
     }
 
     // =========================

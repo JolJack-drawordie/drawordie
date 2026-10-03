@@ -43,6 +43,13 @@ public class TurnManager : MonoBehaviour
     {
         CardDataManager.Instance.OnDataLoaded -= StartGame;
 
+        // 휴식 씬 세이브를 불러온 경우: 저장된 덱을 복원 (IsDeckInitialized = true가 되어 기본 덱 초기화를 건너뜀)
+        if (PendingLoadData.pendingDeckJson != null)
+        {
+            DeckManager.Instance.LoadDeckState(PendingLoadData.pendingDeckJson);
+            PendingLoadData.pendingDeckJson = null;
+        }
+
         // ⭐ [로드 기능] 조건 추가 (원래는 !DeckManager.Instance.IsDeckInitialized 만 있었음)
         // 로드된 게임이면 저장된 덱으로 복원되므로 기본 덱 초기화는 건너뜀 (GameManager.StartBattle에서 처리)
         if (!PendingLoadData.isPending && !DeckManager.Instance.IsDeckInitialized)
@@ -96,7 +103,7 @@ public class TurnManager : MonoBehaviour
 
             if (isResumedTurn)
             {
-                diceManager.SetCurrentEnergy(PendingLoadData.cost);
+                diceManager.SetCurrentEnergy(PendingLoadData.cost, PendingLoadData.maxCost);
 
                 if (DataManager.Instance != null)
                 {

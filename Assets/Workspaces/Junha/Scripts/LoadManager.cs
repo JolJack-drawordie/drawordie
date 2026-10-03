@@ -10,6 +10,7 @@ public class LoadManager : MonoBehaviour
 
     private const string LoadUrl = "http://localhost:8080/api/game/load";
     private const string BattleSceneName = "JunhaTest";
+    private const string RestSceneName = "RestScene";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeBeforeSceneLoad()
@@ -89,21 +90,39 @@ public class LoadManager : MonoBehaviour
         // 구버전 세이브(act 컬럼이 없던 시절)는 0으로 내려오므로 1로 보정
         GameFlowData.currentAct = data.currentAct > 0 ? data.currentAct : 1;
         GameFlowData.currentNodeType = (MapNode.NodeType)data.currentNodeType;
+        GameFlowData.hasRested = data.rested;
         GameFlowData.debugUnlockBoss = false; // 불러온 게임에는 테스트 설정을 적용하지 않음
 
         // 저장 시점의 플레이 타임부터 이어서 측정 (구버전 세이브는 0)
         if (PlayTimeTracker.Instance != null)
             PlayTimeTracker.Instance.ResumeRun(data.playTime);
 
-        PendingLoadData.Set(data.currentHp, data.currentShield, data.currentCost, data.deckData, data.monsterData);
-
-        Debug.Log("<color=green>[LoadManager] 세이브 데이터 불러오기 완료! 전투 씬으로 이동합니다.</color>");
-
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.StopBGM();
         }
 
+        // 휴식 노드에서 저장한 경우: 체력은 바로 복원하고, 덱은 다음 전투 시작 때 복원
+        if (GameFlowData.currentNodeType == MapNode.NodeType.Rest)
+        {
+            if (StatManager.Instance != null && StatManager.Instance.runtimePlayerStat != null)
+            {
+                StatManager.Instance.runtimePlayerStat.currentHp = data.currentHp;
+                StatManager.Instance.runtimePlayerStat.currentShield = 0;
+            }
+
+            PendingLoadData.Clear();
+            PendingLoadData.pendingDeckJson = data.deckData;
+
+            Debug.Log("<color=green>[LoadManager] 세이브 데이터 불러오기 완료! 휴식 씬으로 이동합니다.</color>");
+            SceneManager.LoadScene(RestSceneName);
+            return;
+        }
+
+        PendingLoadData.pendingDeckJson = null;
+        PendingLoadData.Set(data.currentHp, data.currentShield, data.currentCost, data.maxCost, data.deckData, data.monsterData);
+
+        Debug.Log("<color=green>[LoadManager] 세이브 데이터 불러오기 완료! 전투 씬으로 이동합니다.</color>");
         SceneManager.LoadScene(BattleSceneName);
     }
 }

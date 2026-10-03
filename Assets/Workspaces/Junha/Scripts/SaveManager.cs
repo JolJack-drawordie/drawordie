@@ -66,12 +66,20 @@ public class SaveManager : MonoBehaviour
             playerCurrentHp = player.statData.currentHp;
             playerCurrentShield = player.statData.currentShield;
         }
+        else if (StatManager.Instance != null && StatManager.Instance.runtimePlayerStat != null)
+        {
+            // 전투 밖(휴식 씬 등): 씬 간에 유지되는 플레이어 스탯 사용
+            playerCurrentHp = StatManager.Instance.runtimePlayerStat.currentHp;
+            playerCurrentShield = 0;
+        }
 
         // -----------------------------
         // 코스트 (주사위로 굴린 현재 에너지)
         // -----------------------------
         int currentCost =
             DiceManager.Instance != null ? DiceManager.Instance.CurrentEnergy : 0;
+        int maxCost =
+            DiceManager.Instance != null ? DiceManager.Instance.MaxEnergy : 0;
 
         // -----------------------------
         // 덱 정보
@@ -100,6 +108,10 @@ public class SaveManager : MonoBehaviour
         }
 
         string deckDataJson = JsonUtility.ToJson(deck);
+
+        // 휴식 씬 세이브를 불러온 뒤 아직 전투에서 덱을 복원하지 않았다면, 불러온 덱을 그대로 다시 저장
+        if (PendingLoadData.pendingDeckJson != null)
+            deckDataJson = PendingLoadData.pendingDeckJson;
 
         // -----------------------------
         // 몬스터 정보 (전투 중이 아니면 빈 문자열)
@@ -133,12 +145,14 @@ public class SaveManager : MonoBehaviour
         form.AddField("hp", playerCurrentHp);
         form.AddField("shield", playerCurrentShield);
         form.AddField("cost", currentCost);
+        form.AddField("maxCost", maxCost);
         form.AddField("deckData", deckDataJson);
         form.AddField("monsterData", monsterDataJson);
         form.AddField("currentFloor", GameFlowData.currentFloor);
         form.AddField("currentIndex", GameFlowData.currentIndex);
         form.AddField("act", GameFlowData.currentAct);
         form.AddField("nodeType", (int)GameFlowData.currentNodeType);
+        form.AddField("rested", GameFlowData.hasRested ? "true" : "false");
         form.AddField("playTime",
             PlayTimeTracker.Instance != null ? PlayTimeTracker.Instance.GetElapsedSecondsInt() : 0);
 
