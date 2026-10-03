@@ -31,9 +31,12 @@ public class PlayTimeTracker : MonoBehaviour
     // 새 게임 / 불러오기로 런이 시작된 적이 있는지 (종료 후에도 결과 화면에서 최종 시간 표시)
     private bool hasRun;
 
-    // 타이머 오른쪽 끝 위치 (1920x1080 기준, 화면 중앙 기준 좌표)
-    // 전투 씬 저장 버튼: 중심 (814, 477), 너비 약 202.6 → 왼쪽 끝 x ≈ 712.7, 거기서 20 간격
-    private static readonly Vector2 TimerPosition = new Vector2(693f, 477f);
+    // 타이머 오른쪽 끝 위치 (1920x1080 기준, 화면 오른쪽 위 모서리 기준 좌표)
+    // 상단 바(높이 100): 설정 버튼(중심 -70) · 저장 버튼(중심 -216, 너비 180 → 왼쪽 끝 -306) 왼쪽으로 28 간격
+    private static readonly Vector2 TimerPosition = new Vector2(-334f, -50f);
+
+    // 타이머 폰트 (Assets/Workspaces/Junha/Resources 안의 폰트 에셋 이름)
+    private const string TimerFontName = "온글잎 콘콘체 SDF";
 
     private GameObject timerCanvas;
     private TextMeshProUGUI timerText;
@@ -168,6 +171,13 @@ public class PlayTimeTracker : MonoBehaviour
         textObj.transform.SetParent(timerCanvas.transform, false);
 
         timerText = textObj.AddComponent<TextMeshProUGUI>();
+
+        TMP_FontAsset timerFont = Resources.Load<TMP_FontAsset>(TimerFontName);
+        if (timerFont != null)
+            timerText.font = timerFont;
+        else
+            Debug.LogWarning($"[PlayTimeTracker] Resources에서 폰트를 찾을 수 없습니다: {TimerFontName}");
+
         timerText.fontSize = 36f;
         timerText.alignment = TextAlignmentOptions.Right;
         timerText.color = Color.white;
@@ -175,10 +185,10 @@ public class PlayTimeTracker : MonoBehaviour
         timerText.outlineColor = Color.black;
         timerText.raycastTarget = false; // 클릭을 막지 않도록
 
-        // 전투 씬 저장 버튼 왼쪽 (오른쪽 끝을 기준으로 배치)
+        // 전투 씬 저장 버튼 왼쪽 (오른쪽 위 모서리 기준, 오른쪽 끝을 기준으로 배치)
         RectTransform rect = timerText.rectTransform;
-        rect.anchorMin = new Vector2(0.5f, 0.5f);
-        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.anchorMin = new Vector2(1f, 1f);
+        rect.anchorMax = new Vector2(1f, 1f);
         rect.pivot = new Vector2(1f, 0.5f);
         rect.anchoredPosition = TimerPosition;
         rect.sizeDelta = new Vector2(300f, 60f);

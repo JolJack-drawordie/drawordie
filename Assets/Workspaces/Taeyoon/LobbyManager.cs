@@ -77,6 +77,8 @@ public class LobbyManager : MonoBehaviour
         if (PlayTimeTracker.Instance != null)
             PlayTimeTracker.Instance.StartNewRun();
 
+        PendingLoadData.pendingDeckJson = null;
+
         ApplyDebugStart();
 
         StartCoroutine(FadeAndLoad("MapScene"));

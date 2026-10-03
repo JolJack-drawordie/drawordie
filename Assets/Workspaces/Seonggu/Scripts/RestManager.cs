@@ -13,6 +13,10 @@ public class RestManager : MonoBehaviour
         if (restButton != null)
         {
             restButton.onClick.AddListener(OnRestButtonClicked);
+
+            // 이미 휴식한 노드(휴식 후 저장한 세이브를 불러온 경우 등)면 다시 휴식할 수 없음
+            if (GameFlowData.hasRested)
+                restButton.interactable = false;
         }
     }
 
@@ -24,6 +28,7 @@ public class RestManager : MonoBehaviour
             // 예시: StatManager에 플레이어 체력을 회복시키는 메서드가 있다고 가정
             // StatManager.Instance.HealPlayer(healAmount);
             StatManager.Instance.HealPlayer(healAmount);
+            GameFlowData.hasRested = true;
 
             Debug.Log($"휴식 완료: 체력 {healAmount} 회복!");
 

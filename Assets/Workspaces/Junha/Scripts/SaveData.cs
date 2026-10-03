@@ -52,12 +52,14 @@ public class GameSaveDto
     public int currentHp;
     public int currentShield;
     public int currentCost;
+    public int maxCost; // 이번 턴 최대 에너지 (구버전 세이브는 0)
     public string deckData;
     public string monsterData;
     public int currentFloor;
     public int currentIndex;
     public int currentAct;
     public int currentNodeType;
+    public bool rested; // 현재 휴식 노드에서 이미 휴식했는지
     public int playTime; // 누적 플레이 타임(초)
 }
 
