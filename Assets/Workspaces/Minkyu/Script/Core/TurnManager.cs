@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class TurnManager : MonoBehaviour
     public PlayerController playerController;
     public EnemyController enemyController;
 
+    [Header("턴 종료 버튼")]
+    public Button endTurnButton; // 비어있으면 씬에서 "EndTurnButton" 이름으로 찾음
+    public bool alignEndTurnWithRollButton = true; // 주사위 버튼과 같은 위치에 배치
+
     [Header("턴 정보")]
     public int turnCount = 0;
     public bool playerActionFinished = false;
@@ -22,6 +27,7 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        SetupEndTurnButton();
 
         if (CardDataManager.Instance.isDataLoaded)
         {
@@ -123,11 +129,21 @@ public class TurnManager : MonoBehaviour
             gameManager.currentState = BattleState.PlayerTurn;
             Debug.Log("Player Turn Start - 카드를 드래그해 공격하고 턴 종료 버튼을 누르세요.");
             playerActionFinished = false;
+            ShowEndTurnButton(true);
 
             // 카드 드래그로 공격, EndTurnButton이 EndPlayerTurn() 호출할 때까지 대기
             while (!playerActionFinished)
             {
-                if (gameManager.isGameOver) yield break;
+                if (gameManager.isGameOver)
+                {
+                    ShowEndTurnButton(false);
+                    yield break;
+                }
+
+                // 카드 사용(공격 연출) 중에는 회색 처리
+                if (endTurnButton != null)
+                    endTurnButton.interactable = !EnemyTarget.IsActing;
+
                 yield return null;
             }
 
@@ -135,6 +151,9 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
+
+            // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라짐
+            enemy.ResetShield();
 
             if (enemyController != null)
                 yield return StartCoroutine(enemyController.PlayAttackAnimation());
@@ -147,14 +166,36 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.TurnEnd;
 
-            //방어도 리셋
+            // 플레이어 방어도 리셋 (적 방어도는 다음 적 턴 시작 시 리셋)
             player.ResetShield();
-            enemy.ResetShield();
 
             Debug.Log($"===== Turn {turnCount} End =====");
 
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    private void SetupEndTurnButton()
+    {
+        if (endTurnButton == null)
+        {
+            GameObject found = GameObject.Find("EndTurnButton");
+            if (found != null) endTurnButton = found.GetComponent<Button>();
+        }
+        if (endTurnButton == null) return;
+
+        // 주사위 버튼과 같은 자리에 겹쳐 두고, 상황에 따라 둘 중 하나만 보이게 함
+        if (alignEndTurnWithRollButton && diceManager != null && diceManager.rollDiceButton != null)
+            endTurnButton.transform.position = diceManager.rollDiceButton.transform.position;
+
+        ShowEndTurnButton(false);
+    }
+
+    private void ShowEndTurnButton(bool show)
+    {
+        if (endTurnButton == null) return;
+        endTurnButton.interactable = true;
+        endTurnButton.gameObject.SetActive(show);
     }
 
     private bool ShowBattleResultIfGameOver()
@@ -171,6 +212,18 @@ public class TurnManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
+        // 플레이어 턴이 아니거나 이미 종료 요청됐으면 무시
+        if (playerActionFinished || gameManager.currentState != BattleState.PlayerTurn) return;
+
+        // 카드 사용(공격 연출) 중에는 턴 종료 불가
+        if (EnemyTarget.IsActing)
+        {
+            Debug.Log("카드 사용 중에는 턴을 종료할 수 없습니다.");
+            return;
+        }
+
+        ShowEndTurnButton(false);
+
         if (DataManager.Instance != null)
             DataManager.Instance.StartDiscardAll();
         playerActionFinished = true;
