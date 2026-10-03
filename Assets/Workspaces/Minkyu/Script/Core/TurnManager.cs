@@ -152,6 +152,9 @@ public class TurnManager : MonoBehaviour
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
 
+            // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라짐
+            enemy.ResetShield();
+
             if (enemyController != null)
                 yield return StartCoroutine(enemyController.PlayAttackAnimation());
             enemy.Attack(player);
@@ -163,9 +166,8 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.TurnEnd;
 
-            //방어도 리셋
+            // 플레이어 방어도 리셋 (적 방어도는 다음 적 턴 시작 시 리셋)
             player.ResetShield();
-            enemy.ResetShield();
 
             Debug.Log($"===== Turn {turnCount} End =====");
 
