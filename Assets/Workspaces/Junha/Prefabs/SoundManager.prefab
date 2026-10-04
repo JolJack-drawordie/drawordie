@@ -56,6 +56,19 @@ MonoBehaviour:
   mainBackgroundSound: {fileID: 8300000, guid: 01c02fee172ee5c428bbaa3c531811d6, type: 3}
   mapBackgroundSound: {fileID: 8300000, guid: 15a23c63e907b3c49ae7a150be9c9793, type: 3}
   battleBackgroundSound: {fileID: 8300000, guid: 3ac206f90b568c643b90e511208369a2, type: 3}
+  actMapBackgroundSounds:
+  - {fileID: 8300000, guid: cef6b5f432c483b498d07b40fa848f80, type: 3}
+  - {fileID: 8300000, guid: f2d5fe2ba3a5b43629878781af4390e8, type: 3}
+  - {fileID: 8300000, guid: ffc95b83c9f8344ebb6214eb5b0b3087, type: 3}
+  actBattleBackgroundSounds:
+  - {fileID: 8300000, guid: 8e7b37cdcdead884bbe55e4df8de0087, type: 3}
+  - {fileID: 8300000, guid: d293afdf5e93fce43a80af4332c8639e, type: 3}
+  - {fileID: 8300000, guid: aa71588156db2fb4ab875d94dfcc6fa3, type: 3}
+  actBossBackgroundSounds:
+  - {fileID: 8300000, guid: 6edc69924617c5c4b9c6ac264ec9c615, type: 3}
+  - {fileID: 8300000, guid: 5f454f11711d64f8b9416274a6b247fa, type: 3}
+  - {fileID: 8300000, guid: c7b1d2a52517f4d27ba60f7afa66a248, type: 3}
+  restBackgroundSound: {fileID: 8300000, guid: 7e371b800dc9b49b6a803715bc37b8e2, type: 3}
 --- !u!82 &6552868397947594876
 AudioSource:
   m_ObjectHideFlags: 0

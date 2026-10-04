@@ -58,8 +58,8 @@ public class TurnManager : MonoBehaviour
             DeckManager.Instance.IsDeckInitialized = true; // "이제 초기화 끝났다"고 체크 박아둠
         }
         // 배경 음악
-        if (SoundManager.Instance != null && SoundManager.Instance.battleBackgroundSound != null) {
-            SoundManager.Instance.PlayBGM(SoundManager.Instance.battleBackgroundSound);
+        if (SoundManager.Instance != null) {
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.GetBattleBGM());
         }
 
         gameManager.StartBattle();

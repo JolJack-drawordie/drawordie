@@ -10,6 +10,9 @@ public class RestManager : MonoBehaviour
 
     private void Start()
     {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.restBackgroundSound);
+
         if (restButton != null)
         {
             restButton.onClick.AddListener(OnRestButtonClicked);
