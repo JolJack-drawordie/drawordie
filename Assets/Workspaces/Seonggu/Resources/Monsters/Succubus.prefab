@@ -2329,7 +2329,7 @@ MonoBehaviour:
   crossFadeTime: 0.05
   maxActionTime: 4
   fallbackDuration: 0.6
-  applyIntentEffects: 0
+  defendSkipsDamage: 1
   useTestKey: 0
   testKey: 51
 --- !u!1 &6920246943309049052
