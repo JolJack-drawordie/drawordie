@@ -26,6 +26,8 @@ public class SkillEffectManager : MonoBehaviour
     // 기본 슬라임 타격 위치 지정 (X: 4.93, Y: -1.73, Z: -1)
     private readonly Vector3 defaultSlimePosition = new Vector3(4.93f, -1.73f, -1f);
 
+    private readonly WaitForSeconds waitDelay = new WaitForSeconds(0.05f);
+
     private void Awake()
     {
         if (Instance == null)
@@ -47,7 +49,7 @@ public class SkillEffectManager : MonoBehaviour
         adjectiveDict.Clear();
         foreach (var data in adjectiveEffects)
         {
-            if (data.effectPrefab != null && !adjectiveDict.ContainsKey(data.id))
+            if (data.effectPrefab != null && data.id > 0 && !adjectiveDict.ContainsKey(data.id))
             {
                 adjectiveDict.Add(data.id, data.effectPrefab);
             }
@@ -56,7 +58,7 @@ public class SkillEffectManager : MonoBehaviour
         gerundDict.Clear();
         foreach (var data in gerundEffects)
         {
-            if (data.effectPrefab != null && !gerundDict.ContainsKey(data.id))
+            if (data.effectPrefab != null && data.id > 0 && !gerundDict.ContainsKey(data.id))
             {
                 gerundDict.Add(data.id, data.effectPrefab);
             }
@@ -64,8 +66,16 @@ public class SkillEffectManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 스킬 이펙트를 재생합니다.
-    /// 별도 좌표 지정이 없거나 UI 좌표가 오면 슬라임 위치(4.93, -1.73, -1)에서 터집니다.
+    /// [단독 사용] 동명사 카드만 사용할 때 호출
+    /// </summary>
+    public void PlaySkillEffect(int gerundId, Vector3 targetPosition = default)
+    {
+        // 형용사 ID에 -1(없음)을 넘김
+        PlaySkillEffect(-1, gerundId, targetPosition);
+    }
+
+    /// <summary>
+    /// [조합 사용] 형용사 + 동명사 카드를 함께 사용할 때 호출
     /// </summary>
     public void PlaySkillEffect(int adjectiveId, int gerundId, Vector3 targetPosition = default)
     {
@@ -83,25 +93,21 @@ public class SkillEffectManager : MonoBehaviour
 
     private IEnumerator RoutinePlayCombinedEffect(int adjectiveId, int gerundId, Vector3 targetPosition)
     {
-        // 1. 동작(동명사) 이펙트
+        // 1. 동작(동명사) 이펙트 재생
         if (gerundDict.TryGetValue(gerundId, out GameObject gerundPrefab))
         {
             GameObject gerundInstance = Instantiate(gerundPrefab, targetPosition, Quaternion.identity);
             SetSortingOrderHigh(gerundInstance);
-
-            // 0.5초 뒤 자동 삭제
             Destroy(gerundInstance, 2.5f);
         }
 
-        yield return new WaitForSeconds(0.05f);
-
-        // 2. 속성(형용사) 이펙트
-        if (adjectiveDict.TryGetValue(adjectiveId, out GameObject adjPrefab))
+        // 2. 형용사 ID가 유효하고(0 초과), 딕셔너리에 존재하는 경우에만 형용사 이펙트 재생
+        if (adjectiveId > 0 && adjectiveDict.TryGetValue(adjectiveId, out GameObject adjPrefab))
         {
+            yield return waitDelay;
+
             GameObject adjInstance = Instantiate(adjPrefab, targetPosition, Quaternion.identity);
             SetSortingOrderHigh(adjInstance);
-
-            // 0.5초 뒤 자동 삭제
             Destroy(adjInstance, 0.5f);
         }
     }
