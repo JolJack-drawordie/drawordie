@@ -27,7 +27,7 @@ public class ButtonHoverSound : MonoBehaviour
 
         if (audioSource != null && audioSource.isActiveAndEnabled)
         {
-            audioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip, SoundManager.SavedSFXVolume);
         }
     }
 }

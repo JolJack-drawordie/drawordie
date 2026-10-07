@@ -34,6 +34,75 @@ public static class FixButtonHoverAudioWarning
         FixScene(EditorSceneManager.GetActiveScene());
     }
 
+    // 빌드 설정의 모든 씬에서 AudioSource.PlayOneShot을 직접 부르는 버튼(onClick / EventTrigger)을 찾아
+    // ButtonHoverSound.PlaySafely로 교체한다. PlaySafely는 SoundManager.PlaySFX를 거치므로 설정의 효과음 음량/음소거를 따른다.
+    // (AudioSource가 버튼과 다른 오브젝트에 있어도 처리)
+    [MenuItem("Tools/UI/모든 씬 버튼 사운드를 효과음 설정에 연결")]
+    private static void FixAllScenesDirectAudio()
+    {
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+
+        string originalScene = EditorSceneManager.GetActiveScene().path;
+
+        foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes)
+        {
+            if (!buildScene.enabled) continue;
+
+            UnityEngine.SceneManagement.Scene scene = EditorSceneManager.OpenScene(buildScene.path, OpenSceneMode.Single);
+            int fixedCount = 0;
+
+            foreach (GameObject root in scene.GetRootGameObjects())
+            {
+                foreach (Button button in root.GetComponentsInChildren<Button>(true))
+                {
+                    SerializedObject so = new SerializedObject(button);
+                    FixDirectAudioCalls(button, FindCallsArray(so.FindProperty("m_OnClick")), ref fixedCount);
+                }
+
+                foreach (EventTrigger trigger in root.GetComponentsInChildren<EventTrigger>(true))
+                {
+                    SerializedObject so = new SerializedObject(trigger);
+                    SerializedProperty delegates = so.FindProperty("m_Delegates");
+                    if (delegates == null) continue;
+
+                    for (int i = 0; i < delegates.arraySize; i++)
+                        FixDirectAudioCalls(trigger, FindCallsArray(delegates.GetArrayElementAtIndex(i).FindPropertyRelative("callback")), ref fixedCount);
+                }
+            }
+
+            if (fixedCount > 0)
+            {
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log($"<color=green>[FixButtonHoverAudioWarning] {buildScene.path}: {fixedCount}개 수정 후 저장</color>");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(originalScene))
+            EditorSceneManager.OpenScene(originalScene, OpenSceneMode.Single);
+    }
+
+    // calls 안에서 AudioSource.PlayOneShot / Play를 직접 부르는 항목마다, 그 AudioSource 기준으로 FixAudioCalls를 적용
+    private static void FixDirectAudioCalls(Component owner, SerializedProperty callsProp, ref int fixedCount)
+    {
+        if (callsProp == null) return;
+
+        var sources = new System.Collections.Generic.HashSet<AudioSource>();
+        for (int j = 0; j < callsProp.arraySize; j++)
+        {
+            SerializedProperty call = callsProp.GetArrayElementAtIndex(j);
+            string method = call.FindPropertyRelative("m_MethodName").stringValue;
+            if ((method == "PlayOneShot" || method == "Play") &&
+                call.FindPropertyRelative("m_Target").objectReferenceValue is AudioSource source)
+            {
+                sources.Add(source);
+            }
+        }
+
+        foreach (AudioSource source in sources)
+            FixAudioCalls(owner, callsProp, source, ref fixedCount);
+    }
+
     private static void FixScene(UnityEngine.SceneManagement.Scene scene)
     {
         Undo.SetCurrentGroupName("버튼 사운드 경고 수정");

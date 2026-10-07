@@ -21,11 +21,10 @@ public class MapNodeManager : MonoBehaviour
         InitializeNodes();
 
         // 배경음악
-        if (SoundManager.Instance != null &&
-            SoundManager.Instance.mapBackgroundSound != null)
+        if (SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayBGM(
-                SoundManager.Instance.mapBackgroundSound
+                SoundManager.Instance.GetMapBGM()
             );
         }
     }

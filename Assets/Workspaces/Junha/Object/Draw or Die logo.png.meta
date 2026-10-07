@@ -1,0 +1,1313 @@
+fileFormatVersion: 2
+guid: ac765f91c29abf44eafacd0e3fbb8824
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5137980427943207156
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_0"
+  - first:
+      213: -3923995071883690012
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_1"
+  - first:
+      213: -389917435740258343
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_2"
+  - first:
+      213: 4150395746779756526
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_3"
+  - first:
+      213: 595259023301041242
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_4"
+  - first:
+      213: -2186943316677958662
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_5"
+  - first:
+      213: 2692527575210571155
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_6"
+  - first:
+      213: 7587725299132191695
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_7"
+  - first:
+      213: -6543402081246214251
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_8"
+  - first:
+      213: 6525802776508759969
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_9"
+  - first:
+      213: 8186117477987533745
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_10"
+  - first:
+      213: -3578662631493296411
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_11"
+  - first:
+      213: -6780130381142751303
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_12"
+  - first:
+      213: 1978841964917790312
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_13"
+  - first:
+      213: -656206500112819135
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_14"
+  - first:
+      213: 1695469095081714364
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_15"
+  - first:
+      213: 3877089828457402230
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_16"
+  - first:
+      213: -1781083770932453603
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_17"
+  - first:
+      213: 6336904213377445730
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_18"
+  - first:
+      213: -7828156648346390776
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_19"
+  - first:
+      213: 5789435015317216068
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_20"
+  - first:
+      213: 49375597756137666
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_21"
+  - first:
+      213: -6992767774973561554
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_22"
+  - first:
+      213: -1056433463258361538
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_23"
+  - first:
+      213: 5324952454695494938
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_24"
+  - first:
+      213: 296680045089344611
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_25"
+  - first:
+      213: -8860770796706704411
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_26"
+  - first:
+      213: -4109545026331993826
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_27"
+  - first:
+      213: 6478315234649102876
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_28"
+  - first:
+      213: -4550959034124134898
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_29"
+  - first:
+      213: 6060599037918386426
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_30"
+  - first:
+      213: 898858927845439744
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_31"
+  - first:
+      213: -5658926597080252985
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_32"
+  - first:
+      213: -3870870236520434039
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_33"
+  - first:
+      213: 1081095970704683064
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_34"
+  - first:
+      213: 7227118591177209117
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_35"
+  - first:
+      213: 6553351779649170341
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_36"
+  - first:
+      213: -7088835938423156130
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_37"
+  - first:
+      213: 8983066326764470699
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_38"
+  - first:
+      213: -7115501420890504691
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_39"
+  - first:
+      213: 4328989777538027541
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_40"
+  - first:
+      213: -8359307214937187700
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_41"
+  - first:
+      213: -8696887930730934844
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_42"
+  - first:
+      213: 295252845648380707
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_43"
+  - first:
+      213: 2186510435100288266
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_44"
+  - first:
+      213: -8609203210656344228
+    second: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_45"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_0"
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 0
+        width: 2148
+        height: 696
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0f1981e50a32b8b0800000000000000
+      internalID: -5137980427943207156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_1"
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 681
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ef3df7b54b2b89c0800000000000000
+      internalID: -3923995071883690012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_2"
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 681
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9df78f6782cb69af0800000000000000
+      internalID: -389917435740258343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_3"
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 667
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7791421fa299930800000000000000
+      internalID: 4150395746779756526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_4"
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 653
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5c54398de8c24800800000000000000
+      internalID: 595259023301041242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_5"
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 609
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af3ee71f3aa66a1e0800000000000000
+      internalID: -2186943316677958662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_6"
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 279
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 395be546097cd5520800000000000000
+      internalID: 2692527575210571155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_7"
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 120
+        width: 23
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc3d40445f30d4960800000000000000
+      internalID: 7587725299132191695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_8"
+      rect:
+        serializedVersion: 2
+        x: 1100
+        y: 137
+        width: 9
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59784ccb97a2135a0800000000000000
+      internalID: -6543402081246214251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_9"
+      rect:
+        serializedVersion: 2
+        x: 784
+        y: 93
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1afff00dc0f409a50800000000000000
+      internalID: 6525802776508759969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_10"
+      rect:
+        serializedVersion: 2
+        x: 1118
+        y: 112
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b3401d697eea9170800000000000000
+      internalID: 8186117477987533745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_11"
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 112
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ee90e61c49065ec0800000000000000
+      internalID: -3578662631493296411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_12"
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 120
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b7072d475328e1a0800000000000000
+      internalID: -6780130381142751303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_13"
+      rect:
+        serializedVersion: 2
+        x: 1253
+        y: 112
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8669f816842467b10800000000000000
+      internalID: 1978841964917790312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_14"
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 79
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14c19753aafa4e6f0800000000000000
+      internalID: -656206500112819135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_15"
+      rect:
+        serializedVersion: 2
+        x: 643
+        y: 103
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb2aff3b824878710800000000000000
+      internalID: 1695469095081714364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_16"
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 98
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67fcb7348a03ec530800000000000000
+      internalID: 3877089828457402230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_17"
+      rect:
+        serializedVersion: 2
+        x: 1001
+        y: 97
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1f9b563fb15847e0800000000000000
+      internalID: -1781083770932453603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_18"
+      rect:
+        serializedVersion: 2
+        x: 1028
+        y: 103
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26fe906cec431f750800000000000000
+      internalID: 6336904213377445730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_19"
+      rect:
+        serializedVersion: 2
+        x: 1094
+        y: 98
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80f6331f00dcc5390800000000000000
+      internalID: -7828156648346390776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_20"
+      rect:
+        serializedVersion: 2
+        x: 1130
+        y: 92
+        width: 11
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44bd0320974385050800000000000000
+      internalID: 5789435015317216068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_21"
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 99
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c0c3d438da6fa000800000000000000
+      internalID: 49375597756137666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_22"
+      rect:
+        serializedVersion: 2
+        x: 1162
+        y: 99
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e25f6e702c2b4fe90800000000000000
+      internalID: -6992767774973561554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_23"
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 78
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3156a5cc5bc651f0800000000000000
+      internalID: -1056433463258361538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_24"
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 79
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1528f37b0806e940800000000000000
+      internalID: 5324952454695494938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_25"
+      rect:
+        serializedVersion: 2
+        x: 762
+        y: 63
+        width: 27
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36c4f7bdde40e1400800000000000000
+      internalID: 296680045089344611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_26"
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 85
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e3542228e7380580800000000000000
+      internalID: -8860770796706704411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_27"
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 71
+        width: 12
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1912056296f7f6c0800000000000000
+      internalID: -4109545026331993826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_28"
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 95
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1ad240e16997e950800000000000000
+      internalID: 6478315234649102876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_29"
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 75
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e061da7dedeb7d0c0800000000000000
+      internalID: -4550959034124134898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_30"
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 82
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af8133de6b29b1450800000000000000
+      internalID: 6060599037918386426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_31"
+      rect:
+        serializedVersion: 2
+        x: 1172
+        y: 65
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0097a69be63697c00800000000000000
+      internalID: 898858927845439744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_32"
+      rect:
+        serializedVersion: 2
+        x: 1524
+        y: 62
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cd75030e347771b0800000000000000
+      internalID: -5658926597080252985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_33"
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 51
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98631945708e74ac0800000000000000
+      internalID: -3870870236520434039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_34"
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 41
+        width: 17
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83075f5be03d00f00800000000000000
+      internalID: 1081095970704683064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_35"
+      rect:
+        serializedVersion: 2
+        x: 641
+        y: 63
+        width: 16
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d153db85112eb4460800000000000000
+      internalID: 7227118591177209117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_36"
+      rect:
+        serializedVersion: 2
+        x: 1671
+        y: 57
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5aba922f8be22fa50800000000000000
+      internalID: 6553351779649170341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_37"
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 47
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e52d343b5456f9d90800000000000000
+      internalID: -7088835938423156130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_38"
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 51
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba1c198da334aac70800000000000000
+      internalID: 8983066326764470699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_39"
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 41
+        width: 10
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d02c8014829a04d90800000000000000
+      internalID: -7115501420890504691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_40"
+      rect:
+        serializedVersion: 2
+        x: 1532
+        y: 45
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51093764449a31c30800000000000000
+      internalID: 4328989777538027541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_41"
+      rect:
+        serializedVersion: 2
+        x: 1744
+        y: 47
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8a1f45a066cdfb80800000000000000
+      internalID: -8359307214937187700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_42"
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 46
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cd866d41827e4780800000000000000
+      internalID: -8696887930730934844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_43"
+      rect:
+        serializedVersion: 2
+        x: 1830
+        y: 0
+        width: 82
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3238bc716e2f81400800000000000000
+      internalID: 295252845648380707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_44"
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 37
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0566d5f7ab085e10800000000000000
+      internalID: 2186510435100288266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_45"
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 39
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c571dad1b47f58880800000000000000
+      internalID: -8609203210656344228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_0": -5137980427943207156
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_1": -3923995071883690012
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_10": 8186117477987533745
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_11": -3578662631493296411
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_12": -6780130381142751303
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_13": 1978841964917790312
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_14": -656206500112819135
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_15": 1695469095081714364
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_16": 3877089828457402230
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_17": -1781083770932453603
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_18": 6336904213377445730
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_19": -7828156648346390776
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_2": -389917435740258343
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_20": 5789435015317216068
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_21": 49375597756137666
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_22": -6992767774973561554
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_23": -1056433463258361538
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_24": 5324952454695494938
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_25": 296680045089344611
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_26": -8860770796706704411
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_27": -4109545026331993826
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_28": 6478315234649102876
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_29": -4550959034124134898
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_3": 4150395746779756526
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_30": 6060599037918386426
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_31": 898858927845439744
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_32": -5658926597080252985
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_33": -3870870236520434039
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_34": 1081095970704683064
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_35": 7227118591177209117
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_36": 6553351779649170341
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_37": -7088835938423156130
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_38": 8983066326764470699
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_39": -7115501420890504691
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_4": 595259023301041242
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_40": 4328989777538027541
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_41": -8359307214937187700
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_42": -8696887930730934844
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_43": 295252845648380707
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_44": 2186510435100288266
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_45": -8609203210656344228
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_5": -2186943316677958662
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_6": 2692527575210571155
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_7": 7587725299132191695
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_8": -6543402081246214251
+      "Draw or Die \uD14D\uC2A4\uD2B8 \uB85C\uACE0_9": 6525802776508759969
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
