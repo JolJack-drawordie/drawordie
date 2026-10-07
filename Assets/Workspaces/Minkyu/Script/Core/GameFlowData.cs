@@ -25,6 +25,9 @@ public static class GameFlowData
 
     public static MapNode.NodeType currentNodeType;
 
+    // 현재 휴식 노드에서 이미 휴식했는지 (새 노드를 고르면 초기화, 세이브에 저장됨)
+    public static bool hasRested = false;
+
     // 현재 선택한 노드의 전용 Seed
     // MapGenerator가 생성
     public static int currentNodeSeed = 0;
@@ -62,6 +65,7 @@ public static class GameFlowData
         currentIndex = node.index;
         currentNodeType = node.nodeType;
         currentNodeSeed = node.nodeSeed;
+        hasRested = false;
     }
 
 

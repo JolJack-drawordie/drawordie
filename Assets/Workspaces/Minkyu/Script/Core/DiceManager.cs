@@ -36,6 +36,9 @@ public class DiceManager : MonoBehaviour
 
     public bool isRollFinished = false; // 턴매니저 대기용 플래그
 
+    // 이번 턴에 주사위로 얻은 에너지 (에너지 게이지의 최대치로 사용)
+    public int MaxEnergy { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -93,7 +96,9 @@ public class DiceManager : MonoBehaviour
 
         diceValue = diceRng.Next(1, 7);
 
-        CurrentEnergy = baseEnergy + diceValue;
+        // 이벤트가 발생하기 전에 최대치를 먼저 갱신해야 UI가 올바른 비율로 그려짐
+        MaxEnergy = baseEnergy + diceValue;
+        CurrentEnergy = MaxEnergy;
         
         if (diceImage != null && diceSprites.Length >= 6)
             diceImage.sprite = diceSprites[diceValue - 1];
@@ -114,8 +119,10 @@ public class DiceManager : MonoBehaviour
 
     // ⭐ [로드 기능] 신규 메서드
     // 세이브 로드 시 주사위를 다시 굴리지 않고 저장된 코스트를 그대로 복원
-    public void SetCurrentEnergy(int amount)
+    public void SetCurrentEnergy(int amount, int maxAmount = 0)
     {
+        // 저장된 최대치가 없는 구버전 세이브(0)는 남은 코스트를 최대치로 사용
+        MaxEnergy = Mathf.Max(maxAmount, amount);
         CurrentEnergy = amount;
     }
 }

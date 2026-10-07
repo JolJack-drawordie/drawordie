@@ -66,7 +66,6 @@ public class GameResultManager : MonoBehaviour
     private IEnumerator SubmitResultRoutine(bool cleared, int reachedAct, int reachedFloor, int playTime)
     {
         WWWForm form = new WWWForm();
-        form.AddField("userId", AuthManager.userId.ToString());
         form.AddField("cleared", cleared ? "true" : "false");
         form.AddField("reachedAct", reachedAct);
         form.AddField("reachedFloor", reachedFloor);
@@ -74,6 +73,8 @@ public class GameResultManager : MonoBehaviour
 
         using (UnityWebRequest www = UnityWebRequest.Post(ResultUrl, form))
         {
+            // 유저 번호는 서버가 토큰에서 꺼내 씀
+            AuthManager.SetAuthHeader(www);
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
@@ -81,6 +82,10 @@ public class GameResultManager : MonoBehaviour
                 LastResult = JsonUtility.FromJson<GameResultResponse>(www.downloadHandler.text);
                 Debug.Log($"<color=green>[GameResultManager] 결과 등록 완료! {LastResult.rank}위 " +
                           $"(클리어: {cleared}, Act {reachedAct}, {reachedFloor}층, {playTime}초)</color>");
+            }
+            else if (www.responseCode == 401)
+            {
+                Debug.LogError("[GameResultManager] 결과 등록 실패: 로그인이 만료되었습니다.");
             }
             else
             {
