@@ -1109,6 +1109,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Btn_Option
       objectReference: {fileID: 0}
+    - target: {fileID: 7238074691340589883, guid: adb8bbecb641e674e85642f5781b550d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7448029584990255546, guid: adb8bbecb641e674e85642f5781b550d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
