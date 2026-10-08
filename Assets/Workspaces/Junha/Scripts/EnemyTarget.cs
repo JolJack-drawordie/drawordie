@@ -67,7 +67,7 @@ public class EnemyTarget : MonoBehaviour
         int heal = card.Heal;
         GameObject cardObj = card.gameObject;
 
-        if (card.AdjectiveId != 0 && card.GerundId != 0 && SkillEffectManager.Instance != null)
+        if (card.GerundId != 0 && SkillEffectManager.Instance != null)
         {
             Vector3 effectPosition = card.Damage > 0 || GameManager.Instance.Player == null
                 ? transform.position

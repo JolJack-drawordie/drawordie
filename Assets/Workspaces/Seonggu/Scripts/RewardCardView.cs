@@ -29,6 +29,10 @@ public class RewardCardView : MonoBehaviour, IPointerClickHandler, IPointerEnter
         if (nameText != null) nameText.text = card.Name;
         if (costText != null) costText.text = card.Cost.ToString();
         if (descriptionText != null) descriptionText.text = card.Description;
+
+        // 카드 프레임/아이콘 적용
+        CardVisual cardVisual = GetComponent<CardVisual>();
+        if (cardVisual != null) cardVisual.Apply(card);
     }
 
     public void OnPointerClick(PointerEventData eventData)

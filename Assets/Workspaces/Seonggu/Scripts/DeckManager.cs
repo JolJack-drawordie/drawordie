@@ -45,6 +45,19 @@ public class DeckManager : MonoBehaviour
         shuffleRng = new System.Random(nodeSeed + 3);
     }
 
+    // 새 게임: 이전 런의 덱을 비우고 다음 전투에서 기본 덱으로 다시 초기화되게 함
+    public void ResetForNewRun()
+    {
+        AdjectiveDrawPile.Clear();
+        AdjectiveDiscardPile.Clear();
+        GerundDrawPile.Clear();
+        GerundDiscardPile.Clear();
+        Hand.Clear();
+        AdjectiveSlot = null;
+        GerundSlot = null;
+        IsDeckInitialized = false;
+    }
+
     public void InitializeDeck(List<int> adjectiveIds, List<int> gerundIds)
     {
         AdjectiveDrawPile.Clear(); // 혹시 모를 기존 카드 초기화

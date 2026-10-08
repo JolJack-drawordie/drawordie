@@ -77,11 +77,26 @@ public class LobbyManager : MonoBehaviour
         if (PlayTimeTracker.Instance != null)
             PlayTimeTracker.Instance.StartNewRun();
 
-        PendingLoadData.pendingDeckJson = null;
+        ResetRunState();
 
         ApplyDebugStart();
 
         StartCoroutine(FadeAndLoad("MapScene"));
+    }
+
+    // 설정 창의 "로비로"나 클리어 후 로비로 돌아온 경우 이전 런의 진행도 / 체력 / 덱이 남아 있으므로 초기화
+    private void ResetRunState()
+    {
+        GameFlowData.ResetRun();
+
+        PendingLoadData.Clear();
+        PendingLoadData.pendingDeckJson = null;
+
+        if (StatManager.Instance != null && StatManager.Instance.runtimePlayerStat != null)
+            StatManager.Instance.runtimePlayerStat.ResetStat();
+
+        if (DeckManager.Instance != null)
+            DeckManager.Instance.ResetForNewRun();
     }
 
     // 테스트 설정 적용 (빌드에서는 항상 꺼짐)

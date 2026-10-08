@@ -14,6 +14,9 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public CardSlot currentSlot;
     public bool isDragging = false;
 
+    // 드래그 중에만 붙이는 정렬용 Canvas (슬롯 패널보다 위에 그리기 위함)
+    private Canvas dragCanvas;
+
     // 🚀 Awake에서 Start로 변경하여 모든 준비가 끝난 후 세팅!
     private void Start()
     {
@@ -46,6 +49,7 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
         transform.SetAsLastSibling();
+        BringToFront();
 
         if (cardUI.cardType == CardType.Adjective)
             ComboManager.Instance.ShowSlots();
@@ -63,6 +67,7 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         isDragging = false;
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
+        RestoreSorting();
 
         // 슬롯 판정: RectTransformUtility로 화면 좌표 포함 여부 직접 확인
         // → Physics2D 좌표계 혼란 없이 Canvas 스케일을 자동 처리함
@@ -125,5 +130,21 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             ComboManager.Instance.HideSlots();
         transform.SetParent(DataManager.Instance.handArea);
         DataManager.Instance.RearrangeHand();
+    }
+
+    // 드래그 중인 카드를 같은 Canvas 안의 다른 UI(슬롯 등)보다 위에 그린다
+    private void BringToFront()
+    {
+        if (dragCanvas == null) dragCanvas = gameObject.AddComponent<Canvas>();
+        dragCanvas.overrideSorting = true;
+        dragCanvas.sortingLayerID = canvas.rootCanvas.sortingLayerID;
+        dragCanvas.sortingOrder = canvas.rootCanvas.sortingOrder + 1;
+    }
+
+    private void RestoreSorting()
+    {
+        if (dragCanvas == null) return;
+        Destroy(dragCanvas);
+        dragCanvas = null;
     }
 }

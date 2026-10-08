@@ -160,13 +160,25 @@ public class DataManager : MonoBehaviour
         foreach (GameObject card in toDiscard) DiscardCard(card);
     }
 
+    // 묘지로 날아가는 중인 카드 (카드 사용 직후 턴 종료를 누르면 같은 카드가 다시 들어와 이중 처리되는 것 방지)
+    private readonly HashSet<GameObject> discardingCards = new HashSet<GameObject>();
+
     // 카드를 묘지로 날려보내는 애니메이션 후 제거
     public void DiscardCard(GameObject cardObj)
     {
+        if (cardObj == null || !discardingCards.Add(cardObj)) return;
         StartCoroutine(DiscardCardRoutine(cardObj));
     }
 
     private IEnumerator DiscardCardRoutine(GameObject cardObj)
+    {
+        yield return DiscardCardAnimation(cardObj);
+
+        discardingCards.Remove(cardObj);
+        if (cardObj != null) Destroy(cardObj);
+    }
+
+    private IEnumerator DiscardCardAnimation(GameObject cardObj)
     {
         if (cardObj == null) yield break;
 
@@ -177,7 +189,7 @@ public class DataManager : MonoBehaviour
         if (cardUI != null) cardUI.enabled = false;
 
         RectTransform rect = cardObj.GetComponent<RectTransform>();
-        if (rect == null) { Destroy(cardObj); yield break; }
+        if (rect == null) yield break;
 
         // 카드 버리는 소리
         if (SoundManager.Instance != null) {
@@ -193,14 +205,15 @@ public class DataManager : MonoBehaviour
 
         while (elapsed < duration)
         {
+            // 연출 중 다른 곳(ClearHand 등)에서 카드가 파괴되면 중단
+            if (rect == null) yield break;
+
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
             rect.position = Vector3.Lerp(startPos, endPos, t);
             rect.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
             yield return null;
         }
-
-        Destroy(cardObj);
     }
 
     public void AddSynergyCardToHand(Combination comboData)

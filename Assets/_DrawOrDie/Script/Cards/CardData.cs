@@ -6,6 +6,9 @@ using UnityEngine;
 // 카드 타입을 구분하기 위한 열거형 추가
 public enum CardType { Adjective, Gerund, Synergy }
 
+// 카드 UI 색상/프레임 구분용 (형용사=Basic, 동명사=Attack/Defense/Heal, 조합=Combination)
+public enum CardCategory { Basic, Attack, Defense, Heal, Combination }
+
 // --- 서버에서 받아올 데이터 구조 ---
 [Serializable]
 public class Adjective 
@@ -24,6 +27,7 @@ public class Gerund
 {
     public int id;
     public string name;
+    public string category; // 서버 값: "ATTACK" / "DEFENSE" / "HEAL"
     public int baseCost; 
     public int baseDmg;
     public int baseShd;
@@ -75,6 +79,7 @@ public interface ICard
 {
     int Id { get; }
     CardType Type { get; } // "Adjective", "Gerund", "Combination" 등 구분용
+    CardCategory Category { get; } // 카드 프레임 색상 구분용
 
     // UI 표시용
     string Name { get; }
@@ -105,6 +110,7 @@ public class AdjectiveCard : ICard
 
     public int Id => _data.id; // 서버 ID가 int라면 .ToString() 사용
     public CardType Type => CardType.Adjective;
+    public CardCategory Category => CardCategory.Basic;
     public string Name => _data.name;
     public int Cost => _data.costMod;
     public string Description => _data.desc;
@@ -135,12 +141,25 @@ public class GerundCard : ICard
 
     public int Id => _data.id;
     public CardType Type => CardType.Gerund;
+    public CardCategory Category => ParseCategory(_data.category);
     public string Name => _data.name;
     public int Cost => _data.baseCost;
     public string Description => _data.desc;
     public int Damage => _data.baseDmg;
     public int Shield => _data.baseShd;
     public int Heal => _data.baseHeal;
+
+    // 서버 문자열을 CardCategory로 변환 (값이 없거나 모르는 값이면 Basic)
+    private static CardCategory ParseCategory(string category)
+    {
+        switch (category?.Trim().ToUpperInvariant())
+        {
+            case "ATTACK": return CardCategory.Attack;
+            case "DEFENSE": return CardCategory.Defense;
+            case "HEAL": return CardCategory.Heal;
+            default: return CardCategory.Basic;
+        }
+    }
 
     public void Play()
     {
