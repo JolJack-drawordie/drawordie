@@ -11,8 +11,17 @@ public class RestManager : MonoBehaviour
     [Header("Effect Settings")]
     [SerializeField] private GameObject restEffectObject; // 1. 씬에 미리 배치해둔 파티클 오브젝트 (또는 프리팹)
 
+    [Header("Background Settings")]
+    [SerializeField] private SpriteRenderer backgroundSpriteRenderer; // 배경 오브젝트의 SpriteRenderer 컴포넌트
+    [SerializeField] private Sprite act1Background; // Act 1 휴식 배경 스프라이트
+    [SerializeField] private Sprite act2Background; // Act 2 휴식 배경 스프라이트
+    [SerializeField] private Sprite act3Background; // Act 3 휴식 배경 스프라이트
+
     private void Start()
     {
+        // Act에 따른 배경 오브젝트 이미지(스프라이트) 교체 적용
+        UpdateBackgroundImage();
+
         if (SoundManager.Instance != null)
             SoundManager.Instance.PlayBGM(SoundManager.Instance.restBackgroundSound);
 
@@ -27,6 +36,30 @@ public class RestManager : MonoBehaviour
             // 이미 휴식한 노드(휴식 후 저장한 세이브를 불러온 경우 등)면 다시 휴식할 수 없음
             if (GameFlowData.hasRested)
                 restButton.interactable = false;
+        }
+    }
+
+    private void UpdateBackgroundImage()
+    {
+        if (backgroundSpriteRenderer == null) return;
+
+        // 현재 Act 정보를 가져오는 방식 (프로젝트 구조에 맞게 수정 가능)
+        int currentAct = GameFlowData.currentAct;
+
+        switch (currentAct)
+        {
+            case 1:
+                if (act1Background != null) backgroundSpriteRenderer.sprite = act1Background;
+                break;
+            case 2:
+                if (act2Background != null) backgroundSpriteRenderer.sprite = act2Background;
+                break;
+            case 3:
+                if (act3Background != null) backgroundSpriteRenderer.sprite = act3Background;
+                break;
+            default:
+                Debug.LogWarning($"알 수 없는 Act 번호입니다: {currentAct}");
+                break;
         }
     }
 
