@@ -93,6 +93,26 @@ public static class GameFlowData
         }
     }
 
+    // 새 게임: 이전 런(로비로 돌아온 판 등)의 진행 정보와 시드를 모두 지움
+    public static void ResetRun()
+    {
+        currentAct = 1;
+
+        clearedNodeLevel = 0;
+        currentFloor = -1;
+        currentIndex = -1;
+        currentNodeType = default;
+        currentNodeSeed = 0;
+        hasRested = false;
+
+        masterSeed = 0;
+        hasMasterSeed = false;
+        mapSeed = 0;
+        hasMapSeed = false;
+
+        debugUnlockBoss = false;
+    }
+
     // 지정한 Act의 맵 처음부터 시작 (테스트용, LobbyManager 테스트 설정에서 사용)
     public static void StartAtAct(int act)
     {

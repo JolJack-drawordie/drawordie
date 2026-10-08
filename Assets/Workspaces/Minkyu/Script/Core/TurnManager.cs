@@ -25,6 +25,21 @@ public class TurnManager : MonoBehaviour
 
     private bool isDeckInitialized = false;
 
+    // 전투 씬(턴 진행 중인 씬)이 열려 있는지.
+    // 휴식 씬 등에 GameManager가 딸려 들어가도 전투로 오인하지 않도록 저장 가능 조건에서 이 값으로 판단
+    public static bool IsInBattleScene => instance != null;
+    private static TurnManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this) instance = null;
+    }
+
     private void Start()
     {
         SetupEndTurnButton();

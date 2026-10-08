@@ -6,9 +6,6 @@ public class DiceManager : MonoBehaviour
 {
     public static DiceManager Instance;
 
-    //노드 시드 기반 주사위 난수 생성기
-    System.Random diceRng;
-
     [Header("에너지 설정")]
     public int baseEnergy = 3;
     public int diceValue;
@@ -33,6 +30,11 @@ public class DiceManager : MonoBehaviour
     public GameObject diceImageObject; // 주사위 이미지 부모
     public Image diceImage;
     public Sprite[] diceSprites;
+
+    [Tooltip("3D 주사위가 굴러가는 연출 사용 (끄거나 dice3D가 비어 있으면 기존처럼 이미지만 바뀜)")]
+    public bool use3DDice = true;
+    // Tools > Dice > 3D 주사위 프리팹 만들기 로 씬에 배치
+    public Dice3DRoller dice3D;
 
     public bool isRollFinished = false; // 턴매니저 대기용 플래그
 
@@ -60,10 +62,7 @@ public class DiceManager : MonoBehaviour
             rollDiceButton.onClick.AddListener(OnClickRollButton);
         }
 
-        int nodeSeed = GameFlowData.currentNodeSeed;
-
-        // 몬스터나 카드 보상 시드와 겹치지 않도록 보상 전용 오프셋 부여
-        diceRng = new System.Random(nodeSeed + 4);
+        if (!use3DDice) dice3D = null;
     }
 
     public void ShowRollButton()
@@ -87,14 +86,24 @@ public class DiceManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
         }
 
-        // 주사위 굴러가는 애니메이션
-        for(int i = 0; i < 10; i++)
-        {
-            diceImage.sprite = diceSprites[Random.Range(0, 6)];
-            yield return new WaitForSeconds(0.05f);
-        }
+        // 매 턴 완전 랜덤 (노드 시드와 무관). 결과를 먼저 정하고, 연출은 그 결과로 끝나도록 보여주기만 함
+        diceValue = Random.Range(1, 7);
 
-        diceValue = diceRng.Next(1, 7);
+        // 주사위 굴러가는 애니메이션
+        if (dice3D != null)
+        {
+            // 3D 주사위가 결과 면으로 착지 (2D 이미지는 숨김)
+            if (diceImage != null) diceImage.enabled = false;
+            yield return StartCoroutine(dice3D.Roll(diceValue));
+        }
+        else
+        {
+            for(int i = 0; i < 10; i++)
+            {
+                diceImage.sprite = diceSprites[Random.Range(0, 6)];
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
 
         // 이벤트가 발생하기 전에 최대치를 먼저 갱신해야 UI가 올바른 비율로 그려짐
         MaxEnergy = baseEnergy + diceValue;
@@ -107,6 +116,7 @@ public class DiceManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         diceImageObject.SetActive(false);
+        if (dice3D != null) dice3D.Hide();
 
         isRollFinished = true; // 주사위가 끝나면 TurnManager가 다음을 진행함!
     }
