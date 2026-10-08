@@ -1,0 +1,378 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e2d3c5f6a74e8b9d0e1f2a3b4c5d62, type: 3}
+  m_Name: CardIconDatabase
+  m_EditorClassIdentifier: 
+  defaultIcon: {fileID: 0}
+  adjectives:
+  - name: "\uBD88\uD0C0\uB294"
+    id: 101
+    icon: {fileID: 21300000, guid: 85f6db0efa996b342ac40bb7aa6eb2f9, type: 3}
+  - name: "\uCC28\uAC00\uC6B4"
+    id: 102
+    icon: {fileID: 21300000, guid: 3c6c6bdf1890c4b44842f1a6fdbb580c, type: 3}
+  - name: "\uC2E0\uC131\uD55C"
+    id: 103
+    icon: {fileID: 21300000, guid: 515a917bca5765944babb81609842ad1, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4"
+    id: 104
+    icon: {fileID: 21300000, guid: 0e1ab67eb67874542b1606233616c377, type: 3}
+  - name: "\uBB35\uC9C1\uD55C"
+    id: 105
+    icon: {fileID: 21300000, guid: 23532754e5319b448873f7d0cbc7b6c6, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4"
+    id: 106
+    icon: {fileID: 21300000, guid: 5604c071f7afd5c4892a892c65c15c00, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C"
+    id: 107
+    icon: {fileID: 21300000, guid: c40c7dd254a2ee94c88a40affd85c57a, type: 3}
+  - name: "\uB3C5\uD55C"
+    id: 108
+    icon: {fileID: 21300000, guid: cdba1506788764c4d81ac7b4d8b585b1, type: 3}
+  - name: "\uC2E0\uC18D\uD55C"
+    id: 109
+    icon: {fileID: 21300000, guid: 4fe46e27fc7b9364d964fdcf16bb9642, type: 3}
+  - name: "\uAE30\uC801\uC758"
+    id: 110
+    icon: {fileID: 21300000, guid: 66b19d43466315e4caff1240bfe0da43, type: 3}
+  gerunds:
+  - name: "\uBCA0\uAE30"
+    id: 201
+    icon: {fileID: 21300000, guid: 0b46af7ed3d786c4cb3ba2893e3a1392, type: 3}
+  - name: "\uCC0C\uB974\uAE30"
+    id: 202
+    icon: {fileID: 21300000, guid: 8e5a3df2309599d42a812baca6503547, type: 3}
+  - name: "\uB9C9\uAE30"
+    id: 203
+    icon: {fileID: 21300000, guid: 0038c07c43785c04faa15ecb8093fe89, type: 3}
+  - name: "\uCE58\uC720\uD558\uAE30"
+    id: 204
+    icon: {fileID: 21300000, guid: 02f8aa0bb2ec18f4eac367806275fb25, type: 3}
+  - name: "\uB0B4\uBFDC\uAE30"
+    id: 205
+    icon: {fileID: 21300000, guid: 693aedcf1382feb4baed8baa61ff238b, type: 3}
+  - name: "\uC6C5\uD06C\uB9AC\uAE30"
+    id: 206
+    icon: {fileID: 21300000, guid: 1b6057b8d4dcc964894086495cb7b54b, type: 3}
+  - name: "\uB358\uC9C0\uAE30"
+    id: 207
+    icon: {fileID: 21300000, guid: 7e029ccd4fa2a9d4c849194f47c7028f, type: 3}
+  - name: "\uB09C\uD0C0\uD558\uAE30"
+    id: 208
+    icon: {fileID: 21300000, guid: 9461060db4cc4f84e8fe5ffb9c76205a, type: 3}
+  - name: "\uD734\uC2DD\uD558\uAE30"
+    id: 209
+    icon: {fileID: 21300000, guid: f2c3c96b934bafa4abdf9a6b0ca2e760, type: 3}
+  - name: "\uB3C4\uC57D\uD558\uAE30"
+    id: 210
+    icon: {fileID: 21300000, guid: 4c2d00409c0b3494f9802468f35fd9b5, type: 3}
+  combinations:
+  - name: "\uBD88\uD0C0\uB294 \uBCA0\uAE30"
+    combinationId: 101_201
+    icon: {fileID: 21300000, guid: 16b02c8029a2f1a4a9d4846e2987328e, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uCC0C\uB974\uAE30"
+    combinationId: 101_202
+    icon: {fileID: 21300000, guid: 18b2b41b127ec2e48b64f05a7abafc11, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uB9C9\uAE30"
+    combinationId: 101_203
+    icon: {fileID: 21300000, guid: 302b4dea97d5ec843923598abe23f69a, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uCE58\uC720\uD558\uAE30"
+    combinationId: 101_204
+    icon: {fileID: 21300000, guid: 0db1ed33fd2933044b42f3f5d42632c0, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uB0B4\uBFDC\uAE30"
+    combinationId: 101_205
+    icon: {fileID: 21300000, guid: 0aeec7ac656bda04f8dd3d7535309545, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 101_206
+    icon: {fileID: 21300000, guid: e8115c4780a9fb148963983c606506c5, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uB358\uC9C0\uAE30"
+    combinationId: 101_207
+    icon: {fileID: 21300000, guid: 962ffb9c1ed43ba4991a80987a80ef9a, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 101_208
+    icon: {fileID: 21300000, guid: fc4df3a9863666c44bf69ee51f1a06c2, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uD734\uC2DD\uD558\uAE30"
+    combinationId: 101_209
+    icon: {fileID: 21300000, guid: 16475b66d6dc90046bbc420457bbf669, type: 3}
+  - name: "\uBD88\uD0C0\uB294 \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 101_210
+    icon: {fileID: 21300000, guid: c01010c7b6bd1064caee40f4d59224cd, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uBCA0\uAE30"
+    combinationId: 102_201
+    icon: {fileID: 21300000, guid: 1e28fea69828b3e40a2859de96dd3328, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uCC0C\uB974\uAE30"
+    combinationId: 102_202
+    icon: {fileID: 21300000, guid: 806f0f2ed8739e647be3316342077d44, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uB9C9\uAE30"
+    combinationId: 102_203
+    icon: {fileID: 21300000, guid: 72a9f27299fd66646b205ecd69abd54b, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uCE58\uC720\uD558\uAE30"
+    combinationId: 102_204
+    icon: {fileID: 21300000, guid: dff8a4611ab389f4fa10bffe391b5169, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uB0B4\uBFDC\uAE30"
+    combinationId: 102_205
+    icon: {fileID: 21300000, guid: 2876010d540fd574b9d660eccfba05d3, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 102_206
+    icon: {fileID: 21300000, guid: e30d9b061a327664bb50a3754c68c392, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uB358\uC9C0\uAE30"
+    combinationId: 102_207
+    icon: {fileID: 21300000, guid: 4c7b23585d651a447914f086decc59c5, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 102_208
+    icon: {fileID: 21300000, guid: 550edcc8f2f3b9a459c2f866ba1f262a, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uD734\uC2DD\uD558\uAE30"
+    combinationId: 102_209
+    icon: {fileID: 21300000, guid: add1cb68348f0f94483ffaa67fbcbb29, type: 3}
+  - name: "\uCC28\uAC00\uC6B4 \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 102_210
+    icon: {fileID: 21300000, guid: c17805f8911a60848b487c77559dffc4, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uBCA0\uAE30"
+    combinationId: 103_201
+    icon: {fileID: 21300000, guid: aca93a24d1a79d54aac3aa2f2be1baf9, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uCC0C\uB974\uAE30"
+    combinationId: 103_202
+    icon: {fileID: 21300000, guid: 156b1649b67a4ea49b2f88d0c37fd463, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uB9C9\uAE30"
+    combinationId: 103_203
+    icon: {fileID: 21300000, guid: 6402e62a7d64d494ca6f3fd91f490099, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uCE58\uC720\uD558\uAE30"
+    combinationId: 103_204
+    icon: {fileID: 21300000, guid: 84cc5c307fe727745a4c5493a9d0e38b, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uB0B4\uBFDC\uAE30"
+    combinationId: 103_205
+    icon: {fileID: 21300000, guid: 3ce1bcbc1fca53140ab144226fe5b547, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 103_206
+    icon: {fileID: 21300000, guid: cd402ed8b8d9a8b42be3e9bcd40f7735, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uB358\uC9C0\uAE30"
+    combinationId: 103_207
+    icon: {fileID: 21300000, guid: 030288083a94df04cbffcae106f2ae96, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 103_208
+    icon: {fileID: 21300000, guid: 4ba0a0c27b4c6ea45ad09abf5b43f711, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uD734\uC2DD\uD558\uAE30"
+    combinationId: 103_209
+    icon: {fileID: 21300000, guid: c2022b298e63c33459e4f912e3dea09a, type: 3}
+  - name: "\uC2E0\uC131\uD55C \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 103_210
+    icon: {fileID: 21300000, guid: 29430f88b5983214692d51223ffb4f00, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uBCA0\uAE30"
+    combinationId: 104_201
+    icon: {fileID: 21300000, guid: f67a1c0135d3c084b9ac978e98a4039a, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uCC0C\uB974\uAE30"
+    combinationId: 104_202
+    icon: {fileID: 21300000, guid: 960e95cf3b1f5294a85c156642dd2421, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uB9C9\uAE30"
+    combinationId: 104_203
+    icon: {fileID: 21300000, guid: f9a6651c5b452104086b94fbd44de60a, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uCE58\uC720\uD558\uAE30"
+    combinationId: 104_204
+    icon: {fileID: 21300000, guid: 1507e3c7cb6a2664397d4e489419376e, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uB0B4\uBFDC\uAE30"
+    combinationId: 104_205
+    icon: {fileID: 21300000, guid: f30d24ae22e16d847909033c850ab569, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 104_206
+    icon: {fileID: 21300000, guid: 03b0d95c839f48c43af808e21b70b8ab, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uB358\uC9C0\uAE30"
+    combinationId: 104_207
+    icon: {fileID: 21300000, guid: 54d2a43caa5691c40b3c7ae3ad3d605c, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 104_208
+    icon: {fileID: 21300000, guid: 8005c2643d64a5f40b00629ae3470f92, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uD734\uC2DD\uD558\uAE30"
+    combinationId: 104_209
+    icon: {fileID: 21300000, guid: b3cbc16c8393ff54e9580adf3fcf6987, type: 3}
+  - name: "\uB0A0\uCE74\uB85C\uC6B4 \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 104_210
+    icon: {fileID: 21300000, guid: 94f6fa35c3a6a264484aecdda53c5ed3, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uBCA0\uAE30"
+    combinationId: 105_201
+    icon: {fileID: 21300000, guid: c786dc73e248ab34b8d486229edab055, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uCC0C\uB974\uAE30"
+    combinationId: 105_202
+    icon: {fileID: 21300000, guid: f47342aef65088546b3a1daf13cb9ccb, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uB9C9\uAE30"
+    combinationId: 105_203
+    icon: {fileID: 21300000, guid: 4157f3295e1ae0b408164ae7fb67ceca, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uCE58\uC720\uD558\uAE30"
+    combinationId: 105_204
+    icon: {fileID: 21300000, guid: 5e56468ec2a1ec5488cf60c38148aed7, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uB0B4\uBFDC\uAE30"
+    combinationId: 105_205
+    icon: {fileID: 21300000, guid: bbd94d993d3b08d459be517d3d3ad91d, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 105_206
+    icon: {fileID: 21300000, guid: 0d74bdb806bf9f54d9cfb1facd944ef1, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uB358\uC9C0\uAE30"
+    combinationId: 105_207
+    icon: {fileID: 21300000, guid: ec2c6f3560b64bd4cb4414e7f1497a1f, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 105_208
+    icon: {fileID: 21300000, guid: 8b3a4dabc5be92e479b69c1eaf0ea9df, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uD734\uC2DD\uD558\uAE30"
+    combinationId: 105_209
+    icon: {fileID: 21300000, guid: c7563785c7dbdf241a735caeaa48ecca, type: 3}
+  - name: "\uBB35\uC9C1\uD55C \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 105_210
+    icon: {fileID: 21300000, guid: 918887f1aacb71b4cb34e86339c92e1b, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uBCA0\uAE30"
+    combinationId: 106_201
+    icon: {fileID: 21300000, guid: 7c969b06052a84e4b83868acaf469bce, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uCC0C\uB974\uAE30"
+    combinationId: 106_202
+    icon: {fileID: 21300000, guid: 3a23d81a0ee030e44960115c927b3a38, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uB9C9\uAE30"
+    combinationId: 106_203
+    icon: {fileID: 21300000, guid: d33131a7918b3e346b987ecf3b80b505, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uCE58\uC720\uD558\uAE30"
+    combinationId: 106_204
+    icon: {fileID: 21300000, guid: 95916d24a5a199b4abc0cbff6abca015, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uB0B4\uBFDC\uAE30"
+    combinationId: 106_205
+    icon: {fileID: 21300000, guid: 0efb3cece104ec043801e4ea3f618c83, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 106_206
+    icon: {fileID: 21300000, guid: 4c79d075f66c8af4196cc6e11bc54127, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uB358\uC9C0\uAE30"
+    combinationId: 106_207
+    icon: {fileID: 21300000, guid: e20b5f6fb1e89574f9fc09bc7ae429f4, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 106_208
+    icon: {fileID: 21300000, guid: af91306f3fac9da49a467a6a24928fb2, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uD734\uC2DD\uD558\uAE30"
+    combinationId: 106_209
+    icon: {fileID: 21300000, guid: 9fb2db68e05e4bd4f822bfe3cbab9373, type: 3}
+  - name: "\uAC00\uBCBC\uC6B4 \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 106_210
+    icon: {fileID: 21300000, guid: 0bff7be837e8d024e8b90a84cc395a46, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uBCA0\uAE30"
+    combinationId: 107_201
+    icon: {fileID: 21300000, guid: 38f8ade3c3645e9429f9784ff542378b, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uCC0C\uB974\uAE30"
+    combinationId: 107_202
+    icon: {fileID: 21300000, guid: e0d28137676e2ba428d9594922a7cfd3, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uB9C9\uAE30"
+    combinationId: 107_203
+    icon: {fileID: 21300000, guid: 644c3c5054bb4904096b7d3b5b4b4f92, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uCE58\uC720\uD558\uAE30"
+    combinationId: 107_204
+    icon: {fileID: 21300000, guid: 632c7767ebf48d24c910a98544d8f70b, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uB0B4\uBFDC\uAE30"
+    combinationId: 107_205
+    icon: {fileID: 21300000, guid: 341e922fbff1ebe4daf1ca0c2ca9ce27, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 107_206
+    icon: {fileID: 21300000, guid: 9fb3e1e3995ea7b43b71d0f8f0b540cb, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uB358\uC9C0\uAE30"
+    combinationId: 107_207
+    icon: {fileID: 21300000, guid: d76fd996602447749bd48268820f1fb9, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 107_208
+    icon: {fileID: 21300000, guid: 1985b1e01973d504c8339c792cba7673, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uD734\uC2DD\uD558\uAE30"
+    combinationId: 107_209
+    icon: {fileID: 21300000, guid: 02794f49dda7c82449716771eb44fb02, type: 3}
+  - name: "\uB2E8\uB2E8\uD55C \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 107_210
+    icon: {fileID: 21300000, guid: 56c641bf550598942ad82a77fcd1d7a3, type: 3}
+  - name: "\uB3C5\uD55C \uBCA0\uAE30"
+    combinationId: 108_201
+    icon: {fileID: 21300000, guid: e443a94203fa75c488576aef3f07c127, type: 3}
+  - name: "\uB3C5\uD55C \uCC0C\uB974\uAE30"
+    combinationId: 108_202
+    icon: {fileID: 21300000, guid: 0d9a5006edbb13c4c97e0731a82265b2, type: 3}
+  - name: "\uB3C5\uD55C \uB9C9\uAE30"
+    combinationId: 108_203
+    icon: {fileID: 21300000, guid: 326f171a756b2dc4789432658fc986c9, type: 3}
+  - name: "\uB3C5\uD55C \uCE58\uC720\uD558\uAE30"
+    combinationId: 108_204
+    icon: {fileID: 21300000, guid: 0eb749440e3c50c4492e3330cbc51aa9, type: 3}
+  - name: "\uB3C5\uD55C \uB0B4\uBFDC\uAE30"
+    combinationId: 108_205
+    icon: {fileID: 21300000, guid: bc60b4df9152f644688282f96a8d1364, type: 3}
+  - name: "\uB3C5\uD55C \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 108_206
+    icon: {fileID: 21300000, guid: 28b815630f263714399d1046122e9a94, type: 3}
+  - name: "\uB3C5\uD55C \uB358\uC9C0\uAE30"
+    combinationId: 108_207
+    icon: {fileID: 21300000, guid: 5620ad4a5665fb84184dab2e923ecd3f, type: 3}
+  - name: "\uB3C5\uD55C \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 108_208
+    icon: {fileID: 21300000, guid: fa2e13df7e1fed941835a6ffca0bcc83, type: 3}
+  - name: "\uB3C5\uD55C \uD734\uC2DD\uD558\uAE30"
+    combinationId: 108_209
+    icon: {fileID: 21300000, guid: 45e765b1e326ce84083fe0c8c4f241fc, type: 3}
+  - name: "\uB3C5\uD55C \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 108_210
+    icon: {fileID: 21300000, guid: 8ac2ba7e2750f3f4e852f00318837599, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uBCA0\uAE30"
+    combinationId: 109_201
+    icon: {fileID: 21300000, guid: 9f615d42db3730d4da2c4b350f05b4e4, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uCC0C\uB974\uAE30"
+    combinationId: 109_202
+    icon: {fileID: 21300000, guid: 4334ecd4288ac4f48b25f6e68154d8db, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uB9C9\uAE30"
+    combinationId: 109_203
+    icon: {fileID: 21300000, guid: 458adb709701e1546849e38d339c662a, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uCE58\uC720\uD558\uAE30"
+    combinationId: 109_204
+    icon: {fileID: 21300000, guid: 015bc8bbd145375458145073edcd12fa, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uB0B4\uBFDC\uAE30"
+    combinationId: 109_205
+    icon: {fileID: 21300000, guid: 4409646a5d92cb24090a1f2908152a91, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 109_206
+    icon: {fileID: 21300000, guid: ef9fda4cfefba8444893e5618720827a, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uB358\uC9C0\uAE30"
+    combinationId: 109_207
+    icon: {fileID: 21300000, guid: dd9553335d5e8ac4f8cd1bf7715b004f, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 109_208
+    icon: {fileID: 21300000, guid: c58fbdfde802f3c46806af29a6805f8a, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uD734\uC2DD\uD558\uAE30"
+    combinationId: 109_209
+    icon: {fileID: 21300000, guid: 1a1ffa6606544084bb364d8769a7d50b, type: 3}
+  - name: "\uC2E0\uC18D\uD55C \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 109_210
+    icon: {fileID: 21300000, guid: 5801f36627d7f504892d7fc8a3ff42f6, type: 3}
+  - name: "\uAE30\uC801\uC758 \uBCA0\uAE30"
+    combinationId: 110_201
+    icon: {fileID: 21300000, guid: 57fddcef572254749ad949b7a07b3e07, type: 3}
+  - name: "\uAE30\uC801\uC758 \uCC0C\uB974\uAE30"
+    combinationId: 110_202
+    icon: {fileID: 21300000, guid: bb07ba5c0347c724b869a12eca4875d4, type: 3}
+  - name: "\uAE30\uC801\uC758 \uB9C9\uAE30"
+    combinationId: 110_203
+    icon: {fileID: 21300000, guid: 45483fed0e4221d4c8f7bd6b92baf04e, type: 3}
+  - name: "\uAE30\uC801\uC758 \uCE58\uC720\uD558\uAE30"
+    combinationId: 110_204
+    icon: {fileID: 21300000, guid: 77d7018450196774a99cc2be5ed47a3f, type: 3}
+  - name: "\uAE30\uC801\uC758 \uB0B4\uBFDC\uAE30"
+    combinationId: 110_205
+    icon: {fileID: 21300000, guid: 1fe784c0346a64742a9ab94ab0dd7617, type: 3}
+  - name: "\uAE30\uC801\uC758 \uC6C5\uD06C\uB9AC\uAE30"
+    combinationId: 110_206
+    icon: {fileID: 21300000, guid: 5787a696cbd3006408ddb5f733920f49, type: 3}
+  - name: "\uAE30\uC801\uC758 \uB358\uC9C0\uAE30"
+    combinationId: 110_207
+    icon: {fileID: 21300000, guid: ce0e9c614c20782498047fb16eb408c6, type: 3}
+  - name: "\uAE30\uC801\uC758 \uB09C\uD0C0\uD558\uAE30"
+    combinationId: 110_208
+    icon: {fileID: 21300000, guid: 3488b33dd528c2c44953de75a09d3ee4, type: 3}
+  - name: "\uAE30\uC801\uC758 \uD734\uC2DD\uD558\uAE30"
+    combinationId: 110_209
+    icon: {fileID: 21300000, guid: 8051e328fd4f98549891785dc4ab8106, type: 3}
+  - name: "\uAE30\uC801\uC758 \uB3C4\uC57D\uD558\uAE30"
+    combinationId: 110_210
+    icon: {fileID: 21300000, guid: 513d2090ba754a7438ffc867ebc2e8f2, type: 3}

@@ -29,6 +29,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private RectTransform rect;
     private CardDraggable cardDrag; // 홍성구 추가 : 카드 드래그 스크립트
+    private CardVisual cardVisual; // 카드 프레임/아이콘
     public bool isInSlot = false; // 홍성구 추가 : 카드가 슬롯에 있는지 확인하는 변수
 
     // ⭐ 추가됨: 카드의 원래 순서를 기억하는 변수
@@ -38,6 +39,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         rect = GetComponent<RectTransform>();
         cardDrag = GetComponent<CardDraggable>(); // 홍성구 추가 : 카드 드래그 스크립트 가져오기
+        cardVisual = GetComponent<CardVisual>();
     }
 
     // 홍성구 수정 : 카드 id 추가 (카드 타입, 실제 비용, 데미지도 함께 받도록 수정)
@@ -61,6 +63,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             combo.finalCost, combo.finalDamage, combo.finalShield, combo.finalHeal);
         AdjectiveId = combo.adjectiveId;
         GerundId = combo.gerundId;
+
+        if (cardVisual != null) cardVisual.Apply(combo);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -132,6 +136,8 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             card.Shield,
             card.Heal
         );
+
+        if (cardVisual != null) cardVisual.Apply(card);
     }
 
     void Update()

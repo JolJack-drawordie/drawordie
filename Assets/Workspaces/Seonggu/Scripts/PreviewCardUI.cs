@@ -14,5 +14,9 @@ public class PreviewCardUI : MonoBehaviour
         if (nameText != null) nameText.text = combo.skillName;
         if (costText != null) costText.text = combo.finalCost.ToString();
         if (descriptionText != null) descriptionText.text = combo.description.ToString();
+
+        // 카드 프레임/아이콘 적용
+        CardVisual cardVisual = GetComponent<CardVisual>();
+        if (cardVisual != null) cardVisual.Apply(combo);
     }
 }
