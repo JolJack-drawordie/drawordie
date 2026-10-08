@@ -775,6 +775,8 @@ MonoBehaviour:
   - {fileID: 4211914617808972773, guid: 76b84be14cc83044c9f769c23938429b, type: 3}
   - {fileID: -5567505861628926109, guid: d2a45d9cc8abc49458add7c25c03ee97, type: 3}
   - {fileID: 3585615014435213555, guid: c83cb3c78349822478575bb57f6ecc52, type: 3}
+  use3DDice: 1
+  dice3D: {fileID: 1891243953}
   isRollFinished: 0
 --- !u!4 &80527413
 Transform:
@@ -3759,6 +3761,78 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2220369728041109076, guid: 707ac18b952c1fb428d7f1934886bdb9, type: 3}
   m_PrefabInstance: {fileID: 2087534845668811717}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &847798251
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 847798254}
+  - component: {fileID: 847798253}
+  - component: {fileID: 847798252}
+  m_Layer: 5
+  m_Name: Dice3DView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &847798252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847798251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 8400000, guid: 3d3d1b87733d88a4e9ce0cca35d4c0f6, type: 2}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &847798253
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847798251}
+  m_CullTransparentMesh: 1
+--- !u!224 &847798254
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847798251}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1618133027}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 2160, y: 1215}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &854922743
 GameObject:
   m_ObjectHideFlags: 0
@@ -7552,6 +7626,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 195816226}
+  - {fileID: 847798254}
   m_Father: {fileID: 270338635}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -9086,6 +9161,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869317689}
   m_CullTransparentMesh: 1
+--- !u!1001 &1891243952
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 597346605639173329, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: view
+      value: 
+      objectReference: {fileID: 847798252}
+    - target: {fileID: 2314737074986905706, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_Name
+      value: Dice3D
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7722472049272274768, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+--- !u!114 &1891243953 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 597346605639173329, guid: 3ce1986596e72ff468854e2c8901763a, type: 3}
+  m_PrefabInstance: {fileID: 1891243952}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b145ce794f72547832a58b633eb5fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Dice3DRoller
 --- !u!114 &1909340214 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6412896822664241840, guid: 3a77bd690f671394da7c3592189959b5, type: 3}
@@ -11218,3 +11365,4 @@ SceneRoots:
   - {fileID: 601999192}
   - {fileID: 263802776}
   - {fileID: 1037397019}
+  - {fileID: 1891243952}

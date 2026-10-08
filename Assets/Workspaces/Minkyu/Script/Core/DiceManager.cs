@@ -34,6 +34,11 @@ public class DiceManager : MonoBehaviour
     public Image diceImage;
     public Sprite[] diceSprites;
 
+    [Tooltip("3D 주사위가 굴러가는 연출 사용 (끄거나 dice3D가 비어 있으면 기존처럼 이미지만 바뀜)")]
+    public bool use3DDice = true;
+    // Tools > Dice > 3D 주사위 프리팹 만들기 로 씬에 배치
+    public Dice3DRoller dice3D;
+
     public bool isRollFinished = false; // 턴매니저 대기용 플래그
 
     // 이번 턴에 주사위로 얻은 에너지 (에너지 게이지의 최대치로 사용)
@@ -59,6 +64,8 @@ public class DiceManager : MonoBehaviour
             rollDiceButton.gameObject.SetActive(false);
             rollDiceButton.onClick.AddListener(OnClickRollButton);
         }
+
+        if (!use3DDice) dice3D = null;
 
         int nodeSeed = GameFlowData.currentNodeSeed;
 
@@ -87,14 +94,24 @@ public class DiceManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
         }
 
-        // 주사위 굴러가는 애니메이션
-        for(int i = 0; i < 10; i++)
-        {
-            diceImage.sprite = diceSprites[Random.Range(0, 6)];
-            yield return new WaitForSeconds(0.05f);
-        }
-
+        // 결과는 시드로 먼저 정하고, 연출은 그 결과로 끝나도록 보여주기만 함
         diceValue = diceRng.Next(1, 7);
+
+        // 주사위 굴러가는 애니메이션
+        if (dice3D != null)
+        {
+            // 3D 주사위가 결과 면으로 착지 (2D 이미지는 숨김)
+            if (diceImage != null) diceImage.enabled = false;
+            yield return StartCoroutine(dice3D.Roll(diceValue));
+        }
+        else
+        {
+            for(int i = 0; i < 10; i++)
+            {
+                diceImage.sprite = diceSprites[Random.Range(0, 6)];
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
 
         // 이벤트가 발생하기 전에 최대치를 먼저 갱신해야 UI가 올바른 비율로 그려짐
         MaxEnergy = baseEnergy + diceValue;
@@ -107,6 +124,7 @@ public class DiceManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         diceImageObject.SetActive(false);
+        if (dice3D != null) dice3D.Hide();
 
         isRollFinished = true; // 주사위가 끝나면 TurnManager가 다음을 진행함!
     }
