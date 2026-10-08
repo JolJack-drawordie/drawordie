@@ -6,9 +6,6 @@ public class DiceManager : MonoBehaviour
 {
     public static DiceManager Instance;
 
-    //노드 시드 기반 주사위 난수 생성기
-    System.Random diceRng;
-
     [Header("에너지 설정")]
     public int baseEnergy = 3;
     public int diceValue;
@@ -66,11 +63,6 @@ public class DiceManager : MonoBehaviour
         }
 
         if (!use3DDice) dice3D = null;
-
-        int nodeSeed = GameFlowData.currentNodeSeed;
-
-        // 몬스터나 카드 보상 시드와 겹치지 않도록 보상 전용 오프셋 부여
-        diceRng = new System.Random(nodeSeed + 4);
     }
 
     public void ShowRollButton()
@@ -94,8 +86,8 @@ public class DiceManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
         }
 
-        // 결과는 시드로 먼저 정하고, 연출은 그 결과로 끝나도록 보여주기만 함
-        diceValue = diceRng.Next(1, 7);
+        // 매 턴 완전 랜덤 (노드 시드와 무관). 결과를 먼저 정하고, 연출은 그 결과로 끝나도록 보여주기만 함
+        diceValue = Random.Range(1, 7);
 
         // 주사위 굴러가는 애니메이션
         if (dice3D != null)
