@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public class SettingsManager : MonoBehaviour
@@ -20,17 +21,33 @@ public class SettingsManager : MonoBehaviour
     [FormerlySerializedAs("soundLabelText")]
     [SerializeField] private TextMeshProUGUI bgmLabelText;
     [SerializeField] private TextMeshProUGUI bgmValueText;
-    [SerializeField] private Toggle bgmToggle; // ÄÑÁü(isOn) = ¼Ò¸® ÄÑÁü
+    [SerializeField] private Toggle bgmToggle; // ì¼œì§(isOn) = ì†Œë¦¬ ì¼œì§
 
     [Header("SFX Controls")]
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private TextMeshProUGUI sfxLabelText;
     [SerializeField] private TextMeshProUGUI sfxValueText;
-    [SerializeField] private Toggle sfxToggle; // ÄÑÁü(isOn) = ¼Ò¸® ÄÑÁü
+    [SerializeField] private Toggle sfxToggle; // ì¼œì§(isOn) = ì†Œë¦¬ ì¼œì§
 
-    // À½¼Ò°Å¸¦ Ç® ¶§ ÀúÀåµÈ À½·®ÀÌ ÀÌº¸´Ù ÀÛÀ¸¸é(½½¶óÀÌ´õ¸¦ ³¡±îÁö ³»·Á ²ö °æ¿ì) ±âº» À½·®À¸·Î µÇµ¹¸°´Ù
+    [Header("Exit / Lobby")]
+    // ê²Œì„ ì¢…ë£Œ / ë¡œë¹„ë¡œ ì „ì— ë„ìš°ëŠ” í™•ì¸ ì°½ (Tools > Settings > ì„¤ì • ì°½ UI ë°°ì¹˜ ë¡œ ìƒì„±)
+    [SerializeField] private ConfirmDialog confirmDialog;
+    // ë¡œë¹„ ì”¬ì—ëŠ” ì—†ìŒ
+    [SerializeField] private Button lobbyButton;
+
+    private const string LobbySceneName = "LobbyScene";
+    private bool isLeaving;
+
+    // ìŒì†Œê±°ë¥¼ í’€ ë•Œ ì €ì¥ëœ ìŒëŸ‰ì´ ì´ë³´ë‹¤ ì‘ìœ¼ë©´(ìŠ¬ë¼ì´ë”ë¥¼ ëê¹Œì§€ ë‚´ë ¤ ëˆ ê²½ìš°) ê¸°ë³¸ ìŒëŸ‰ìœ¼ë¡œ ë˜ëŒë¦°ë‹¤
     private const float MinRestoreVolume = 0.05f;
     private const float DefaultRestoreVolume = 0.5f;
+
+    private void Awake()
+    {
+        // ì„¤ì • ì°½ì´ ì—´ë ¤ ìˆëŠ” ë™ì•ˆ ê²Œì„ ì¼ì‹œì •ì§€ (ë¡œë¹„ëŠ” LobbyManagerê°€ íŒ¨ë„ì„ ì§ì ‘ ì¼œë¯€ë¡œ íŒ¨ë„ ìì²´ì— ë¶™ì„)
+        if (settingsPanel != null && settingsPanel.GetComponent<PauseWhileActive>() == null)
+            settingsPanel.AddComponent<PauseWhileActive>();
+    }
 
     private void Start()
     {
@@ -43,7 +60,7 @@ public class SettingsManager : MonoBehaviour
         }
         SetBrightness(savedBrightness);
 
-        // ÀúÀåµÈ À½·®Àº SoundManager°¡ ½ÃÀÛÇÒ ¶§ ºÒ·¯¿Í µÎ¹Ç·Î UI¸¸ ¸ÂÃçÁØ´Ù (À½¼Ò°Å ÁßÀÌ¸é ½½¶óÀÌ´õ´Â 0)
+        // ì €ì¥ëœ ìŒëŸ‰ì€ SoundManagerê°€ ì‹œì‘í•  ë•Œ ë¶ˆëŸ¬ì™€ ë‘ë¯€ë¡œ UIë§Œ ë§ì¶°ì¤€ë‹¤ (ìŒì†Œê±° ì¤‘ì´ë©´ ìŠ¬ë¼ì´ë”ëŠ” 0)
         SoundManager sound = SoundManager.Instance;
         if (sound != null)
         {
@@ -63,8 +80,16 @@ public class SettingsManager : MonoBehaviour
         UpdateLabels();
     }
 
+    private void Update()
+    {
+        // ì „íˆ¬ ì¤‘ì—ëŠ” ì¹´ë“œ ì—°ì¶œ / ì  í„´ ë™ì•ˆ ë¡œë¹„ë¡œ ë²„íŠ¼ì„ íšŒìƒ‰ ì²˜ë¦¬
+        if (lobbyButton != null)
+            lobbyButton.interactable = !isLeaving && CanLeaveToLobby();
+    }
+
     public void OpenSettings()
     {
+        if (confirmDialog != null) confirmDialog.Hide();
         if (settingsPanel != null)
             settingsPanel.SetActive(true);
     }
@@ -72,17 +97,95 @@ public class SettingsManager : MonoBehaviour
     public void CloseSettings()
     {
         PlayerPrefs.Save();
+        if (confirmDialog != null) confirmDialog.Hide();
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
     }
 
     public void OnClickExit()
     {
+        if (confirmDialog != null)
+            confirmDialog.Show("ì •ë§ ê²Œì„ì„ ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", QuitGame);
+        else
+            QuitGame();
+    }
+
+    private void QuitGame()
+    {
+        PlayerPrefs.Save();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
+    }
+
+    public void OnClickLobby()
+    {
+        if (isLeaving || !CanLeaveToLobby()) return;
+
+        // ì˜ˆ: ì €ì¥ í›„ ì´ë™ / ì•„ë‹ˆì˜¤: ì €ì¥í•˜ì§€ ì•Šê³  ì´ë™ / ì·¨ì†Œ: ê·¸ëŒ€ë¡œ ë¨¸ë¬´ë¦„
+        if (confirmDialog != null)
+            confirmDialog.ShowWithCancel("ë¡œë¹„ë¡œ ëŒì•„ê°€ê¸° ì „ì—\nì €ì¥í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", SaveAndGoToLobby, GoToLobby);
+        else
+            SaveAndGoToLobby();
+    }
+
+    // ì €ì¥ ë²„íŠ¼ê³¼ ê°™ì€ ì¡°ê±´ (ì „íˆ¬ ì¤‘ì´ë©´ í”Œë ˆì´ì–´ í„´ + ì¹´ë“œ ì—°ì¶œ ì¤‘ì´ ì•„ë‹ ë•Œë§Œ)
+    private static bool CanLeaveToLobby()
+    {
+        return SaveManager.IsSafeToSave();
+    }
+
+    private void SaveAndGoToLobby()
+    {
+        isLeaving = true;
+
+        // ë¡œê·¸ì¸í•˜ì§€ ì•Šì•˜ê±°ë‚˜ ì´ë¯¸ ëë‚œ ëŸ°ì´ë©´ ì €ì¥ ì—†ì´ ì´ë™
+        bool canSave = SaveManager.Instance != null && AuthManager.isLoggedIn &&
+                       (PlayTimeTracker.Instance == null || !PlayTimeTracker.Instance.IsRunEnded);
+        if (!canSave)
+        {
+            GoToLobby();
+            return;
+        }
+
+        // ì €ì¥ì´ ëë‚œ ë’¤ì— ì”¬ì„ ë°”ê¿”ì•¼ ì €ì¥ ìš”ì²­ì´ ëŠê¸°ì§€ ì•ŠìŒ
+        SaveManager.Instance.SaveGame(success =>
+        {
+            if (success)
+            {
+                GoToLobby();
+                return;
+            }
+
+            isLeaving = false;
+            if (confirmDialog != null)
+                confirmDialog.Show("ì €ì¥ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.\nì €ì¥í•˜ì§€ ì•Šê³  ë¡œë¹„ë¡œ ëŒì•„ê°€ì‹œê² ìŠµë‹ˆê¹Œ?", GoToLobby);
+        });
+    }
+
+    private void GoToLobby()
+    {
+        isLeaving = true;
+        PlayerPrefs.Save();
+
+        // ì„¤ì • ì°½ ì¼ì‹œì •ì§€ë¥¼ ë¨¼ì € í’€ì–´ì•¼ ë¡œë¹„ê°€ ë©ˆì¶˜ ì±„ë¡œ ì—´ë¦¬ì§€ ì•ŠìŒ
+        GamePause.Resume();
+
+        // ë¡œë¹„ì— ìˆëŠ” ë™ì•ˆì€ í”Œë ˆì´ íƒ€ì„ì„ ì¬ì§€ ì•ŠìŒ (ìƒˆ ê²Œì„ / ë¶ˆëŸ¬ì˜¤ê¸° ì‹œ ë‹¤ì‹œ ì‹œì‘)
+        if (PlayTimeTracker.Instance != null)
+            PlayTimeTracker.Instance.IsPaused = true;
+
+        // ë¡œë¹„ BGMì€ íƒ€ì´í‹€ì—ì„œ í‹€ë˜ ë©”ì¸ BGM
+        SoundManager sound = SoundManager.Instance;
+        if (sound != null)
+        {
+            sound.StopBGM();
+            if (sound.mainBackgroundSound != null) sound.PlayBGM(sound.mainBackgroundSound);
+        }
+
+        SceneManager.LoadScene(LobbySceneName);
     }
 
     public void SetBrightness(float value)
@@ -100,17 +203,17 @@ public class SettingsManager : MonoBehaviour
 
         PlayerPrefs.SetFloat("Brightness", value);
 
-        SetLabel(brightnessLabelText, brightnessValueText, "¹à±â", value);
+        SetLabel(brightnessLabelText, brightnessValueText, "ë°ê¸°", value);
     }
 
-    // ¹è°æÀ½ / È¿°úÀ½ À½·® Á¶Àı (½ÇÁ¦ Àû¿ë°ú ÀúÀåÀº SoundManager°¡ ´ã´ç)
-    // ½½¶óÀÌ´õ¸¦ 0À¸·Î ³»¸®¸é À½¼Ò°Å, À½¼Ò°Å ¾ÆÀÌÄÜÀ» ´©¸£¸é ½½¶óÀÌ´õµµ 0À¸·Î ³»·Á°£´Ù
+    // ë°°ê²½ìŒ / íš¨ê³¼ìŒ ìŒëŸ‰ ì¡°ì ˆ (ì‹¤ì œ ì ìš©ê³¼ ì €ì¥ì€ SoundManagerê°€ ë‹´ë‹¹)
+    // ìŠ¬ë¼ì´ë”ë¥¼ 0ìœ¼ë¡œ ë‚´ë¦¬ë©´ ìŒì†Œê±°, ìŒì†Œê±° ì•„ì´ì½˜ì„ ëˆ„ë¥´ë©´ ìŠ¬ë¼ì´ë”ë„ 0ìœ¼ë¡œ ë‚´ë ¤ê°„ë‹¤
     public void SetBGMVolume(float value)
     {
         SoundManager sound = SoundManager.Instance;
         if (sound != null)
         {
-            if (value > 0f) sound.SetBGMVolume(value); // 0ÀÏ ¶§´Â À½¼Ò°Å¸¸ ÇÏ°í ÀÌÀü À½·®Àº ±â¾ï
+            if (value > 0f) sound.SetBGMVolume(value); // 0ì¼ ë•ŒëŠ” ìŒì†Œê±°ë§Œ í•˜ê³  ì´ì „ ìŒëŸ‰ì€ ê¸°ì–µ
             sound.SetBGMEnabled(value > 0f);
         }
 
@@ -163,12 +266,12 @@ public class SettingsManager : MonoBehaviour
 
     private void UpdateLabels()
     {
-        if (brightnessSlider != null) SetLabel(brightnessLabelText, brightnessValueText, "¹à±â", brightnessSlider.value);
-        if (bgmSlider != null) SetLabel(bgmLabelText, bgmValueText, "¹è°æÀ½", bgmSlider.value);
-        if (sfxSlider != null) SetLabel(sfxLabelText, sfxValueText, "È¿°úÀ½", sfxSlider.value);
+        if (brightnessSlider != null) SetLabel(brightnessLabelText, brightnessValueText, "ë°ê¸°", brightnessSlider.value);
+        if (bgmSlider != null) SetLabel(bgmLabelText, bgmValueText, "ë°°ê²½ìŒ", bgmSlider.value);
+        if (sfxSlider != null) SetLabel(sfxLabelText, sfxValueText, "íš¨ê³¼ìŒ", sfxSlider.value);
     }
 
-    // ¿ŞÂÊ ¶óº§¿£ ÀÌ¸§, ¿À¸¥ÂÊ ¶óº§¿£ %¸¦ Ç¥½Ã (% ¶óº§ÀÌ ¾øÀ¸¸é "ÀÌ¸§: %"¸¦ ÇÑ ¶óº§¿¡)
+    // ì™¼ìª½ ë¼ë²¨ì—” ì´ë¦„, ì˜¤ë¥¸ìª½ ë¼ë²¨ì—” %ë¥¼ í‘œì‹œ (% ë¼ë²¨ì´ ì—†ìœ¼ë©´ "ì´ë¦„: %"ë¥¼ í•œ ë¼ë²¨ì—)
     private static void SetLabel(TextMeshProUGUI nameText, TextMeshProUGUI valueText, string label, float value)
     {
         string percent = $"{Mathf.RoundToInt(value * 100)}%";
