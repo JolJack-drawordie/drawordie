@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PileUI : MonoBehaviour, IPointerClickHandler
+public class PileUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public enum PileType
     {
@@ -20,9 +20,48 @@ public class PileUI : MonoBehaviour, IPointerClickHandler
     [Header("UI 컴포넌트")]
     public TextMeshProUGUI countText; // 남은 카드 장수를 띄울 텍스트
 
+    [Header("카드팩 이미지 (호버/클릭 시 열림)")]
+    public Image packImage;
+    public Sprite closedSprite;
+    public Sprite openSprite;
+
+    private bool isHovered;
+    private bool isViewing; // 이 더미의 덱 뷰어가 열려 있는 동안 열린 상태 유지
+
+    private void Awake()
+    {
+        if (packImage == null) packImage = GetComponent<Image>();
+        UpdatePackSprite();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isHovered = true;
+
+        // 호버 효과음
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.cardHoverSound, true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovered = false;
+    }
+
+    private void UpdatePackSprite()
+    {
+        if (isViewing && (DeckViewerUI.Instance == null || DeckViewerUI.Instance.viewerPanel == null || !DeckViewerUI.Instance.viewerPanel.activeSelf))
+            isViewing = false;
+
+        Sprite sprite = (isHovered || isViewing) ? openSprite : closedSprite;
+        if (packImage != null && sprite != null && packImage.sprite != sprite)
+            packImage.sprite = sprite;
+    }
+
     private void Update()
     {
         UpdateCardCount();
+        UpdatePackSprite();
     }
 
     // 매 프레임 혹은 데이터가 갱신될 때 카드 장수 업데이트
@@ -60,6 +99,10 @@ public class PileUI : MonoBehaviour, IPointerClickHandler
         // 좌클릭일 때만 작동하게 하고 싶다면 아래 조건 추가 가능
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            // 클릭 효과음
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.drawCardSound, true);
+
             Debug.Log($"{pileType} 더미 클릭됨! (IPointerClickHandler 방식)");
 
             if (DeckManager.Instance == null) return;
@@ -87,6 +130,7 @@ public class PileUI : MonoBehaviour, IPointerClickHandler
             if (targetList != null)
             {
                 DeckViewerUI.Instance.OpenViewer(targetList, pileType);
+                isViewing = true;
             }
         }
     }

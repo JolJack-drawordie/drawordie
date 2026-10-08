@@ -2235,8 +2235,8 @@ MonoBehaviour:
   fadeImage: {fileID: 0}
   messageText: {fileID: 0}
   messageDuration: 2
-  debugStartAct: 2
-  debugStartAtBoss: 1
+  debugStartAct: 0
+  debugStartAtBoss: 0
 --- !u!4 &911053748
 Transform:
   m_ObjectHideFlags: 0
