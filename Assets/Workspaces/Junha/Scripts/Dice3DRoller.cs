@@ -67,8 +67,8 @@ public class Dice3DRoller : MonoBehaviour
         Hide();
     }
 
-    // value(1~6)가 위로 오도록 던져서 착지시킨다
-    public IEnumerator Roll(int value)
+    // value(1~6)가 위로 오도록 던져서 착지시킨다. onFirstLanding: 날아온 주사위가 처음 바닥에 닿는 순간 호출 (효과음 등)
+    public IEnumerator Roll(int value, System.Action onFirstLanding = null)
     {
         value = Mathf.Clamp(value, 1, 6);
         Show();
@@ -117,6 +117,7 @@ public class Dice3DRoller : MonoBehaviour
                 segmentStart += durations[segment];
                 segment++;
                 shakeTimer = shakeDuration;
+                if (segment == 1) onFirstLanding?.Invoke();
             }
 
             float s = Mathf.Clamp01((elapsed - segmentStart) / Mathf.Max(durations[segment], 0.0001f));

@@ -80,11 +80,6 @@ public class DiceManager : MonoBehaviour
     IEnumerator RollDiceRoutine()
     {
         diceImageObject.SetActive(true);
-        
-        // 주사위 굴리는 소리
-        if (SoundManager.Instance != null) {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
-        }
 
         // 매 턴 완전 랜덤 (노드 시드와 무관). 결과를 먼저 정하고, 연출은 그 결과로 끝나도록 보여주기만 함
         diceValue = Random.Range(1, 7);
@@ -94,10 +89,12 @@ public class DiceManager : MonoBehaviour
         {
             // 3D 주사위가 결과 면으로 착지 (2D 이미지는 숨김)
             if (diceImage != null) diceImage.enabled = false;
-            yield return StartCoroutine(dice3D.Roll(diceValue));
+            // 주사위 소리는 날아온 주사위가 처음 바닥에 닿을 때 재생
+            yield return StartCoroutine(dice3D.Roll(diceValue, PlayDiceSound));
         }
         else
         {
+            PlayDiceSound();
             for(int i = 0; i < 10; i++)
             {
                 diceImage.sprite = diceSprites[Random.Range(0, 6)];
@@ -119,6 +116,13 @@ public class DiceManager : MonoBehaviour
         if (dice3D != null) dice3D.Hide();
 
         isRollFinished = true; // 주사위가 끝나면 TurnManager가 다음을 진행함!
+    }
+
+    // 주사위 굴리는 소리
+    private void PlayDiceSound()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.diceRollSound);
     }
 
     public void UseEnergy(int amount)
