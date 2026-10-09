@@ -2,14 +2,13 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
     [Header("에너지 UI")]
-    public Slider energySlider;               // 원형 게이지 (남은 에너지 / 이번 턴 에너지)
-    public TextMeshProUGUI energySliderText;  // 게이지 가운데 숫자
-    public TextMeshProUGUI energyText;        // 예전 텍스트 UI (게이지가 없는 씬용)
+    public Slider energySlider;
+    public TextMeshProUGUI energySliderText;
+    public TextMeshProUGUI energyText;
 
     [Header("기본 UI")]
     public TextMeshProUGUI playerHpText;
@@ -36,9 +35,10 @@ public class UIManager : MonoBehaviour
     public GameObject rewardPanel;
     public TextMeshProUGUI rewardText;
 
-    // 게임 클리어 화면의 랭킹 버튼 (Tools > Ranking > 클리어 화면 랭킹 버튼 배치 로 연결, 클리어 시에만 표시)
-    // 비워두면 클리어 시 코드로 생성
+    [Header("클리어 랭킹 UI")]
     public Button clearRankingButton;
+
+    private Button defeatLobbyButton;
 
     public static UIManager Instance;
 
@@ -68,38 +68,34 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         if (DiceManager.Instance != null)
-        {
             DiceManager.Instance.OnEnergyChanged += UpdateEnergyUI;
-        }
     }
 
     private void OnDisable()
     {
         if (DiceManager.Instance != null)
-        {
             DiceManager.Instance.OnEnergyChanged -= UpdateEnergyUI;
-        }
     }
 
     private void Start()
     {
         if (DiceManager.Instance != null)
-        {
             UpdateEnergyUI(DiceManager.Instance.CurrentEnergy);
-        }
     }
 
     // =========================
-    // Energy UI
+    // 에너지 UI
     // =========================
 
     public void UpdateEnergyUI(int newEnergy)
     {
-        int maxEnergy = DiceManager.Instance != null ? DiceManager.Instance.MaxEnergy : newEnergy;
+        int maxEnergy = DiceManager.Instance != null
+            ? DiceManager.Instance.MaxEnergy
+            : newEnergy;
 
         if (energySlider != null)
         {
-            energySlider.interactable = false; // 표시 전용 (드래그로 값 변경 방지)
+            energySlider.interactable = false;
             energySlider.minValue = 0;
             energySlider.maxValue = Mathf.Max(1, maxEnergy);
             energySlider.value = newEnergy;
@@ -120,137 +116,205 @@ public class UIManager : MonoBehaviour
     {
         if (isVictory)
         {
-            DeckManager.Instance.DiscardHand();
-            DeckManager.Instance.RefillDeckFromDiscard(true);
-            DeckManager.Instance.RefillDeckFromDiscard(false);
+            if (DeckManager.Instance != null)
+            {
+                DeckManager.Instance.DiscardHand();
+                DeckManager.Instance.RefillDeckFromDiscard(true);
+                DeckManager.Instance.RefillDeckFromDiscard(false);
+            }
 
-            rewardPanel.SetActive(true);
-            rewardText.text = "승리! 보상을 선택하세요.";
+            if (rewardPanel != null)
+                rewardPanel.SetActive(true);
 
-            BattleRewardManager.Instance.GenerateRewardChoices();
+            if (rewardText != null)
+                rewardText.text = "승리! 보상을 선택하세요.";
+
+            if (BattleRewardManager.Instance != null)
+                BattleRewardManager.Instance.GenerateRewardChoices();
         }
         else
         {
-            resultPanel.SetActive(true);
-            resultText.text = "Defeat";
+            if (rewardPanel != null)
+                rewardPanel.SetActive(false);
+
+            if (resultPanel != null)
+                resultPanel.SetActive(true);
+
+            if (resultText != null)
+                resultText.text = "Defeat";
+
+            CreateDefeatLobbyButton();
         }
     }
 
     public void HideResult()
     {
-        resultPanel.SetActive(false);
+        if (resultPanel != null)
+            resultPanel.SetActive(false);
+
+        if (defeatLobbyButton != null)
+            defeatLobbyButton.gameObject.SetActive(false);
     }
 
     // =========================
-    // 승리 후 이동
+    // 패배 후 로비 이동 버튼
+    // =========================
+
+    private void CreateDefeatLobbyButton()
+    {
+        if (resultPanel == null)
+        {
+            Debug.LogError("[UIManager] ResultPanel이 연결되지 않았습니다.");
+            return;
+        }
+
+        // 이미 생성된 버튼이 있으면 중복 생성하지 않음
+        if (defeatLobbyButton != null)
+        {
+            defeatLobbyButton.gameObject.SetActive(true);
+            return;
+        }
+
+        GameObject buttonObject = new GameObject(
+            "DefeatLobbyButton",
+            typeof(RectTransform),
+            typeof(CanvasRenderer),
+            typeof(Image),
+            typeof(Button)
+        );
+
+        buttonObject.transform.SetParent(resultPanel.transform, false);
+
+        RectTransform rect = buttonObject.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = new Vector2(0f, -60f);
+        rect.sizeDelta = new Vector2(220f, 55f);
+
+        Image image = buttonObject.GetComponent<Image>();
+        image.color = new Color(0.25f, 0.12f, 0.12f, 1f);
+
+        defeatLobbyButton = buttonObject.GetComponent<Button>();
+        defeatLobbyButton.targetGraphic = image;
+        defeatLobbyButton.onClick.AddListener(GoToLobbyAfterDefeat);
+
+        GameObject textObject = new GameObject(
+            "ButtonText",
+            typeof(RectTransform),
+            typeof(CanvasRenderer),
+            typeof(TextMeshProUGUI)
+        );
+
+        textObject.transform.SetParent(buttonObject.transform, false);
+
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+
+        TextMeshProUGUI buttonText =
+            textObject.GetComponent<TextMeshProUGUI>();
+
+        buttonText.text = "로비로 돌아가기";
+        buttonText.fontSize = 24;
+        buttonText.alignment = TextAlignmentOptions.Center;
+        buttonText.color = Color.white;
+
+        Debug.Log("[UIManager] 패배 후 로비 이동 버튼을 생성했습니다.");
+    }
+
+    public void GoToLobbyAfterDefeat()
+    {
+        Debug.Log("[UIManager] 패배 후 LobbyScene으로 이동합니다.");
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.StopBGM();
+
+        // 새 게임 시작 시 LobbyManager가 런 상태와 플레이어 스탯을 초기화함
+        SceneManager.LoadScene("LobbyScene");
+    }
+
+    // =========================
+    // 승리 후 맵 이동
     // =========================
 
     public void GoToMapAfterVictory()
     {
-        // 현재 클리어한 노드가 보스인지 확인
         bool isBossNode =
             GameFlowData.currentNodeType == MapNode.NodeType.Boss;
 
-        // =========================
-        // 보스 노드 클리어
-        // =========================
-
         if (isBossNode)
         {
-            // =========================
-            // Act 3 최종 보스 클리어
-            // =========================
-
             if (GameFlowData.IsFinalAct())
             {
-                Debug.Log(
-                    "최종 보스 클리어! " +
-                    "LobbyScene으로 이동합니다."
-                );
+                Debug.Log("최종 보스 클리어! LobbyScene으로 이동합니다.");
 
-                // 보상 패널 닫기
                 if (rewardPanel != null)
                     rewardPanel.SetActive(false);
 
-                // 결과 패널 닫기
                 if (resultPanel != null)
                     resultPanel.SetActive(false);
 
-                // 전투 BGM 정지
                 if (SoundManager.Instance != null)
-                {
                     SoundManager.Instance.StopBGM();
-                }
 
-                // 로비 씬으로 이동
                 SceneManager.LoadScene("LobbyScene");
-
-                // 클리어 화면에서 랭킹을 볼 수 있도록 랭킹 버튼 표시
-                if (clearRankingButton != null)
-                {
-                    clearRankingButton.gameObject.SetActive(true);
-                }
-                else if (resultPanel != null)
-                {
-                    clearRankingButton = RankingUIFactory.CreateOpenButton(
-                        resultPanel.transform,
-                        new Vector2(0f, -130f),
-                        new Vector2(220f, 50f),
-                        28f);
-                }
-
                 return;
             }
 
-            // =========================
-            // Act 1 또는 Act 2 보스 클리어
-            // =========================
-
             Debug.Log(
-                $"Act {GameFlowData.currentAct} 클리어! " +
-                "다음 Act로 이동합니다."
+                $"Act {GameFlowData.currentAct} 클리어! 다음 Act로 이동합니다."
             );
 
             GameFlowData.MoveToNextAct();
         }
 
-        // =========================
-        // 일반 노드 또는 엘리트 노드 클리어
-        // =========================
-
         GameFlowData.clearedNodeLevel++;
 
-        // 다음 Act 또는 현재 Act의 맵으로 이동
         SceneManager.LoadScene("MapScene");
 
-        // 배경 음악 정지
         if (SoundManager.Instance != null)
-        {
             SoundManager.Instance.StopBGM();
-        }
     }
 
     // =========================
-    // Unit UI 연결
+    // 유닛 UI 연결
     // =========================
 
     public void LinkUnitToUI(UnitBase unit)
     {
+        if (unit == null)
+            return;
+
         if (unit is PlayerUnit)
         {
-            playerHpProvider.SetTarget(unit);
-            playerShieldProvider.SetTarget(unit);
+            if (playerHpProvider != null && playerHpBar != null)
+            {
+                playerHpProvider.SetTarget(unit);
+                playerHpBar.SetProvider(playerHpProvider);
+            }
 
-            playerHpBar.SetProvider(playerHpProvider);
-            playerShieldBar.SetProvider(playerShieldProvider);
+            if (playerShieldProvider != null && playerShieldBar != null)
+            {
+                playerShieldProvider.SetTarget(unit);
+                playerShieldBar.SetProvider(playerShieldProvider);
+            }
         }
         else if (unit is EnemyUnit)
         {
-            enemyHpProvider.SetTarget(unit);
-            enemyShieldProvider.SetTarget(unit);
+            if (enemyHpProvider != null && enemyHpBar != null)
+            {
+                enemyHpProvider.SetTarget(unit);
+                enemyHpBar.SetProvider(enemyHpProvider);
+            }
 
-            enemyHpBar.SetProvider(enemyHpProvider);
-            enemyShieldBar.SetProvider(enemyShieldProvider);
+            if (enemyShieldProvider != null && enemyShieldBar != null)
+            {
+                enemyShieldProvider.SetTarget(unit);
+                enemyShieldBar.SetProvider(enemyShieldProvider);
+            }
         }
     }
 }
