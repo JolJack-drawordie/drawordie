@@ -22,6 +22,9 @@ public class MapGenerator : MonoBehaviour
     public float floorSpacing = 180f;
     public float nodeSpacing = 180f;
 
+    // 1층 노드의 y 위치 (1920x1080 기준). 보스 노드가 상단 바(높이 100)에 가리지 않도록 아래로 내림
+    public float startY = -370f;
+
     [Header("Rest Settings")]
     [Range(0f, 1f)]
     public float restChance = 0.2f;
@@ -109,7 +112,7 @@ public class MapGenerator : MonoBehaviour
                         bossPrefab,
                         new Vector2(
                             0,
-                            floor * floorSpacing - 300f
+                            startY + floor * floorSpacing
                         ),
                         floor,
                         0,
@@ -143,7 +146,7 @@ public class MapGenerator : MonoBehaviour
                         * nodeSpacing;
 
                     float y =
-                        floor * floorSpacing - 300f;
+                        startY + floor * floorSpacing;
 
                     GameObject prefab =
                         monsterPrefab;

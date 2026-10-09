@@ -34,7 +34,7 @@ TextureImporter:
   cubemapConvolution: 0
   seamlessCubemap: 0
   textureFormat: 1
-  maxTextureSize: 2048
+  maxTextureSize: 4096
   textureSettings:
     serializedVersion: 2
     filterMode: 1
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -85,7 +85,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -105,7 +105,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 724
+        width: 720
         height: 724
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -125,9 +125,9 @@ TextureImporter:
       name: ActMapBackground_Act2
       rect:
         serializedVersion: 2
-        x: 724
+        x: 727
         y: 0
-        width: 724
+        width: 720
         height: 724
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -147,9 +147,9 @@ TextureImporter:
       name: ActMapBackground_Act3
       rect:
         serializedVersion: 2
-        x: 1448
+        x: 1452
         y: 0
-        width: 724
+        width: 720
         height: 724
       alignment: 0
       pivot: {x: 0.5, y: 0.5}

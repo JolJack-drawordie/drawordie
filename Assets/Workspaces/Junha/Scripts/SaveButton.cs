@@ -3,8 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 휴식 / 전투 씬의 저장 버튼.
+// 휴식 / 전투 / 맵 씬의 저장 버튼.
 // 전투 중 카드 연출 / 적 턴 / 저장 중에는 회색 처리되고 (설정 창의 로비로 버튼과 같은 조건),
+// 맵 씬에서는 저장을 지원하지 않아 항상 회색 처리된다.
 // 저장이 끝나면 화면에 빨간 글씨로 결과를 잠깐 보여준다.
 public class SaveButton : MonoBehaviour
 {
@@ -49,6 +50,7 @@ public class SaveButton : MonoBehaviour
 
     private static bool CanSave()
     {
+        if (!SaveManager.IsSaveSupportedScene()) return false;
         if (SaveManager.Instance != null && SaveManager.Instance.IsSaving) return false;
         return SaveManager.IsSafeToSave();
     }
