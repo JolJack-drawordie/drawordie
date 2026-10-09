@@ -175,7 +175,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 142.11774}
-  m_SizeDelta: {x: 160, y: 85.7646}
+  m_SizeDelta: {x: 120, y: 64.323}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3194349732671331265
 CanvasRenderer:
@@ -283,4 +283,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  nodeType: 0
+  floor: 0
+  index: 0
+  nodeSeed: 0
+  connectedNodes: []
   button: {fileID: 0}
+  isVisited: 0
