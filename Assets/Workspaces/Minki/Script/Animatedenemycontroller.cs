@@ -41,8 +41,9 @@ public class AnimatedEnemyController : EnemyController
     [FormerlySerializedAs("pulsePreset")]
     public MotionPreset motionPreset = MotionPreset.Custom;  // Custom이면 아래 숫자를 그대로 사용
 
-    [Header("공격 모션 (코드) - Use Code Attack이 켜져 있으면 Attack 클립 대신 재생")]
+    [Header("공격 모션 (코드) - Use Code Attack이 켜져 있으면 위치 이동(돌진)을 코드로 재생")]
     public bool useCodeAttack = true;
+    public bool playAttackClip = true;      // 코드 돌진과 동시에 몬스터 고유 Attack 애니메이션 클립도 재생 (몬스터마다 동작이 달라 보이게 함)
     public float attackDistance = 4f;       // 플레이어 쪽(왼쪽)으로 돌진할 거리
     public float attackWindupBack = 0.2f;   // 돌진 전에 뒤(오른쪽)로 물러나는 거리 (0이면 생략)
     public float attackWindupTime = 0.2f;
@@ -212,8 +213,15 @@ public class AnimatedEnemyController : EnemyController
     {
         if (useCodeAttack)
         {
-            // Animator는 건드리지 않고(Idle 유지) 코드로 공격 모션 재생
+            // 돌진/타격은 코드로 재생하되, 몬스터 고유의 Attack 클립도 같이 틀어서
+            // 몬스터마다 다른 동작(할퀴기/물기 등)이 보이도록 함
+            if (playAttackClip && HasState(attackState))
+                animator.CrossFadeInFixedTime(attackState, crossFadeTime);
+
             yield return StartCoroutine(AttackMotionRoutine());
+
+            // Attack 클립이 Idle로 자동 복귀하지 않는 경우를 대비해 명시적으로 되돌림
+            if (playAttackClip && !hitIsDead) ReturnToIdle();
         }
         else
         {

@@ -7,9 +7,9 @@ using UnityEngine.Networking;
 public enum MonsterType
 {
     // Act 1
-    Slime = 100,
+    Bat = 100,
     Rat = 101,
-    Ghost = 102,
+    Spider = 102,
 
     // Act 2
     Zombie = 200,

@@ -1,18 +1,27 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class BattleFactory : MonoBehaviour
 {
     public static BattleFactory Instance;
-    
-    //int monsterSpawnSeed;
+
+    //노드 시드 기반 몬스터 생성 시드
+    int monsterSpawnSeed;
 
     [Header("프리팹들")]
     public GameObject playerPrefab;
 
-    [Header("보스 (Boss 노드에서만 등장)")]
-    public GameObject bossPrefab;
-    public int bossHp = 100;
-    public int bossMaxShield = 30;
+    // [Act 대응] Act마다 다른 보스를 쓸 수 있도록 act 번호로 묶어서 관리
+    [System.Serializable]
+    public class BossInfo
+    {
+        public int act;              // 이 보스가 등장할 Act (1, 2, 3 ...)
+        public GameObject bossPrefab;
+        public int bossId;           // 서버 Monster.json에 등록된 보스 id (스탯을 여기서 가져옴)
+    }
+
+    [Header("보스 (Boss 노드에서만 등장, Act마다 다른 보스를 리스트에 추가)")]
+    public List<BossInfo> bossList = new List<BossInfo>();
 
     private void Awake()
     {
@@ -22,16 +31,20 @@ public class BattleFactory : MonoBehaviour
             Destroy(gameObject);
     }
 
-    //private void Start()
-    //{
-    //    Debug.Log($"[BattleFactory Start] 현재 GameFlowData.currentNodeSeed 값: {GameFlowData.currentNodeSeed}");
-    //    // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
-    //    int nodeSeed = GameFlowData.currentNodeSeed;
-    //    System.Random seedGenerator = new System.Random(nodeSeed + 1);
+    private void Start()
+    {
+        // 현재 노드의 시드를 바탕으로 몬스터 시드 생성
+        int nodeSeed = GameFlowData.currentNodeSeed;
+        System.Random seedGenerator = new System.Random(nodeSeed + 1);
 
-    //    monsterSpawnSeed = seedGenerator.Next();
-    //    Debug.Log($"[BattleFactory Start] 생성된 monsterSpawnSeed: {monsterSpawnSeed}");
-    //}
+        monsterSpawnSeed = seedGenerator.Next();
+    }
+
+    // 현재 Act에 맞는 보스 정보를 찾아줌 (없으면 null)
+    private BossInfo GetBossInfo(int act)
+    {
+        return bossList.Find(b => b.act == act);
+    }
 
     public GameObject SpawnPlayer(GameObject spawnPoint)
     {
@@ -68,24 +81,28 @@ public class BattleFactory : MonoBehaviour
 
     public GameObject SpawnEnemy(GameObject spawnPoint)
     {
-        // [보스 분기] 보스 노드이고 보스 프리팹이 지정되어 있으면 보스를 스폰
-        Debug.Log($"[BattleFactory] nodeType={GameFlowData.currentNodeType}, bossPrefab={(bossPrefab != null)}");
-        bool isBoss = GameFlowData.currentNodeType == MapNode.NodeType.Boss && bossPrefab != null;
+        // [보스 분기] 보스 노드면 현재 Act에 맞는 보스를 찾아서 스폰
+        bool isBossNode = GameFlowData.currentNodeType == MapNode.NodeType.Boss;
+        BossInfo bossInfo = isBossNode ? GetBossInfo(GameFlowData.currentAct) : null;
+        bool isBoss = bossInfo != null && bossInfo.bossPrefab != null;
+
+        if (isBossNode && bossInfo == null)
+        {
+            Debug.LogWarning($"[BattleFactory] Act {GameFlowData.currentAct}에 등록된 보스가 없습니다. bossList에 추가해주세요.");
+        }
 
         int selectedId = -1;
         GameObject enemyPrefab;
 
         if (isBoss)
         {
-            enemyPrefab = bossPrefab;
-            Debug.Log("보스 노드 → 보스 스폰");
+            enemyPrefab = bossInfo.bossPrefab;
+            selectedId = bossInfo.bossId; // 보스도 몬스터와 동일하게 서버 id로 스탯 조회
+            Debug.Log($"보스 노드 → Act {bossInfo.act} 보스 스폰 ({bossInfo.bossPrefab.name}, id={selectedId})");
         }
         else
         {
-            int nodeSeed = GameFlowData.currentNodeSeed;
-            System.Random seedGenerator = new System.Random(nodeSeed + 1);
-            int seed = seedGenerator.Next(); // 몬스터 시드값
-
+            int seed = monsterSpawnSeed; // 몬스터 시드값
             Debug.Log("몬스터 시드 : " + seed);
             selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
             enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
@@ -103,23 +120,17 @@ public class BattleFactory : MonoBehaviour
         GameObject enemyObj = Instantiate(enemyPrefab, pos, rot);
         enemyObj.SetActive(false); // 데이터가 주입될 때까지 숨김
 
-        // 런타임 스탯 주입 (DI)
+        // 런타임 스탯 주입 (DI) - 보스도 몬스터와 동일하게 서버 Monster.json에서 id로 조회
         UnitBase enemyUnit = enemyObj.GetComponent<UnitBase>();
         if (enemyUnit != null && StatManager.Instance != null)
         {
-            if (isBoss)
-            {
-                // 보스는 서버 데이터 대신 인스펙터 값으로 스탯 주입
-                StatManager.Instance.SetEnemyStat(bossHp, bossMaxShield);
-                enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
-            }
-            else if (MonsterDatabase.Instance.TryInitializeMonsterStat(selectedId))
+            if (MonsterDatabase.Instance.TryInitializeMonsterStat(selectedId))
             {
                 enemyUnit.Initialize(StatManager.Instance.GetEnemyStat());
             }
             else
             {
-                Debug.Log("몬스터 스탯을 가져오지 못했습니다.");
+                Debug.Log($"{(isBoss ? "보스" : "몬스터")} 스탯을 가져오지 못했습니다. (id={selectedId}) 서버 Monster.json에 등록됐는지 확인하세요.");
             }
         }
 
