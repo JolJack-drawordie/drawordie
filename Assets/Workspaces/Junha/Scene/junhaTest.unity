@@ -1997,6 +1997,7 @@ MonoBehaviour:
   player: {fileID: 0}
   enemy: {fileID: 0}
   playerController: {fileID: 0}
+  playerSpineController: {fileID: 0}
   enemyController: {fileID: 0}
   endTurnButton: {fileID: 0}
   alignEndTurnWithRollButton: 1
@@ -3831,7 +3832,7 @@ Transform:
   m_GameObject: {fileID: 786873938}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.24, y: -1.3, z: 0}
+  m_LocalPosition: {x: -5.24, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6534,7 +6535,7 @@ Transform:
   m_GameObject: {fileID: 1396051992}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.93, y: -1.73, z: 0}
+  m_LocalPosition: {x: 4.93, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8776,14 +8777,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c8e733d4ae103f489a18f87a94e261e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleFactory
-  playerPrefab: {fileID: 4944560238511240866, guid: 9d79d20f0d831d043b77d238369b6647, type: 3}
-  bossList:
-  - act: 1
-    bossPrefab: {fileID: 6090681860200693100, guid: 81e28f0ed86f31b43a1f47f30e837908, type: 3}
-    bossId: 150
-  - act: 2
-    bossPrefab: {fileID: 6170441368762929513, guid: 6573b0858a0945345b4ca2253f7a9579, type: 3}
-    bossId: 250
+  playerPrefab: {fileID: 3619253469477948751, guid: 90a4022a2969adb43ba5bebff3f029ec, type: 3}
+  bossPrefab: {fileID: 6090681860200693100, guid: 81e28f0ed86f31b43a1f47f30e837908, type: 3}
+  bossHp: 100
+  bossMaxShield: 30
 --- !u!4 &1826100313
 Transform:
   m_ObjectHideFlags: 0
@@ -11177,6 +11174,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
+    - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
+      propertyPath: hitSound
+      value: 
+      objectReference: {fileID: 8300000, guid: eff9629c7d7fa694fafd2b0642cd3a64, type: 3}
+    - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
+      propertyPath: healSound
+      value: 
+      objectReference: {fileID: 8300000, guid: b125f311e2be35d4b9e333dbeb3e8850, type: 3}
+    - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
+      propertyPath: shieldSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6a0d7d9a9a5b5af44b875b23b743d56c, type: 3}
+    - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
+      propertyPath: restButtonSound
+      value: 
+      objectReference: {fileID: 8300000, guid: b125f311e2be35d4b9e333dbeb3e8850, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

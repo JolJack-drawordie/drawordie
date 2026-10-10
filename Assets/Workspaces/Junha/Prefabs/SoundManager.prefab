@@ -53,6 +53,9 @@ MonoBehaviour:
   equipSlotSound: {fileID: 8300000, guid: 79fbcede1b2d4d8458b12ad3bbb06f3e, type: 3}
   equipFailSound: {fileID: 8300000, guid: 5c528d7088a346e4dac31d70d1927b98, type: 3}
   diceRollSound: {fileID: 8300000, guid: 12080595fa624a64291357a1290e1299, type: 3}
+  healSound: {fileID: 8300000, guid: b125f311e2be35d4b9e333dbeb3e8850, type: 3}
+  hitSound: {fileID: 8300000, guid: eff9629c7d7fa694fafd2b0642cd3a64, type: 3}
+  shieldSound: {fileID: 8300000, guid: 6a0d7d9a9a5b5af44b875b23b743d56c, type: 3}
   mainBackgroundSound: {fileID: 8300000, guid: 01c02fee172ee5c428bbaa3c531811d6, type: 3}
   mapBackgroundSound: {fileID: 8300000, guid: 15a23c63e907b3c49ae7a150be9c9793, type: 3}
   battleBackgroundSound: {fileID: 8300000, guid: 3ac206f90b568c643b90e511208369a2, type: 3}

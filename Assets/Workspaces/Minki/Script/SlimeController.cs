@@ -17,6 +17,7 @@ public class SlimeController : EnemyController
             yield return null;
         }
 
+
         yield return new WaitForSeconds(0.1f);
 
         timer = 0;

@@ -80,6 +80,11 @@ public class RestManager : MonoBehaviour
             {
                 restEffectObject.SetActive(true);
 
+                if (PlayerSpineController.Instance != null)
+                {
+                    PlayerSpineController.Instance.StartCoroutine(PlayerSpineController.Instance.HealRoutine());
+                }
+
                 // 만약 ParticleSystem 컴포넌트가 직접 붙어있다면 확실하게 Play() 호출
                 ParticleSystem ps = restEffectObject.GetComponent<ParticleSystem>();
                 if (ps != null)

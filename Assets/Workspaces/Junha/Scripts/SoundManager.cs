@@ -14,6 +14,9 @@ public class SoundManager : MonoBehaviour
     public AudioClip equipSlotSound;
     public AudioClip equipFailSound;
     public AudioClip diceRollSound;
+    public AudioClip healSound;
+    public AudioClip hitSound;
+    public AudioClip shieldSound;
 
     [Header("배경음악 파일들")]
     public AudioClip mainBackgroundSound;

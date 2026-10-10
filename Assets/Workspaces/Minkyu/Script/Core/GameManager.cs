@@ -103,9 +103,14 @@ public class GameManager : MonoBehaviour
         }
         else if (currentPlayer != null && currentPlayer.IsDead())
         {
+            PlayerSpineController.Instance.PlayDefeat();
+
             currentState = BattleState.Defeat;
             isGameOver = true;
+
             Debug.Log("패배...");
+
+
 
             // 사망 시 플레이 타임 측정 종료 및 랭킹 등록
             if (GameResultManager.Instance != null)
