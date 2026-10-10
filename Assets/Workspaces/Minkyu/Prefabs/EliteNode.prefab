@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -200, y: 17.578703}
-  m_SizeDelta: {x: 160, y: 94.8425}
+  m_SizeDelta: {x: 120, y: 71.132}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6670939452378465450
 CanvasRenderer:
@@ -146,7 +146,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61d7e2485adab614d9696b3017fbabaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNode
+  nodeType: 0
+  floor: 0
+  index: 0
+  nodeSeed: 0
+  connectedNodes: []
   button: {fileID: 0}
+  isVisited: 0
 --- !u!1 &3314260578745366436
 GameObject:
   m_ObjectHideFlags: 0

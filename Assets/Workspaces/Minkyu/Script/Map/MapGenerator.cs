@@ -19,8 +19,8 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Map Settings")]
     public int floorCount = 5;
-    public float floorSpacing = 180f;
-    public float nodeSpacing = 180f;
+    public float floorSpacing = 210f;
+    public float nodeSpacing = 230f;
 
     // 1층 노드의 y 위치 (1920x1080 기준). 보스 노드가 상단 바(높이 100)에 가리지 않도록 아래로 내림
     public float startY = -370f;
@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour
                 // =========================
 
                 int nodeCount =
-                    mapRandom.Next(2, 4);
+                    mapRandom.Next(3, 5);
 
                 // =========================
                 // 보스 직전 층인지 확인
@@ -237,151 +237,160 @@ public class MapGenerator : MonoBehaviour
         );
     }
 
+
     /// <summary>
-    /// 이전 층과 현재 층을 1~2개의 연결로 연결
+    /// 이전 층과 현재 층을 연결한다.
+    /// 가까운 노드를 우선 연결하고, 연결되지 않은 노드는 보정한다.
     /// </summary>
     void CreateConnections(
         List<GameObject> previousFloor,
         List<GameObject> currentFloor)
     {
-        // 각 현재 노드의 연결 개수 확인용
-        int[] incomingConnections =
-            new int[currentFloor.Count];
+        if (previousFloor == null || currentFloor == null)
+            return;
 
-        // -----------------------------
-        // 1단계
-        // 이전 층의 각 노드가
-        // 다음 층의 1~2개 노드와 연결
-        // -----------------------------
+        if (previousFloor.Count == 0 || currentFloor.Count == 0)
+            return;
 
+        // 현재 층 각 노드의 유입 연결 개수
+        int[] incomingConnections = new int[currentFloor.Count];
+
+        // 각 이전 층 노드에서 가까운 노드를 우선 연결
         foreach (GameObject prev in previousFloor)
         {
-            MapNode prevNode =
-                prev.GetComponent<MapNode>();
-
-            if (prevNode == null)
+            if (prev == null)
                 continue;
 
-            // 연결할 개수 결정
-            int connectionCount =
-                mapRandom.Next(
-                    minConnections,
-                    maxConnections + 1
-                );
+            MapNode prevNode = prev.GetComponent<MapNode>();
+            RectTransform prevRect = prev.GetComponent<RectTransform>();
 
-            // 현재 층 노드가 1개라면 1개만 연결
-            connectionCount =
-                Mathf.Min(
-                    connectionCount,
-                    currentFloor.Count
-                );
+            if (prevNode == null || prevRect == null)
+                continue;
 
-            // 중복 방지
-            List<int> selectedIndexes =
-                new List<int>();
+            // 기존 설정에 따라 연결 개수 결정
+            int minCount = Mathf.Clamp(minConnections, 1, currentFloor.Count);
+            int maxCount = Mathf.Clamp(
+                maxConnections,
+                minCount,
+                currentFloor.Count
+            );
 
-            while (
-                selectedIndexes.Count <
-                connectionCount)
+            int connectionCount = mapRandom.Next(
+                minCount,
+                maxCount + 1
+            );
+
+            // 가로 거리가 가까운 순서대로 후보 정렬
+            List<int> candidateIndexes = new List<int>();
+
+            for (int i = 0; i < currentFloor.Count; i++)
             {
-                int randomIndex =
-                    mapRandom.Next(
-                        0,
-                        currentFloor.Count
-                    );
-
-                if (!selectedIndexes.Contains(
-                    randomIndex))
+                if (currentFloor[i] != null &&
+                    currentFloor[i].GetComponent<MapNode>() != null &&
+                    currentFloor[i].GetComponent<RectTransform>() != null)
                 {
-                    selectedIndexes.Add(
-                        randomIndex
-                    );
+                    candidateIndexes.Add(i);
                 }
             }
 
-            foreach (int index
-                in selectedIndexes)
+            candidateIndexes.Sort((a, b) =>
             {
-                MapNode currentNode =
-                    currentFloor[index]
-                        .GetComponent<MapNode>();
-
-                if (currentNode == null)
-                    continue;
-
-                prevNode.AddConnection(
-                    currentNode
+                float distanceA = Mathf.Abs(
+                    currentFloor[a].GetComponent<RectTransform>()
+                        .anchoredPosition.x - prevRect.anchoredPosition.x
                 );
 
+                float distanceB = Mathf.Abs(
+                    currentFloor[b].GetComponent<RectTransform>()
+                        .anchoredPosition.x - prevRect.anchoredPosition.x
+                );
+
+                return distanceA.CompareTo(distanceB);
+            });
+
+            int actualCount = Mathf.Min(
+                connectionCount,
+                candidateIndexes.Count
+            );
+
+            // 가까운 후보부터 연결
+            for (int i = 0; i < actualCount; i++)
+            {
+                int index = candidateIndexes[i];
+
+                MapNode currentNode =
+                    currentFloor[index].GetComponent<MapNode>();
+
+                prevNode.AddConnection(currentNode);
                 incomingConnections[index]++;
 
                 CreateLine(
-                    prev.GetComponent<RectTransform>(),
-                    currentFloor[index]
-                        .GetComponent<RectTransform>()
+                    prevRect,
+                    currentFloor[index].GetComponent<RectTransform>()
                 );
             }
         }
 
-        // -----------------------------
-        // 2단계
-        // 연결되지 않은 현재 층 노드가
-        // 있다면 이전 층의 랜덤 노드와 연결
-        // -----------------------------
-
-        for (int i = 0;
-            i < currentFloor.Count;
-            i++)
+        // 유입 연결이 없는 노드는 이전 층의 가장 가까운 노드와 연결
+        for (int i = 0; i < currentFloor.Count; i++)
         {
-            if (incomingConnections[i] > 0)
+            if (incomingConnections[i] > 0 || currentFloor[i] == null)
                 continue;
-
-            // 연결되지 않은 현재 노드
-            GameObject current =
-                currentFloor[i];
-
-            // 이전 층에서 랜덤 노드 선택
-            int previousIndex =
-                mapRandom.Next(
-                    0,
-                    previousFloor.Count
-                );
-
-            GameObject previous =
-                previousFloor[previousIndex];
-
-            MapNode previousNode =
-                previous.GetComponent<MapNode>();
 
             MapNode currentNode =
-                current.GetComponent<MapNode>();
+                currentFloor[i].GetComponent<MapNode>();
 
-            if (previousNode == null ||
-                currentNode == null)
-            {
+            RectTransform currentRect =
+                currentFloor[i].GetComponent<RectTransform>();
+
+            if (currentNode == null || currentRect == null)
                 continue;
+
+            GameObject closestPrevious = null;
+            MapNode closestPreviousNode = null;
+            RectTransform closestPreviousRect = null;
+            float shortestDistance = float.MaxValue;
+
+            foreach (GameObject prev in previousFloor)
+            {
+                if (prev == null)
+                    continue;
+
+                MapNode prevNode = prev.GetComponent<MapNode>();
+                RectTransform prevRect = prev.GetComponent<RectTransform>();
+
+                if (prevNode == null || prevRect == null)
+                    continue;
+
+                float distance = Mathf.Abs(
+                    prevRect.anchoredPosition.x -
+                    currentRect.anchoredPosition.x
+                );
+
+                if (distance < shortestDistance)
+                {
+                    shortestDistance = distance;
+                    closestPrevious = prev;
+                    closestPreviousNode = prevNode;
+                    closestPreviousRect = prevRect;
+                }
             }
 
-            // 연결 추가
-            previousNode.AddConnection(
-                currentNode
-            );
+            if (closestPreviousNode == null)
+                continue;
 
+            closestPreviousNode.AddConnection(currentNode);
             incomingConnections[i]++;
 
-            // 선 생성
-            CreateLine(
-                previous.GetComponent<RectTransform>(),
-                current.GetComponent<RectTransform>()
-            );
+            CreateLine(closestPreviousRect, currentRect);
 
             Debug.Log(
-                $"연결되지 않은 노드 보정 : " +
-                $"Floor {currentNode.floor} / " +
+                $"연결 보정: Floor {currentNode.floor} / " +
                 $"Index {currentNode.index}"
             );
         }
     }
+
 
     GameObject CreateNode(
         GameObject prefab,
