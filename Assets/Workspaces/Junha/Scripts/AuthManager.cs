@@ -39,6 +39,7 @@ public class AuthManager : MonoBehaviour
     [Header("로그인 입력 필드")]
     public TMP_InputField loginID;
     public TMP_InputField loginPW;
+    public TMP_Text loginMessage; // 로그인 버튼 위 (빈 항목, 로그인 실패)
 
     [Header("회원가입 입력 필드")]
     public TMP_InputField regID;
@@ -77,6 +78,10 @@ public class AuthManager : MonoBehaviour
         // 비밀번호를 다시 입력하면 불일치 메시지 지움
         if (regPW != null) regPW.onValueChanged.AddListener(_ => ShowRegMessage(regPwMessage, "", true));
         if (regPWConfirm != null) regPWConfirm.onValueChanged.AddListener(_ => ShowRegMessage(regPwMessage, "", true));
+
+        // 로그인 정보를 다시 입력하면 실패 메시지 지움
+        if (loginID != null) loginID.onValueChanged.AddListener(_ => ShowRegMessage(loginMessage, "", true));
+        if (loginPW != null) loginPW.onValueChanged.AddListener(_ => ShowRegMessage(loginMessage, "", true));
 
         // 로그인 비밀번호도 마스킹
         if (loginPW != null)
@@ -219,7 +224,14 @@ public class AuthManager : MonoBehaviour
     // 버튼 클릭 이벤트
     public void LoginClick() { 
         if (isLoggingIn) return; // Enter 연타 / 버튼 중복 클릭 방지
-        StartCoroutine(LoginAction()); 
+
+        if (string.IsNullOrWhiteSpace(loginID.text) || string.IsNullOrWhiteSpace(loginPW.text)) {
+            ShowRegMessage(loginMessage, "아이디와 비밀번호를 입력해주세요.", false);
+            return;
+        }
+
+        ShowRegMessage(loginMessage, "", true);
+        StartCoroutine(LoginAction());
     }
     public void RegisterClick() {
         ShowRegMessage(regPwMessage, "", true);
@@ -280,6 +292,7 @@ public class AuthManager : MonoBehaviour
             } else {
                 Debug.LogError("로그인 실패: " + www.error);
                 // 로그인 실패 시 팝업을 닫지 않고 그대로 두어 사용자가 다시 입력할 수 있게 합니다.
+                ShowRegMessage(loginMessage, GetLoginErrorMessage(www), false);
             }
         }
 
@@ -364,8 +377,17 @@ public class AuthManager : MonoBehaviour
         target.color = success ? new Color(0.35f, 0.85f, 0.35f) : new Color(0.9f, 0.3f, 0.25f);
     }
 
+    // 서버 연결 실패와 아이디/비밀번호 오류를 구분해서 안내
+    private string GetLoginErrorMessage(UnityWebRequest www)
+    {
+        if (www.result == UnityWebRequest.Result.ConnectionError)
+            return "서버에 연결할 수 없습니다.";
+        return "아이디 또는 비밀번호가 일치하지 않습니다.";
+    }
+
     private void ClearRegMessages()
     {
+        ShowRegMessage(loginMessage, "", true);
         ShowRegMessage(regIdMessage, "", true);
         ShowRegMessage(regPwMessage, "", true);
         ShowRegMessage(regSubmitMessage, "", true);
