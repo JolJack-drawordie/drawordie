@@ -13,6 +13,7 @@ public class TurnManager : MonoBehaviour
 
     [Header("전투 애니메이션 (선택)")]
     public PlayerController playerController;
+    public PlayerSpineController playerSpineController;
     public EnemyController enemyController;
 
     [Header("턴 종료 버튼")]
@@ -83,7 +84,7 @@ public class TurnManager : MonoBehaviour
         {
             player = GameManager.Instance.Player;
             enemy = GameManager.Instance.Enemy;
-            playerController = PlayerController.Instance;
+            playerSpineController = PlayerSpineController.Instance;
 
             if (enemy != null)
             {

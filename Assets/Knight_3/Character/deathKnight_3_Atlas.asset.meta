@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9f67e0776ed9c4ed5b9b31ec9c0ab546
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297619
+  packageName: Animated 2D Character - Knight 3 (Spine)
+  packageVersion: 1.0
+  assetPath: Assets/Knight_3/Character/deathKnight_3_Atlas.asset
+  uploadId: 696526

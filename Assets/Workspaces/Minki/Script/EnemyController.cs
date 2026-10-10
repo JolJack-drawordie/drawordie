@@ -171,8 +171,15 @@ public abstract class EnemyController : MonoBehaviour
     IEnumerator AttackRoutineWrapper()
     {
         isActing = true;
-        yield return StartCoroutine(PlayCustomAttack()); 
-        
+        yield return StartCoroutine(PlayCustomAttack());
+
+        // 플레이어 피격 처리 (OnHit 실행 및 피격 완료까지 대기)
+        if (PlayerSpineController.Instance != null)
+        {
+            // OnHit 코루틴을 yield return으로 받아서 피격 모션(0.5초 등)이 끝날 때까지 기다림
+            yield return StartCoroutine(PlayerSpineController.Instance.HurtRoutine());
+        }
+
         isNextAttack = (Random.value > 0.5f); 
         UpdateIntentUI();
         
