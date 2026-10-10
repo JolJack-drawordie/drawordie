@@ -36,6 +36,11 @@ public class UnitBase : MonoBehaviour
         }
         statData.currentHp -= damage;
 
+        if (TryGetComponent<PlayerSpineController>(out var playerSpine))
+        {
+            playerSpine.StartCoroutine(playerSpine.HurtRoutine());
+        }
+
         if (statData.currentHp < 0) statData.currentHp = 0;
 
         UpdateBarUI();

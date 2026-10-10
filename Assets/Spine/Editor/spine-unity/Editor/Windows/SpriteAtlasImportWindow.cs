@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -42,7 +42,7 @@ namespace Spine.Unity.Editor {
 
 		[MenuItem("Window/Spine/SpriteAtlas Import", false, 5000)]
 		public static void Init (MenuCommand command) {
-			SpriteAtlasImportWindow window = EditorWindow.GetWindow<SpriteAtlasImportWindow>(IsUtilityWindow);
+			var window = EditorWindow.GetWindow<SpriteAtlasImportWindow>(IsUtilityWindow);
 			window.minSize = new Vector2(284f, 256f);
 			window.maxSize = new Vector2(500f, 256f);
 			window.titleContent = new GUIContent("Spine SpriteAtlas Import", Icons.spine);
@@ -74,7 +74,7 @@ namespace Spine.Unity.Editor {
 
 			using (new SpineInspectorUtility.BoxScope()) {
 				EditorGUI.BeginChangeCheck();
-				SerializedProperty spriteAtlasAssetProperty = so.FindProperty("spriteAtlasAsset");
+				var spriteAtlasAssetProperty = so.FindProperty("spriteAtlasAsset");
 				EditorGUILayout.PropertyField(spriteAtlasAssetProperty, new GUIContent("SpriteAtlas", EditorGUIUtility.IconContent("SpriteAtlas Icon").image));
 				if (EditorGUI.EndChangeCheck()) {
 					so.ApplyModifiedProperties();
@@ -86,7 +86,7 @@ namespace Spine.Unity.Editor {
 					}
 				}
 
-				SerializedProperty spineSpriteAtlasAssetProperty = so.FindProperty("spineSpriteAtlasAsset");
+				var spineSpriteAtlasAssetProperty = so.FindProperty("spineSpriteAtlasAsset");
 				EditorGUI.BeginChangeCheck();
 				EditorGUILayout.PropertyField(spineSpriteAtlasAssetProperty, new GUIContent("SpineSpriteAtlasAsset", EditorGUIUtility.IconContent("ScriptableObject Icon").image));
 				if (spineSpriteAtlasAssetProperty.objectReferenceValue == null) {
@@ -120,7 +120,7 @@ namespace Spine.Unity.Editor {
 			using (new SpineInspectorUtility.BoxScope()) {
 
 				using (new EditorGUI.DisabledScope(!isAtlasComplete)) {
-					SerializedProperty skeletonDataAssetProperty = so.FindProperty("skeletonDataFile");
+					var skeletonDataAssetProperty = so.FindProperty("skeletonDataFile");
 					EditorGUI.BeginChangeCheck();
 					EditorGUILayout.PropertyField(skeletonDataAssetProperty, SpineInspectorUtility.TempContent("Skeleton json/skel file", Icons.spine));
 					if (EditorGUI.EndChangeCheck()) {
@@ -158,7 +158,7 @@ namespace Spine.Unity.Editor {
 		SkeletonDataAsset FindSkeletonDataAsset (TextAsset skeletonDataFile) {
 			string path = AssetDatabase.GetAssetPath(skeletonDataFile);
 			path = path.Replace(".json", AssetUtility.SkeletonDataSuffix + ".asset");
-			path = path.Replace(AssetUtility.SkeletonBinaryExtension, AssetUtility.SkeletonDataSuffix + ".asset");
+			path = path.Replace(".skel.bytes", AssetUtility.SkeletonDataSuffix + ".asset");
 			if (System.IO.File.Exists(path)) {
 				return AssetDatabase.LoadAssetAtPath<SkeletonDataAsset>(path);
 			}

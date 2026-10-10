@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -60,7 +60,7 @@ namespace Spine.Unity.Examples {
 			Destroy(shadowRoot.GetComponent<SkeletonUtilityKinematicShadow>());
 
 			// Prepare shadow gameObject's properties.
-			Transform shadowRootTransform = shadowRoot.transform;
+			var shadowRootTransform = shadowRoot.transform;
 			shadowRootTransform.position = transform.position;
 			shadowRootTransform.rotation = transform.rotation;
 
@@ -79,19 +79,19 @@ namespace Spine.Unity.Examples {
 			if (hideShadow)
 				shadowRoot.hideFlags = HideFlags.HideInHierarchy;
 
-			Joint[] shadowJoints = shadowRoot.GetComponentsInChildren<Joint>();
+			var shadowJoints = shadowRoot.GetComponentsInChildren<Joint>();
 			foreach (Joint j in shadowJoints)
 				j.connectedAnchor *= scale;
 
 			// Build list of bone pairs (matches shadow transforms with bone transforms)
-			SkeletonUtilityBone[] bones = GetComponentsInChildren<SkeletonUtilityBone>();
-			SkeletonUtilityBone[] shadowBones = shadowRoot.GetComponentsInChildren<SkeletonUtilityBone>();
-			foreach (SkeletonUtilityBone b in bones) {
+			var bones = GetComponentsInChildren<SkeletonUtilityBone>();
+			var shadowBones = shadowRoot.GetComponentsInChildren<SkeletonUtilityBone>();
+			foreach (var b in bones) {
 				if (b.gameObject == this.gameObject)
 					continue;
 
 				System.Type checkType = (physicsSystem == PhysicsSystem.Physics2D) ? typeof(Rigidbody2D) : typeof(Rigidbody);
-				foreach (SkeletonUtilityBone sb in shadowBones) {
+				foreach (var sb in shadowBones) {
 					if (sb.GetComponent(checkType) != null && sb.boneName == b.boneName) {
 						shadowTable.Add(new TransformPair {
 							dest = b.transform,
@@ -118,17 +118,17 @@ namespace Spine.Unity.Examples {
 
 		void FixedUpdate () {
 			if (physicsSystem == PhysicsSystem.Physics2D) {
-				Rigidbody2D shadowRootRigidbody = shadowRoot.GetComponent<Rigidbody2D>();
+				var shadowRootRigidbody = shadowRoot.GetComponent<Rigidbody2D>();
 				shadowRootRigidbody.MovePosition(transform.position);
 				shadowRootRigidbody.MoveRotation(transform.rotation.eulerAngles.z);
 			} else {
-				Rigidbody shadowRootRigidbody = shadowRoot.GetComponent<Rigidbody>();
+				var shadowRootRigidbody = shadowRoot.GetComponent<Rigidbody>();
 				shadowRootRigidbody.MovePosition(transform.position);
 				shadowRootRigidbody.MoveRotation(transform.rotation);
 			}
 
 			for (int i = 0, n = shadowTable.Count; i < n; i++) {
-				TransformPair pair = shadowTable[i];
+				var pair = shadowTable[i];
 				pair.dest.localPosition = pair.src.localPosition;
 				pair.dest.localRotation = pair.src.localRotation;
 			}

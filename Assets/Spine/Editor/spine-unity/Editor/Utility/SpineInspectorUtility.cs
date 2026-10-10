@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -120,10 +120,6 @@ namespace Spine.Unity.Editor {
 			return type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
 		}
 
-		public static FieldInfo GetPublicField (System.Type type, string fieldName) {
-			return type.GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
-		}
-
 		#region SerializedProperty Helpers
 		public static SerializedProperty FindBaseOrSiblingProperty (this SerializedProperty property, string propertyName) {
 			if (string.IsNullOrEmpty(propertyName)) return null;
@@ -153,21 +149,9 @@ namespace Spine.Unity.Editor {
 							}
 						}
 					}
+
 					newPropertyPath = propertyPath.Remove(propertyPath.Length - localPathLength, localPathLength) + propertyName;
 					relativeProperty = property.serializedObject.FindProperty(newPropertyPath);
-				}
-				// If this fails as well, try at any base property up the hierarchy
-				if (relativeProperty == null) {
-					int dotIndex = propertyPath.Length - property.name.Length - 1;
-					if (dotIndex > 0) {
-						while (relativeProperty == null) {
-							dotIndex = propertyPath.LastIndexOf('.', dotIndex - 1);
-							if (dotIndex < 0)
-								break;
-							newPropertyPath = propertyPath.Remove(dotIndex + 1) + propertyName;
-							relativeProperty = property.serializedObject.FindProperty(newPropertyPath);
-						}
-					}
 				}
 			}
 
@@ -298,9 +282,9 @@ namespace Spine.Unity.Editor {
 		public static bool TargetsUseSameData (SerializedObject so) {
 			if (so.isEditingMultipleObjects) {
 				int n = so.targetObjects.Length;
-				IHasSkeletonDataAsset first = so.targetObjects[0] as IHasSkeletonDataAsset;
+				var first = so.targetObjects[0] as IHasSkeletonDataAsset;
 				for (int i = 1; i < n; i++) {
-					IHasSkeletonDataAsset sr = so.targetObjects[i] as IHasSkeletonDataAsset;
+					var sr = so.targetObjects[i] as IHasSkeletonDataAsset;
 					if (sr != null && sr.SkeletonDataAsset != first.SkeletonDataAsset)
 						return false;
 				}
@@ -310,20 +294,20 @@ namespace Spine.Unity.Editor {
 
 		public static SerializedObject GetRenderersSerializedObject (SerializedObject serializedObject) {
 			if (serializedObject.isEditingMultipleObjects) {
-				List<Object> renderers = new List<Object>();
-				foreach (UnityEngine.Object o in serializedObject.targetObjects) {
-					Component component = o as Component;
+				var renderers = new List<Object>();
+				foreach (var o in serializedObject.targetObjects) {
+					var component = o as Component;
 					if (component != null) {
-						Renderer renderer = component.GetComponent<Renderer>();
+						var renderer = component.GetComponent<Renderer>();
 						if (renderer != null)
 							renderers.Add(renderer);
 					}
 				}
 				return new SerializedObject(renderers.ToArray());
 			} else {
-				Component component = serializedObject.targetObject as Component;
+				var component = serializedObject.targetObject as Component;
 				if (component != null) {
-					Renderer renderer = component.GetComponent<Renderer>();
+					var renderer = component.GetComponent<Renderer>();
 					if (renderer != null)
 						return new SerializedObject(renderer);
 				}
@@ -366,7 +350,7 @@ namespace Spine.Unity.Editor {
 
 				// SetDirty
 				if (renderer.isEditingMultipleObjects)
-					foreach (UnityEngine.Object o in renderer.targetObjects)
+					foreach (var o in renderer.targetObjects)
 						EditorUtility.SetDirty(o);
 				else
 					EditorUtility.SetDirty(renderer.targetObject);

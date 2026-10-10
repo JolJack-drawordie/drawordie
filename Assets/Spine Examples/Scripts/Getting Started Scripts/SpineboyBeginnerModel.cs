@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -94,7 +94,7 @@ namespace Spine.Unity.Examples {
 
 			// Fake jumping.
 			{
-				Vector3 pos = transform.localPosition;
+				var pos = transform.localPosition;
 				const float jumpTime = 1.2f;
 				const float half = jumpTime * 0.5f;
 				const float jumpPower = 20f;

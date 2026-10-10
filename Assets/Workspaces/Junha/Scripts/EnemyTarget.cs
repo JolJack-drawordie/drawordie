@@ -77,18 +77,28 @@ public class EnemyTarget : MonoBehaviour
 
         if(damage > 0)
         {
-            if (PlayerController.Instance != null)
-                yield return StartCoroutine(PlayerController.Instance.AttackRoutine());
+            if (PlayerSpineController.Instance != null)
+                yield return StartCoroutine(PlayerSpineController.Instance.AttackRoutine("attack1"));
             GameManager.Instance.Enemy.TakeDamage(damage);
         }
 
         if(shield > 0)
         {
-           GameManager.Instance.Player.AddShield(shield);
+            if (PlayerSpineController.Instance != null)
+            {
+                yield return StartCoroutine(PlayerSpineController.Instance.ShieldRoutine());
+            }
+
+            GameManager.Instance.Player.AddShield(shield);
         }
         
         if(heal > 0)
         {
+            if (PlayerSpineController.Instance != null)
+            {
+                yield return StartCoroutine(PlayerSpineController.Instance.HealRoutine());
+            }
+
             GameManager.Instance.Player.Heal(heal);
         }
 

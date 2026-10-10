@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -48,16 +48,14 @@ namespace Spine.Unity.Examples {
 			skeletonDataAsset.GetSkeletonData(false); // Preload SkeletonDataAsset.
 			yield return new WaitForSeconds(1f); // Pretend stuff is happening.
 
-			var components = SkeletonGraphic.NewSkeletonGraphicGameObject(skeletonDataAsset, this.transform, skeletonGraphicMaterial); // Spawn a new SkeletonGraphic GameObject.
-			SkeletonGraphic skeletonGraphic = components.skeletonRenderer;
-			SkeletonAnimation skeletonAnimation = components.skeletonAnimation;
-			skeletonGraphic.gameObject.name = "SkeletonGraphic Instance";
+			var sg = SkeletonGraphic.NewSkeletonGraphicGameObject(skeletonDataAsset, this.transform, skeletonGraphicMaterial); // Spawn a new SkeletonGraphic GameObject.
+			sg.gameObject.name = "SkeletonGraphic Instance";
 
 			// Extra Stuff
-			skeletonGraphic.Initialize(false);
-			skeletonGraphic.Skeleton.SetSkin(startingSkin);
-			skeletonGraphic.Skeleton.SetupPoseSlots();
-			skeletonAnimation.AnimationState.SetAnimation(0, startingAnimation, true);
+			sg.Initialize(false);
+			sg.Skeleton.SetSkin(startingSkin);
+			sg.Skeleton.SetSlotsToSetupPose();
+			sg.AnimationState.SetAnimation(0, startingAnimation, true);
 		}
 	}
 

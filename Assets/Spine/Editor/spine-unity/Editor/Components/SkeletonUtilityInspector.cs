@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,11 +31,6 @@
 #define NEW_PREFAB_SYSTEM
 #endif
 
-#if UNITY_2021_2_OR_NEWER
-#define PUBLIC_SET_ICON_FOR_OBJECT
-#endif
-
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -130,7 +125,7 @@ namespace Spine.Unity.Editor {
 		}
 
 		void SpawnHierarchyContextMenu () {
-			GenericMenu menu = new GenericMenu();
+			var menu = new GenericMenu();
 
 			menu.AddItem(new GUIContent("Follow all bones"), false, SpawnFollowHierarchy);
 			menu.AddItem(new GUIContent("Follow (Root Only)"), false, SpawnFollowHierarchyRootOnly);
@@ -145,26 +140,22 @@ namespace Spine.Unity.Editor {
 			Skeleton skeleton = boneComponent.hierarchy.Skeleton;
 			Texture2D icon = boneComponent.bone.Data.Length == 0 ? Icons.nullBone : Icons.boneNib;
 
-			var ikConstraints = skeleton.Constraints.OfType<IkConstraint>();
-			foreach (IkConstraint c in ikConstraints)
+			foreach (IkConstraint c in skeleton.IkConstraints)
 				if (c.Target == boneComponent.bone) {
 					icon = Icons.constraintNib;
 					break;
 				}
-#if PUBLIC_SET_ICON_FOR_OBJECT
-			EditorGUIUtility.SetIconForObject(boneComponent.gameObject, icon);
-#else
+
 			typeof(EditorGUIUtility).InvokeMember("SetIconForObject", BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic, null, null, new object[2] {
 				boneComponent.gameObject,
 				icon
 			});
-#endif
 		}
 
 		static void AttachIconsToChildren (Transform root) {
 			if (root != null) {
-				SkeletonUtilityBone[] utilityBones = root.GetComponentsInChildren<SkeletonUtilityBone>();
-				foreach (SkeletonUtilityBone utilBone in utilityBones)
+				var utilityBones = root.GetComponentsInChildren<SkeletonUtilityBone>();
+				foreach (var utilBone in utilityBones)
 					AttachIcon(utilBone);
 			}
 		}

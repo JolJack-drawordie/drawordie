@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -39,7 +39,6 @@ namespace Spine.Unity {
 	public class SpineAtlasAsset : AtlasAssetBase {
 		public TextAsset atlasFile;
 		public Material[] materials;
-		public TextureLoader customTextureLoader;
 		protected Atlas atlas;
 
 		public override bool IsLoaded { get { return this.atlas != null; } }
@@ -51,19 +50,11 @@ namespace Spine.Unity {
 		#region Runtime Instantiation
 		/// <summary>
 		/// Creates a runtime AtlasAsset</summary>
-		/// <param name="newCustomTextureLoader">When not null, a function instantiating
-		/// a custom <c>TextureLoader</c> with the newly created <c>SpineAtlasAsset</c> as argument
-		/// is used instead of instantiating the default <c>MaterialsTextureLoader</c>.
-		/// A valid parameter is e.g. <c>(a) => new CustomTextureLoader(a)</c></param>
-		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText, Material[] materials, bool initialize,
-			Func<SpineAtlasAsset, TextureLoader> newCustomTextureLoader = null) {
-
+		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText, Material[] materials, bool initialize) {
 			SpineAtlasAsset atlasAsset = ScriptableObject.CreateInstance<SpineAtlasAsset>();
 			atlasAsset.Reset();
 			atlasAsset.atlasFile = atlasText;
 			atlasAsset.materials = materials;
-			if (newCustomTextureLoader != null)
-				atlasAsset.customTextureLoader = newCustomTextureLoader(atlasAsset);
 
 			if (initialize)
 				atlasAsset.GetAtlas();
@@ -79,19 +70,13 @@ namespace Spine.Unity {
 		/// atlas asset JSON file. When procedurally creating textures, each <c>Texture.name</c>
 		/// needs to be set to the atlas page texture filename without the .png extension,
 		/// e.g. 'my_skeleton' if the png filename listed in the atlas asset file is 'my_skeleton.png'.</param>
-		/// <param name="renameMaterial">If true, newly created materials will be renamed to the atlas texture page name.
-		/// If false, the materials keep the name of the <c>materialPropertySource</c> material they are copied from.</param>
-		/// <seealso cref="SpineAtlasAsset.CreateRuntimeInstance(TextAsset, Material[], bool, Func{SpineAtlasAsset, TextureLoader})"/>
-		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText, Texture2D[] textures,
-			Material materialPropertySource, bool initialize,
-			Func<SpineAtlasAsset, TextureLoader> newCustomTextureLoader = null,
-			bool renameMaterial = false) {
-
+		/// <seealso cref="Spine.Unity.SpineAtlasAsset.CreateRuntimeInstance(TextAsset, Material[], bool)"/>
+		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText, Texture2D[] textures, Material materialPropertySource, bool initialize) {
 			// Get atlas page names.
 			string atlasString = atlasText.text;
 			atlasString = atlasString.Replace("\r", "");
 			string[] atlasLines = atlasString.Split('\n');
-			List<string> pages = new List<string>();
+			var pages = new List<string>();
 			for (int i = 0; i < atlasLines.Length - 1; i++) {
 				string line = atlasLines[i].Trim();
 				if (line.EndsWith(".png"))
@@ -99,7 +84,7 @@ namespace Spine.Unity {
 			}
 
 			// Populate Materials[] by matching texture names with page names.
-			Material[] materials = new Material[pages.Count];
+			var materials = new Material[pages.Count];
 			for (int i = 0, n = pages.Count; i < n; i++) {
 				Material mat = null;
 
@@ -110,8 +95,6 @@ namespace Spine.Unity {
 						// Match found.
 						mat = new Material(materialPropertySource);
 						mat.mainTexture = textures[j];
-						if (renameMaterial)
-							mat.name = pageName;
 						break;
 					}
 				}
@@ -123,26 +106,24 @@ namespace Spine.Unity {
 			}
 
 			// Create AtlasAsset normally
-			return CreateRuntimeInstance(atlasText, materials, initialize, newCustomTextureLoader);
+			return CreateRuntimeInstance(atlasText, materials, initialize);
 		}
 
 		/// <summary>
-		/// Creates a runtime AtlasAsset. Only providing the textures is slower because
-		/// it has to search for atlas page matches.
+		/// Creates a runtime AtlasAsset. Only providing the textures is slower because it has to search for atlas page matches.
 		/// <param name="textures">An array of all textures referenced in the provided <c>atlasText</c>
 		/// atlas asset JSON file. When procedurally creating textures, each <c>Texture.name</c>
 		/// needs to be set to the atlas page texture filename without the .png extension,
 		/// e.g. 'my_skeleton' if the png filename listed in the atlas asset file is 'my_skeleton.png'.</param>
-		/// <seealso cref="SpineAtlasAsset.CreateRuntimeInstance(TextAsset, Material[], bool, Func{SpineAtlasAsset, TextureLoader})"/>
-		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText,
-			Texture2D[] textures, Shader shader, bool initialize,
-			Func<SpineAtlasAsset, TextureLoader> newCustomTextureLoader = null) {
-
+		/// <seealso cref="Spine.Unity.AtlasAssetBase.CreateRuntimeInstance(TextAsset, Material[], bool)"/></summary>
+		public static SpineAtlasAsset CreateRuntimeInstance (TextAsset atlasText, Texture2D[] textures, Shader shader, bool initialize) {
 			if (shader == null)
 				shader = Shader.Find("Spine/Skeleton");
 
 			Material materialProperySource = new Material(shader);
-			return CreateRuntimeInstance(atlasText, textures, materialProperySource, initialize, newCustomTextureLoader);
+			var oa = CreateRuntimeInstance(atlasText, textures, materialProperySource, initialize);
+
+			return oa;
 		}
 		#endregion
 
@@ -173,7 +154,7 @@ namespace Spine.Unity {
 			try {
 				TextureLoader loader;
 				if (!onlyMetaData)
-					loader = customTextureLoader == null ? new MaterialsTextureLoader(this) : customTextureLoader;
+					loader = new MaterialsTextureLoader(this);
 				else
 					loader = new NoOpTextureLoader();
 				atlas = new Atlas(new StringReader(atlasFile.text), "", loader);
@@ -269,10 +250,7 @@ namespace Spine.Unity {
 					Debug.LogError("Material is missing texture: " + other.name, other);
 					return;
 				}
-				string textureName = other.mainTexture.name;
-				if (textureName == name ||
-					(atlasAsset.OnDemandTextureLoader != null &&
-					textureName == atlasAsset.OnDemandTextureLoader.GetPlaceholderTextureName(name))) {
+				if (other.mainTexture.name == name) {
 					material = other;
 					break;
 				}

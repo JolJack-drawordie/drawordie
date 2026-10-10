@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -54,14 +54,16 @@ namespace Spine.Unity.Examples {
 		[Header("Runtime Repack Required!!")]
 		public bool repack = true;
 
-		AtlasUtilities.RepackAttachmentsOutput repackingOutput;
+		[Header("Do not assign")]
+		public Texture2D runtimeAtlas;
+		public Material runtimeMaterial;
 		#endregion
 
 		Skin customSkin;
 
 		void OnValidate () {
 			if (sourceMaterial == null) {
-				SkeletonGraphic skeletonGraphic = GetComponent<SkeletonGraphic>();
+				var skeletonGraphic = GetComponent<SkeletonGraphic>();
 				if (skeletonGraphic != null)
 					sourceMaterial = skeletonGraphic.SkeletonDataAsset.atlasAssets[0].PrimaryMaterial;
 			}
@@ -72,22 +74,17 @@ namespace Spine.Unity.Examples {
 			Apply();
 		}
 
-		void OnDestroy () {
-			// Note: materials and textures returned by GetRepackedSkin() behave like 'new Texture2D()' and need to be destroyed
-			repackingOutput.DestroyGeneratedAssets();
-		}
-
 		[ContextMenu("Apply")]
 		void Apply () {
-			SkeletonGraphic skeletonGraphic = GetComponent<SkeletonGraphic>();
-			Skeleton skeleton = skeletonGraphic.Skeleton;
+			var skeletonGraphic = GetComponent<SkeletonGraphic>();
+			var skeleton = skeletonGraphic.Skeleton;
 
 			// STEP 0: PREPARE SKINS
 			// Let's prepare a new skin to be our custom skin with equips/customizations. We get a clone so our original skins are unaffected.
 			customSkin = customSkin ?? new Skin("custom skin"); // This requires that all customizations are done with skin placeholders defined in Spine.
 
 			// Next let's get the skin that contains our source attachments. These are the attachments that
-			Skin baseSkin = skeleton.Data.FindSkin(baseSkinName);
+			var baseSkin = skeleton.Data.FindSkin(baseSkinName);
 
 			// STEP 1: "EQUIP" ITEMS USING SPRITES
 			// STEP 1.1 Find the original attachment.
@@ -99,17 +96,15 @@ namespace Spine.Unity.Examples {
 			int visorSlotIndex = skeleton.Data.FindSlot(visorSlot).Index; // You can access GetAttachment and SetAttachment via string, but caching the slotIndex is faster.
 			Attachment baseAttachment = baseSkin.GetAttachment(visorSlotIndex, visorKey); // STEP 1.1
 
-			// Note: Each call to `SetRegion()` with parameter `premultiplyAlpha` set to `true` creates
+			// Note: Each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true` creates
 			// a cached Texture copy which can be cleared by calling AtlasUtilities.ClearCache() as done below.
-			Attachment newAttachment = baseAttachment.Copy(); // STEP 1.2
-			newAttachment.SetRegion(visorSprite, sourceMaterial); // STEP 1.3
+			Attachment newAttachment = baseAttachment.GetRemappedClone(visorSprite, sourceMaterial); // STEP 1.2 - 1.3
 			customSkin.SetAttachment(visorSlotIndex, visorKey, newAttachment); // STEP 1.4
 
 			// And now for the gun.
 			int gunSlotIndex = skeleton.Data.FindSlot(gunSlot).Index;
 			Attachment baseGun = baseSkin.GetAttachment(gunSlotIndex, gunKey); // STEP 1.1
-			Attachment newGun = baseGun.Copy(); // STEP 1.2
-			newGun.SetRegion(gunSprite, sourceMaterial); // STEP 1.3
+			Attachment newGun = baseGun.GetRemappedClone(gunSprite, sourceMaterial); // STEP 1.2 - 1.3
 			if (newGun != null) customSkin.SetAttachment(gunSlotIndex, gunKey, newGun); // STEP 1.4
 
 			// customSkin.RemoveAttachment(gunSlotIndex, gunKey); // To remove an item.
@@ -124,27 +119,26 @@ namespace Spine.Unity.Examples {
 			// 				Combine all the attachment sources into one skin. Usually this means the default skin and the custom skin.
 			// 				call Skin.GetRepackedSkin to get a cloned skin with cloned attachments that all use one texture.
 			if (repack) {
-				Skin repackedSkin = new Skin("repacked skin");
+				var repackedSkin = new Skin("repacked skin");
 				repackedSkin.AddSkin(skeleton.Data.DefaultSkin);
 				repackedSkin.AddSkin(customSkin);
-				// Note: materials and textures returned by previous GetRepackedSkin() calls behave like 'new Texture2D()'
-				// and need to be destroyed.
-				repackingOutput.DestroyGeneratedAssets();
-				AtlasUtilities.RepackAttachmentsSettings settings = AtlasUtilities.RepackAttachmentsSettings.Default;
-				settings.UseSourceMaterialsFrom(skeletonGraphic.SkeletonDataAsset);
-				settings.maxAtlasSize = 1024;
-				repackedSkin = repackedSkin.GetRepackedSkin("repacked skin", settings, ref repackingOutput); // Pack all the items in the skin.
+				// Note: materials and textures returned by GetRepackedSkin() behave like 'new Texture2D()' and need to be destroyed
+				if (runtimeMaterial)
+					Destroy(runtimeMaterial);
+				if (runtimeAtlas)
+					Destroy(runtimeAtlas);
+				repackedSkin = repackedSkin.GetRepackedSkin("repacked skin", sourceMaterial, out runtimeMaterial, out runtimeAtlas);
 				skeleton.SetSkin(repackedSkin);
 			} else {
 				skeleton.SetSkin(customSkin);
 			}
 
-			//skeleton.SetupPoseSlots();
-			skeleton.SetupPose();
-			skeletonGraphic.Animation.Update(0);
-			skeletonGraphic.OverrideTexture = repackingOutput.outputTexture;
+			//skeleton.SetSlotsToSetupPose();
+			skeleton.SetToSetupPose();
+			skeletonGraphic.Update(0);
+			skeletonGraphic.OverrideTexture = runtimeAtlas;
 
-			// `GetRepackedSkin()` and each call to `SetRegion()` with parameter `premultiplyAlpha` set to `true`
+			// `GetRepackedSkin()` and each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true`
 			// cache necessarily created Texture copies which can be cleared by calling AtlasUtilities.ClearCache().
 			// You can optionally clear the textures cache after multiple repack operations.
 			// Just be aware that while this cleanup frees up memory, it is also a costly operation

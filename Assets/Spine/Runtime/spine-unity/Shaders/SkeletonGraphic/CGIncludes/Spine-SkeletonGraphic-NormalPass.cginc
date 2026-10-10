@@ -17,24 +17,14 @@ struct VertexInput {
 struct VertexOutput {
 	float4 vertex   : SV_POSITION;
 	fixed4 color    : COLOR;
-	float2 texcoord  : TEXCOORD0;
+	half2 texcoord  : TEXCOORD0;
 	float4 worldPosition : TEXCOORD1;
 	UNITY_VERTEX_OUTPUT_STEREO
 };
 
-#ifndef ENABLE_GRAYSCALE
 fixed4 _Color;
-#endif
 fixed4 _TextureSampleAdd;
 float4 _ClipRect;
-
-#ifdef ENABLE_FILL
-float4 _FillColor;
-float _FillPhase;
-#endif
-#ifdef ENABLE_GRAYSCALE
-float _GrayPhase;
-#endif
 
 VertexOutput vert (VertexInput IN) {
 	VertexOutput OUT;
@@ -59,14 +49,9 @@ VertexOutput vert (VertexInput IN) {
 #else
 	// Note: CanvasRenderer performs a GammaToTargetSpace conversion on vertex color already,
 	// however incorrectly assuming straight alpha color.
-	// Saturated version used to prevent numerical issues of certain low-alpha values.
-	float4 vertexColor = PMAGammaToTargetSpaceSaturated(half4(TargetToGammaSpace(IN.color.rgb), IN.color.a));
+	float4 vertexColor = PMAGammaToTargetSpace(half4(TargetToGammaSpace(IN.color.rgb), IN.color.a));
 #endif
-	OUT.color = vertexColor;
-#ifndef ENABLE_GRAYSCALE
-	OUT.color *= float4(_Color.rgb * _Color.a, _Color.a); // Combine a PMA version of _Color with vertexColor.
-#endif
-
+	OUT.color = vertexColor * float4(_Color.rgb * _Color.a, _Color.a); // Combine a PMA version of _Color with vertexColor.
 	return OUT;
 }
 
@@ -87,12 +72,6 @@ fixed4 frag (VertexOutput IN) : SV_Target
 	clip (color.a - 0.001);
 	#endif
 
-	#ifdef ENABLE_FILL
-	color.rgb = lerp(color.rgb, (_FillColor.rgb * color.a), _FillPhase); // make sure to PMA _FillColor.
-	#endif
-	#ifdef ENABLE_GRAYSCALE
-	color.rgb = lerp(color.rgb, dot(color.rgb, float3(0.3, 0.59, 0.11)), _GrayPhase);
-	#endif
 	return color;
 }
 

@@ -90,22 +90,13 @@ namespace Spine {
 
 		public ExposedList<T> Resize (int newSize) {
 			int itemsLength = Items.Length;
-			T[] oldItems = Items;
+			var oldItems = Items;
 			if (newSize > itemsLength) {
 				Array.Resize(ref Items, newSize);
 			} else if (newSize < itemsLength) {
 				// Allow nulling of T reference type to allow GC.
 				for (int i = newSize; i < itemsLength; i++)
 					oldItems[i] = default(T);
-			}
-			Count = newSize;
-			return this;
-		}
-
-		public ExposedList<T> EnsureSize (int newSize) {
-			int itemsLength = Items.Length;
-			if (newSize > itemsLength) {
-				Array.Resize(ref Items, newSize);
 			}
 			Count = newSize;
 			return this;

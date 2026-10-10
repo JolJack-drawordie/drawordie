@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -44,10 +44,6 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	static readonly string kShaderLitLW = "Lightweight Render Pipeline/Spine/Sprite";
 	static readonly string kShaderLitURP = "Universal Render Pipeline/Spine/Sprite";
 	static readonly string kShaderLitURP2D = "Universal Render Pipeline/2D/Spine/Sprite";
-
-	static readonly string kShaderLitURPOutline = "Universal Render Pipeline/Spine/Outline/Sprite";
-	static readonly string kShaderLitURP2DOutline = "Universal Render Pipeline/2D/Spine/Outline/Sprite";
-
 	static readonly int kSolidQueue = 2000;
 	static readonly int kAlphaTestQueue = 2450;
 	static readonly int kTransparentQueue = 3000;
@@ -134,8 +130,6 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	MaterialProperty _smoothnessScale = null;
 
 	MaterialProperty _lightAffectsAdditive = null;
-	MaterialProperty _tintBlack = null;
-	MaterialProperty _darkColor = null;
 
 	static GUIContent _albedoText = new GUIContent("Albedo", "Albedo (RGB) and Transparency (A)");
 	static GUIContent _maskText = new GUIContent("Light Mask", "Light mask texture (secondary Sprite texture)");
@@ -198,8 +192,6 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	static GUIContent _meshRequiresNormalsAndTangentsText = new GUIContent("Note: Material requires a mesh with Normals and Tangents.");
 	static GUIContent[] _fixedDiffuseRampModeOptions = { new GUIContent("Hard"), new GUIContent("Soft"), new GUIContent("Old Hard"), new GUIContent("Old Soft") };
 	static GUIContent _lightAffectsAdditiveText = new GUIContent("Light Affects Additive", "For PMA Additive Slots: When enabled, additive Slots are lit normally before the additive color is written to the target buffer. When disabled, the additive color is directly written with intensity 1.");
-	static GUIContent _tintBlackText = new GUIContent("Tint Black", "Enable Tint Black functionality.");
-	static GUIContent _darkColorText = new GUIContent("Dark Color", "Tint-black dark color.");
 
 	const string _primaryMapsText = "Main Maps";
 	const string _depthLabelText = "Depth";
@@ -221,8 +213,8 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		if (oldShader.name != kShaderVertexLit && oldShader.name != kShaderPixelLit && oldShader.name != kShaderUnlit &&
 			oldShader.name != kShaderVertexLitOutline && oldShader.name != kShaderPixelLitOutline && oldShader.name != kShaderUnlitOutline &&
 			oldShader.name != kShaderLitLW &&
-			oldShader.name != kShaderLitURP && oldShader.name != kShaderLitURPOutline &&
-			oldShader.name != kShaderLitURP2D && oldShader.name != kShaderLitURP2DOutline) {
+			oldShader.name != kShaderLitURP &&
+			oldShader.name != kShaderLitURP2D) {
 			SetDefaultSpriteKeywords(material, newShader);
 		}
 
@@ -274,8 +266,14 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		_smoothnessScale = FindProperty("_GlossMapScale", props, false);
 
 		_lightAffectsAdditive = FindProperty("_LightAffectsAdditive", props, false);
-		_tintBlack = FindProperty("_TintBlack", props, false);
-		_darkColor = FindProperty("_Black", props, false);
+	}
+
+	static bool BoldToggleField (GUIContent label, bool value) {
+		FontStyle origFontStyle = EditorStyles.label.fontStyle;
+		EditorStyles.label.fontStyle = FontStyle.Bold;
+		value = EditorGUILayout.Toggle(label, value, EditorStyles.toggle);
+		EditorStyles.label.fontStyle = origFontStyle;
+		return value;
 	}
 
 	protected virtual void ShaderPropertiesGUI () {
@@ -366,15 +364,15 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 				foreach (Material material in _materialEditor.targets) {
 					switch (lightMode) {
 					case eLightMode.VertexLit:
-						if (material.shader.name != kShaderVertexLit && material.shader.name != kShaderVertexLitOutline)
+						if (material.shader.name != kShaderVertexLit)
 							_materialEditor.SetShader(Shader.Find(kShaderVertexLit), false);
 						break;
 					case eLightMode.PixelLit:
-						if (material.shader.name != kShaderPixelLit && material.shader.name != kShaderPixelLitOutline)
+						if (material.shader.name != kShaderPixelLit)
 							_materialEditor.SetShader(Shader.Find(kShaderPixelLit), false);
 						break;
 					case eLightMode.Unlit:
-						if (material.shader.name != kShaderUnlit && material.shader.name != kShaderUnlitOutline)
+						if (material.shader.name != kShaderUnlit)
 							_materialEditor.SetShader(Shader.Find(kShaderUnlit), false);
 						break;
 					case eLightMode.LitLightweight:
@@ -382,11 +380,11 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 							_materialEditor.SetShader(Shader.Find(kShaderLitLW), false);
 						break;
 					case eLightMode.LitUniversal:
-						if (material.shader.name != kShaderLitURP && material.shader.name != kShaderLitURPOutline)
+						if (material.shader.name != kShaderLitURP)
 							_materialEditor.SetShader(Shader.Find(kShaderLitURP), false);
 						break;
 					case eLightMode.LitUniversal2D:
-						if (material.shader.name != kShaderLitURP2D && material.shader.name != kShaderLitURP2DOutline)
+						if (material.shader.name != kShaderLitURP2D)
 							_materialEditor.SetShader(Shader.Find(kShaderLitURP2D), false);
 						break;
 					}
@@ -436,7 +434,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 		}
 
 		EditorGUI.BeginChangeCheck();
-		eCulling culling = (eCulling)Mathf.RoundToInt(_culling.floatValue);
+		var culling = (eCulling)Mathf.RoundToInt(_culling.floatValue);
 		EditorGUI.showMixedValue = _culling.hasMixedValue;
 		culling = (eCulling)EditorGUILayout.Popup(_cullingModeText, (int)culling, _cullingModeOptions);
 		if (EditorGUI.EndChangeCheck()) {
@@ -853,15 +851,6 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 			_materialEditor.ShaderProperty(_lightAffectsAdditive, _lightAffectsAdditiveText);
 			dataChanged |= EditorGUI.EndChangeCheck();
 		}
-
-		if (_tintBlack != null) {
-			EditorGUI.BeginChangeCheck();
-			_materialEditor.ShaderProperty(_tintBlack, _tintBlackText);
-			dataChanged |= EditorGUI.EndChangeCheck();
-
-			if (_darkColor != null && (_tintBlack.floatValue != 0 || _tintBlack.hasMixedValue))
-				_materialEditor.ShaderProperty(_darkColor, _darkColorText);
-		}
 		return dataChanged;
 	}
 
@@ -896,7 +885,7 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	#region Private Functions
 
 	void RenderMeshInfoBox () {
-		Material material = (Material)_materialEditor.target;
+		var material = (Material)_materialEditor.target;
 		bool requiresNormals = _fixedNormal != null && GetMaterialNormalsMode(material) == eNormalsMode.MeshNormals;
 		bool requiresTangents = material.HasProperty("_BumpMap") && material.GetTexture("_BumpMap") != null;
 
@@ -1007,13 +996,11 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 	}
 
 	static bool IsURP3DShader (MaterialEditor editor, out bool mixedValue) {
-		return IsShaderType(kShaderLitURP, editor, out mixedValue) ||
-			IsShaderType(kShaderLitURPOutline, editor, out mixedValue);
+		return IsShaderType(kShaderLitURP, editor, out mixedValue);
 	}
 
 	static bool IsURP2DShader (MaterialEditor editor, out bool mixedValue) {
-		return IsShaderType(kShaderLitURP2D, editor, out mixedValue) ||
-			IsShaderType(kShaderLitURP2DOutline, editor, out mixedValue);
+		return IsShaderType(kShaderLitURP2D, editor, out mixedValue);
 	}
 
 	static bool IsShaderType (string shaderType, MaterialEditor editor, out bool mixedValue) {
@@ -1053,11 +1040,9 @@ public class SpineSpriteShaderGUI : SpineShaderWithOutlineGUI {
 			return eLightMode.Unlit;
 		} else if (material.shader.name == kShaderLitLW) {
 			return eLightMode.LitLightweight;
-		} else if (material.shader.name == kShaderLitURP ||
-				  material.shader.name == kShaderLitURPOutline) {
+		} else if (material.shader.name == kShaderLitURP) {
 			return eLightMode.LitUniversal;
-		} else if (material.shader.name == kShaderLitURP2D ||
-				  material.shader.name == kShaderLitURP2DOutline) {
+		} else if (material.shader.name == kShaderLitURP2D) {
 			return eLightMode.LitUniversal2D;
 		} else { // if (material.shader.name == kShaderVertexLit || kShaderVertexLitOutline)
 			return eLightMode.VertexLit;

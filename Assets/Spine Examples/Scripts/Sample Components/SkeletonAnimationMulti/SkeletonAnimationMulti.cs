@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -56,24 +56,17 @@ namespace Spine.Unity {
 		SkeletonAnimation currentSkeletonAnimation;
 
 		void Clear () {
-			foreach (SkeletonAnimation skeletonAnimation in skeletonAnimations)
-				Destroy(skeletonAnimation.gameObject);
+			foreach (var s in skeletonAnimations)
+				Destroy(s.gameObject);
 
 			skeletonAnimations.Clear();
 			animationNameTable.Clear();
 			animationSkeletonTable.Clear();
 		}
 
-		void SetActiveSkeleton (int index) {
-			if (index < 0 || index >= skeletonAnimations.Count)
-				SetActiveSkeleton(null);
-			else
-				SetActiveSkeleton(skeletonAnimations[index]);
-		}
-
 		void SetActiveSkeleton (SkeletonAnimation skeletonAnimation) {
-			foreach (SkeletonAnimation iter in skeletonAnimations)
-				iter.gameObject.SetActive(iter == skeletonAnimation);
+			foreach (var sa in skeletonAnimations)
+				sa.gameObject.SetActive(sa == skeletonAnimation);
 
 			currentSkeletonAnimation = skeletonAnimation;
 		}
@@ -88,38 +81,34 @@ namespace Spine.Unity {
 		public Dictionary<Animation, SkeletonAnimation> AnimationSkeletonTable { get { return this.animationSkeletonTable; } }
 		public Dictionary<string, Animation> AnimationNameTable { get { return this.animationNameTable; } }
 		public SkeletonAnimation CurrentSkeletonAnimation { get { return this.currentSkeletonAnimation; } }
-		public List<SkeletonAnimation> SkeletonAnimations { get { return skeletonAnimations; } }
 
 		public void Initialize (bool overwrite) {
 			if (skeletonAnimations.Count != 0 && !overwrite) return;
 
 			Clear();
 
-			MeshGenerator.Settings settings = this.meshGeneratorSettings;
+			var settings = this.meshGeneratorSettings;
 			Transform thisTransform = this.transform;
-			foreach (SkeletonDataAsset dataAsset in skeletonDataAssets) {
-				SkeletonComponents<SkeletonRenderer, SkeletonAnimation> components
-					= SkeletonAnimation.NewSkeletonAnimationGameObject(dataAsset);
-				SkeletonAnimation skeletonAnimation = components.skeletonAnimation;
-				SkeletonRenderer skeletonRenderer  = components.skeletonRenderer;
-				skeletonAnimation.transform.SetParent(thisTransform, false);
+			foreach (var sda in skeletonDataAssets) {
+				var sa = SkeletonAnimation.NewSkeletonAnimationGameObject(sda);
+				sa.transform.SetParent(thisTransform, false);
 
-				skeletonRenderer.SetMeshSettings(settings);
-				skeletonRenderer.initialFlipX = this.initialFlipX;
-				skeletonRenderer.initialFlipY = this.initialFlipY;
-				Skeleton skeleton = skeletonRenderer.skeleton;
+				sa.SetMeshSettings(settings);
+				sa.initialFlipX = this.initialFlipX;
+				sa.initialFlipY = this.initialFlipY;
+				var skeleton = sa.skeleton;
 				skeleton.ScaleX = this.initialFlipX ? -1 : 1;
 				skeleton.ScaleY = this.initialFlipY ? -1 : 1;
 
-				skeletonAnimation.Initialize(false);
-				skeletonAnimations.Add(skeletonAnimation);
+				sa.Initialize(false);
+				skeletonAnimations.Add(sa);
 			}
 
 			// Build cache
-			Dictionary<string, Animation> animationNameTable = this.animationNameTable;
-			Dictionary<Animation, SkeletonAnimation> animationSkeletonTable = this.animationSkeletonTable;
-			foreach (SkeletonAnimation skeletonAnimation in skeletonAnimations) {
-				foreach (Animation animationObject in skeletonAnimation.Skeleton.Data.Animations) {
+			var animationNameTable = this.animationNameTable;
+			var animationSkeletonTable = this.animationSkeletonTable;
+			foreach (var skeletonAnimation in skeletonAnimations) {
+				foreach (var animationObject in skeletonAnimation.Skeleton.Data.Animations) {
 					animationNameTable[animationObject.Name] = animationObject;
 					animationSkeletonTable[animationObject] = skeletonAnimation;
 				}
@@ -130,6 +119,7 @@ namespace Spine.Unity {
 		}
 
 		public Animation FindAnimation (string animationName) {
+			// Analysis disable once LocalVariableHidesMember
 			Animation animation;
 			animationNameTable.TryGetValue(animationName, out animation);
 			return animation;
@@ -147,24 +137,25 @@ namespace Spine.Unity {
 
 			if (skeletonAnimation != null) {
 				SetActiveSkeleton(skeletonAnimation);
-				skeletonAnimation.skeleton.SetupPose();
-				TrackEntry trackEntry = skeletonAnimation.AnimationState.SetAnimation(MainTrackIndex, animation, loop);
+				skeletonAnimation.skeleton.SetToSetupPose();
+				var trackEntry = skeletonAnimation.state.SetAnimation(MainTrackIndex, animation, loop);
 				skeletonAnimation.Update(0);
 				return trackEntry;
 			}
+
 			return null;
 		}
 
 		public void SetEmptyAnimation (float mixDuration) {
-			currentSkeletonAnimation.AnimationState.SetEmptyAnimation(MainTrackIndex, mixDuration);
+			currentSkeletonAnimation.state.SetEmptyAnimation(MainTrackIndex, mixDuration);
 		}
 
 		public void ClearAnimation () {
-			currentSkeletonAnimation.AnimationState.ClearTrack(MainTrackIndex);
+			currentSkeletonAnimation.state.ClearTrack(MainTrackIndex);
 		}
 
 		public TrackEntry GetCurrent () {
-			return currentSkeletonAnimation.AnimationState.GetTrack(MainTrackIndex);
+			return currentSkeletonAnimation.state.GetCurrent(MainTrackIndex);
 		}
 		#endregion
 	}

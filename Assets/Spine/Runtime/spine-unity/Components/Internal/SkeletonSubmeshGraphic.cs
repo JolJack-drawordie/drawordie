@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,15 +27,7 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#if UNITY_2021_1_OR_NEWER
-#define HAS_LIST_POOL
-#endif
-
-using System.Collections.Generic;
 using UnityEngine;
-#if HAS_LIST_POOL
-using UnityEngine.Pool;
-#endif
 using UnityEngine.UI;
 
 namespace Spine.Unity {
@@ -51,32 +43,5 @@ namespace Spine.Unity {
 		protected override void OnPopulateMesh (VertexHelper vh) {
 			vh.Clear();
 		}
-
-		protected override void OnDisable () {
-			base.OnDisable();
-			this.canvasRenderer.cull = true;
-		}
-
-		protected override void OnEnable () {
-			base.OnEnable();
-			this.canvasRenderer.cull = false;
-		}
-
-#if HAS_LIST_POOL
-		public Material UpdateModifiedMaterial (Material baseMaterial) {
-			List<IMaterialModifier> modifierComponents = ListPool<IMaterialModifier>.Get();
-			GetComponents<IMaterialModifier>(modifierComponents);
-
-			Material currentMaterial = baseMaterial;
-			for (int i = 0; i < modifierComponents.Count; i++)
-				currentMaterial = modifierComponents[i].GetModifiedMaterial(currentMaterial);
-			ListPool<IMaterialModifier>.Release(modifierComponents);
-			return currentMaterial;
-		}
-#else
-		public Material UpdateModifiedMaterial (Material baseMaterial) {
-			return GetModifiedMaterial(baseMaterial);
-		}
-#endif
 	}
 }

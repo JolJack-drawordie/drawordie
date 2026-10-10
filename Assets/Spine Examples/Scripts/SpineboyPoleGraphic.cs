@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -35,7 +35,6 @@ using UnityEngine;
 namespace Spine.Unity.Examples {
 	public class SpineboyPoleGraphic : MonoBehaviour {
 		public SkeletonGraphic skeletonGraphic;
-		public SkeletonAnimation skeletonAnimation;
 
 		[Space(18)]
 		public AnimationReferenceAsset run;
@@ -47,14 +46,12 @@ namespace Spine.Unity.Examples {
 		const float RunTimeScale = 1.5f;
 
 		IEnumerator Start () {
-			if (skeletonAnimation == null && skeletonGraphic != null)
-				skeletonAnimation = skeletonGraphic.GetComponent<SkeletonAnimation>();
-			AnimationState state = skeletonAnimation.AnimationState;
+			var state = skeletonGraphic.AnimationState;
 
 			while (true) {
 				// Run phase
 				SetXPosition(startX);
-				skeletonAnimation.Renderer.EnableSeparatorSlots = false; // Disable Separator during run.
+				skeletonGraphic.enableSeparatorSlots = false; // Disable Separator during run.
 				state.SetAnimation(0, run, true);
 				state.TimeScale = RunTimeScale;
 
@@ -65,15 +62,15 @@ namespace Spine.Unity.Examples {
 
 				// Hit phase
 				SetXPosition(endX);
-				skeletonAnimation.Renderer.EnableSeparatorSlots = true; // Enable Separator when hit
-				TrackEntry poleTrack = state.SetAnimation(0, pole, false);
+				skeletonGraphic.enableSeparatorSlots = true; // Enable Separator when hit
+				var poleTrack = state.SetAnimation(0, pole, false);
 				yield return new WaitForSpineAnimationComplete(poleTrack);
 				yield return new WaitForSeconds(1f);
 			}
 		}
 
 		void SetXPosition (float x) {
-			Vector3 tp = transform.localPosition;
+			var tp = transform.localPosition;
 			tp.x = x;
 			transform.localPosition = tp;
 		}

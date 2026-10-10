@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,14 +27,9 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-// Optimization option: Allows faster BuildMeshWithArrays call and avoids calling SetTriangles at the cost of
-// checking for mesh differences (vertex counts, member-wise attachment list compare) every frame.
-#define SPINE_TRIANGLECHECK
+// Not for optimization. Do not disable.
+#define SPINE_TRIANGLECHECK // Avoid calling SetTriangles at the cost of checking for mesh differences (vertex counts, memberwise attachment list compare) every frame.
 //#define SPINE_DEBUG
-
-// Important Note: When disabling this define, also disable the one in MeshGenerator.cs
-// For details, see MeshGenerator.cs.
-#define SLOT_ALPHA_DISABLES_ATTACHMENT
 
 using System;
 using System.Collections.Generic;
@@ -50,11 +45,6 @@ namespace Spine.Unity {
 		public bool hasActiveClipping;
 		public int rawVertexCount = -1;
 		public readonly ExposedList<Attachment> attachments = new ExposedList<Attachment>();
-#else
-		/// <summary>Returns constant true to avoid BuildMeshWithArrays in renderers.</summary>
-		public bool hasActiveClipping { get { return true; } }
-		/// <summary>Returns constant vertex count for early-return if-clauses in renderers.</summary>
-		public int rawVertexCount { get { return 1; } }
 #endif
 
 		public void Clear () {
@@ -66,25 +56,23 @@ namespace Spine.Unity {
 			this.submeshInstructions.Clear(false);
 		}
 
-#if SPINE_TRIANGLECHECK
 		public void Dispose () {
 			attachments.Clear(true);
 		}
-#endif
 
 		public void SetWithSubset (ExposedList<SubmeshInstruction> instructions, int startSubmesh, int endSubmesh) {
 #if SPINE_TRIANGLECHECK
 			int runningVertexCount = 0;
 #endif
 
-			ExposedList<SubmeshInstruction> submeshes = this.submeshInstructions;
+			var submeshes = this.submeshInstructions;
 			submeshes.Clear(false);
 			int submeshCount = endSubmesh - startSubmesh;
 			submeshes.Resize(submeshCount);
-			SubmeshInstruction[] submeshesItems = submeshes.Items;
-			SubmeshInstruction[] instructionsItems = instructions.Items;
+			var submeshesItems = submeshes.Items;
+			var instructionsItems = instructions.Items;
 			for (int i = 0; i < submeshCount; i++) {
-				SubmeshInstruction instruction = instructionsItems[startSubmesh + i];
+				var instruction = instructionsItems[startSubmesh + i];
 				submeshesItems[i] = instruction;
 #if SPINE_TRIANGLECHECK
 				this.hasActiveClipping |= instruction.hasClipping;
@@ -102,20 +90,13 @@ namespace Spine.Unity {
 			attachments.Clear(false);
 			int attachmentCount = endSlot - startSlot;
 			attachments.Resize(attachmentCount);
-			Attachment[] attachmentsItems = attachments.Items;
+			var attachmentsItems = attachments.Items;
 
-			Slot[] drawOrderItems = instructionsItems[0].skeleton.DrawOrder.AppliedPose.Items;
+			var drawOrderItems = instructionsItems[0].skeleton.DrawOrder.Items;
 			for (int i = 0; i < attachmentCount; i++) {
 				Slot slot = drawOrderItems[startSlot + i];
-				if (!slot.Bone.Active
-#if SLOT_ALPHA_DISABLES_ATTACHMENT
-					|| slot.AppliedPose.GetColor().a == 0f
-#endif
-					) {
-					attachmentsItems[i] = null;
-					continue;
-				}
-				attachmentsItems[i] = slot.AppliedPose.Attachment;
+				if (!slot.Bone.Active) continue;
+				attachmentsItems[i] = slot.Attachment;
 			}
 
 #endif
@@ -139,21 +120,19 @@ namespace Spine.Unity {
 			other.submeshInstructions.CopyTo(this.submeshInstructions.Items);
 		}
 
-		public static bool GeometryNotEqual (SkeletonRendererInstruction a, SkeletonRendererInstruction b,
-			bool calledFromMainThread = true) {
-
+		public static bool GeometryNotEqual (SkeletonRendererInstruction a, SkeletonRendererInstruction b) {
 #if SPINE_TRIANGLECHECK
 #if UNITY_EDITOR
-			if (calledFromMainThread && !Application.isPlaying)
-				return true;
+			if (!Application.isPlaying)
+			return true;
 #endif
-			if (a.hasActiveClipping || b.hasActiveClipping) return true; // Triangles are unpredictable when clipping is active.
 
-			if (a.immutableTriangles != b.immutableTriangles) return true;
-			if (a.immutableTriangles) return false;
+			if (a.hasActiveClipping || b.hasActiveClipping) return true; // Triangles are unpredictable when clipping is active.
 
 			// Everything below assumes the raw vertex and triangle counts were used. (ie, no clipping was done)
 			if (a.rawVertexCount != b.rawVertexCount) return true;
+
+			if (a.immutableTriangles != b.immutableTriangles) return true;
 
 			int attachmentCountB = b.attachments.Count;
 			if (a.attachments.Count != attachmentCountB) return true; // Bounds check for the looped storedAttachments count below.
@@ -164,17 +143,17 @@ namespace Spine.Unity {
 			if (submeshCountA != submeshCountB) return true;
 
 			// Submesh Instruction mismatch
-			SubmeshInstruction[] submeshInstructionsItemsA = a.submeshInstructions.Items;
-			SubmeshInstruction[] submeshInstructionsItemsB = b.submeshInstructions.Items;
+			var submeshInstructionsItemsA = a.submeshInstructions.Items;
+			var submeshInstructionsItemsB = b.submeshInstructions.Items;
 
-			Attachment[] attachmentsA = a.attachments.Items;
-			Attachment[] attachmentsB = b.attachments.Items;
+			var attachmentsA = a.attachments.Items;
+			var attachmentsB = b.attachments.Items;
 			for (int i = 0; i < attachmentCountB; i++)
 				if (!System.Object.ReferenceEquals(attachmentsA[i], attachmentsB[i])) return true;
 
 			for (int i = 0; i < submeshCountB; i++) {
-				SubmeshInstruction submeshA = submeshInstructionsItemsA[i];
-				SubmeshInstruction submeshB = submeshInstructionsItemsB[i];
+				var submeshA = submeshInstructionsItemsA[i];
+				var submeshB = submeshInstructionsItemsB[i];
 
 				if (!(
 					submeshA.rawVertexCount == submeshB.rawVertexCount &&

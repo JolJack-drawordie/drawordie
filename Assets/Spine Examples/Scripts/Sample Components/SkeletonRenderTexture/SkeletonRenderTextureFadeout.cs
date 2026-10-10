@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2022, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -31,8 +31,8 @@
 #define HAS_FORCE_RENDER_OFF
 #endif
 
-#if UNITY_2017_2_OR_NEWER
-#define HAS_VECTOR_INT
+#if UNITY_2018_2_OR_NEWER
+#define HAS_GET_SHARED_MATERIALS
 #endif
 
 using UnityEngine;
@@ -47,9 +47,9 @@ namespace Spine.Unity.Examples {
 	/// At the end of the fadeout, the event delegate <c>OnFadeoutComplete</c> is called, to which you can bind e.g.
 	/// a method that disables or destroys the entire GameObject.
 	/// </summary>
-	[RequireComponent(typeof(SkeletonRenderTextureBase))]
+	[RequireComponent(typeof(SkeletonRenderTexture))]
 	public class SkeletonRenderTextureFadeout : MonoBehaviour {
-		SkeletonRenderTextureBase skeletonRenderTexture;
+		SkeletonRenderTexture skeletonRenderTexture;
 
 		public float fadeoutSeconds = 2.0f;
 		protected float fadeoutSecondsRemaining;
@@ -58,7 +58,7 @@ namespace Spine.Unity.Examples {
 		public event FadeoutCallback OnFadeoutComplete;
 
 		protected void Awake () {
-			skeletonRenderTexture = this.GetComponent<SkeletonRenderTextureBase>();
+			skeletonRenderTexture = this.GetComponent<SkeletonRenderTexture>();
 		}
 
 		protected void OnEnable () {
@@ -78,10 +78,10 @@ namespace Spine.Unity.Examples {
 				return;
 			}
 			float fadeoutAlpha = fadeoutSecondsRemaining / fadeoutSeconds;
-#if HAS_VECTOR_INT
+#if HAS_GET_SHARED_MATERIALS
 			skeletonRenderTexture.color.a = fadeoutAlpha;
 #else
-			Debug.LogError("The SkeletonRenderTexture component requires Unity 2017.2 or newer.");
+			Debug.LogError("The SkeletonRenderTexture component requires Unity 2018.2 or newer.");
 #endif
 		}
 	}

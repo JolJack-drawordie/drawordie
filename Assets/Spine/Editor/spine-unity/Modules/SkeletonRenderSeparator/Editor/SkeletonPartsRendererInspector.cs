@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -46,10 +46,10 @@ namespace Spine.Unity.Examples {
 			if (!serializedObject.isEditingMultipleObjects) {
 				EditorGUILayout.Space();
 				if (SpineInspectorUtility.LargeCenteredButton(new GUIContent("Select SkeletonRenderer", SpineEditorUtilities.Icons.spine))) {
-					SkeletonPartsRenderer thisSkeletonPartsRenderer = target as SkeletonPartsRenderer;
-					SkeletonRenderSeparator separator = thisSkeletonPartsRenderer.GetComponentInParent<SkeletonRenderSeparator>();
-					if (separator != null && separator.partsRenderers.Contains(thisSkeletonPartsRenderer) && separator.SkeletonRenderer != null)
-						Selection.activeGameObject = separator.SkeletonRenderer.gameObject;
+					var thisSkeletonPartsRenderer = target as SkeletonPartsRenderer;
+					var srs = thisSkeletonPartsRenderer.GetComponentInParent<SkeletonRenderSeparator>();
+					if (srs != null && srs.partsRenderers.Contains(thisSkeletonPartsRenderer) && srs.SkeletonRenderer != null)
+						Selection.activeGameObject = srs.SkeletonRenderer.gameObject;
 				}
 			}
 		}

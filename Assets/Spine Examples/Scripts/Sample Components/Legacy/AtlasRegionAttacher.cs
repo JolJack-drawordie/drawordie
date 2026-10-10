@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -50,33 +50,30 @@ namespace Spine.Unity.Examples {
 		Atlas atlas;
 
 		void Awake () {
-			SkeletonRenderer skeletonRenderer = GetComponent<SkeletonRenderer>();
+			var skeletonRenderer = GetComponent<SkeletonRenderer>();
 			skeletonRenderer.OnRebuild += Apply;
 			if (skeletonRenderer.valid) Apply(skeletonRenderer);
 		}
 
-		void Apply (ISkeletonRenderer skeletonRenderer) {
+		void Apply (SkeletonRenderer skeletonRenderer) {
 			if (!this.enabled) return;
 
 			atlas = atlasAsset.GetAtlas();
 			if (atlas == null) return;
-			float scale = skeletonRenderer.SkeletonDataAsset.scale;
+			float scale = skeletonRenderer.skeletonDataAsset.scale;
 
-			foreach (SlotRegionPair entry in attachments) {
+			foreach (var entry in attachments) {
 				Slot slot = skeletonRenderer.Skeleton.FindSlot(entry.slot);
-				var slotPose = slot.AppliedPose;
-				Attachment originalAttachment = slotPose.Attachment;
+				Attachment originalAttachment = slot.Attachment;
 				AtlasRegion region = atlas.FindRegion(entry.region);
 
 				if (region == null) {
-					slotPose.Attachment = null;
+					slot.Attachment = null;
 				} else if (inheritProperties && originalAttachment != null) {
-					Attachment newAttachment = originalAttachment.Copy();
-					newAttachment.SetRegion(region, true, scale);
-					slotPose.Attachment = newAttachment;
+					slot.Attachment = originalAttachment.GetRemappedClone(region, true, true, scale);
 				} else {
-					RegionAttachment newRegionAttachment = region.ToRegionAttachment(region.name, scale);
-					slotPose.Attachment = newRegionAttachment;
+					var newRegionAttachment = region.ToRegionAttachment(region.name, scale);
+					slot.Attachment = newRegionAttachment;
 				}
 			}
 		}

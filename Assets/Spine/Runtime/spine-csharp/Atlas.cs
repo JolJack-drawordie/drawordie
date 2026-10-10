@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -63,10 +63,10 @@ namespace Spine {
 
 #if !(IS_UNITY)
 #if WINDOWS_STOREAPP
-		private async Task ReadFile (string path, TextureLoader textureLoader) {
+		private async Task ReadFile(string path, TextureLoader textureLoader) {
 			var folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
 			var file = await folder.GetFileAsync(path).AsTask().ConfigureAwait(false);
-			using (StreamReader reader = new StreamReader(await file.OpenStreamForReadAsync().ConfigureAwait(false))) {
+			using (var reader = new StreamReader(await file.OpenStreamForReadAsync().ConfigureAwait(false))) {
 				try {
 					Atlas atlas = new Atlas(reader, Path.GetDirectoryName(path), textureLoader);
 					this.pages = atlas.pages;
@@ -78,7 +78,7 @@ namespace Spine {
 			}
 		}
 
-		public Atlas (string path, TextureLoader textureLoader) {
+		public Atlas(string path, TextureLoader textureLoader) {
 			this.ReadFile(path, textureLoader).Wait();
 		}
 #else
@@ -120,7 +120,7 @@ namespace Spine {
 			AtlasPage page = null;
 			AtlasRegion region = null;
 
-			Dictionary<string, Action> pageFields = new Dictionary<string, Action>(5);
+			var pageFields = new Dictionary<string, Action>(5);
 			pageFields.Add("size", () => {
 				page.width = int.Parse(entry[1], CultureInfo.InvariantCulture);
 				page.height = int.Parse(entry[2], CultureInfo.InvariantCulture);
@@ -140,7 +140,7 @@ namespace Spine {
 				page.pma = entry[1] == "true";
 			});
 
-			Dictionary<string, Action> regionFields = new Dictionary<string, Action>(8);
+			var regionFields = new Dictionary<string, Action>(8);
 			regionFields.Add("xy", () => { // Deprecated, use bounds.
 				region.x = int.Parse(entry[1], CultureInfo.InvariantCulture);
 				region.y = int.Parse(entry[2], CultureInfo.InvariantCulture);
@@ -245,10 +245,6 @@ namespace Spine {
 					if (region.degrees == 90) {
 						region.u2 = (region.x + region.height) / (float)page.width;
 						region.v2 = (region.y + region.width) / (float)page.height;
-
-						int tempSwap = region.packedWidth;
-						region.packedWidth = region.packedHeight;
-						region.packedHeight = tempSwap;
 					} else {
 						region.u2 = (region.x + region.width) / (float)page.width;
 						region.v2 = (region.y + region.height) / (float)page.height;
@@ -343,22 +339,18 @@ namespace Spine {
 		}
 	}
 
-	public class AtlasRegion : TextureRegion {
+	public class AtlasRegion {
 		public AtlasPage page;
 		public string name;
-		public int x, y;
+		public int x, y, width, height;
+		public float u, v, u2, v2;
 		public float offsetX, offsetY;
 		public int originalWidth, originalHeight;
-		public int packedWidth { get { return width; } set { width = value; } }
-		public int packedHeight { get { return height; } set { height = value; } }
 		public int degrees;
 		public bool rotate;
 		public int index;
 		public string[] names;
 		public int[][] values;
-
-		override public int OriginalWidth { get { return originalWidth; } }
-		override public int OriginalHeight { get { return originalHeight; } }
 
 		public AtlasRegion Clone () {
 			return MemberwiseClone() as AtlasRegion;

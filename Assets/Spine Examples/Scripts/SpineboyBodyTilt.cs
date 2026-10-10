@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -51,21 +51,21 @@ namespace Spine.Unity.Examples {
 		Bone hipBone, headBone;
 
 		void Start () {
-			SkeletonAnimation skeletonAnimation = GetComponent<SkeletonAnimation>();
-			Skeleton skeleton = skeletonAnimation.Skeleton;
+			var skeletonAnimation = GetComponent<SkeletonAnimation>();
+			var skeleton = skeletonAnimation.Skeleton;
 
 			hipBone = skeleton.FindBone(hip);
 			headBone = skeleton.FindBone(head);
-			baseHeadRotation = headBone.Pose.Rotation;
+			baseHeadRotation = headBone.Rotation;
 
 			skeletonAnimation.UpdateLocal += UpdateLocal;
 		}
 
-		private void UpdateLocal (ISkeletonRenderer skeletonRenderer) {
+		private void UpdateLocal (ISkeletonAnimation animated) {
 			hipRotationTarget = planter.Balance * hipTiltScale;
 			hipRotationSmoothed = Mathf.MoveTowards(hipRotationSmoothed, hipRotationTarget, Time.deltaTime * hipRotationMoveScale * Mathf.Abs(2f * planter.Balance / planter.offBalanceThreshold));
-			hipBone.Pose.Rotation = hipRotationSmoothed;
-			headBone.Pose.Rotation = baseHeadRotation + (-hipRotationSmoothed * headTiltScale);
+			hipBone.Rotation = hipRotationSmoothed;
+			headBone.Rotation = baseHeadRotation + (-hipRotationSmoothed * headTiltScale);
 		}
 	}
 

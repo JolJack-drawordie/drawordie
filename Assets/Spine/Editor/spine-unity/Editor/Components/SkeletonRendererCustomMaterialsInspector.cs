@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -26,6 +26,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
+
+#define SPINE_OPTIONAL_MATERIALOVERRIDE
 
 // Contributed by: Lost Polygon
 
@@ -52,14 +54,14 @@ namespace Spine.Unity.Editor {
 		#region SkeletonRenderer context menu
 		[MenuItem("CONTEXT/SkeletonRenderer/Add Basic Serialized Custom Materials")]
 		static void AddSkeletonRendererCustomMaterials (MenuCommand menuCommand) {
-			SkeletonRenderer skeletonRenderer = (SkeletonRenderer)menuCommand.context;
-			SkeletonRendererCustomMaterials newComponent = skeletonRenderer.gameObject.AddComponent<SkeletonRendererCustomMaterials>();
+			var skeletonRenderer = (SkeletonRenderer)menuCommand.context;
+			var newComponent = skeletonRenderer.gameObject.AddComponent<SkeletonRendererCustomMaterials>();
 			Undo.RegisterCreatedObjectUndo(newComponent, "Add Basic Serialized Custom Materials");
 		}
 
 		[MenuItem("CONTEXT/SkeletonRenderer/Add Basic Serialized Custom Materials", true)]
 		static bool AddSkeletonRendererCustomMaterials_Validate (MenuCommand menuCommand) {
-			SkeletonRenderer skeletonRenderer = (SkeletonRenderer)menuCommand.context;
+			var skeletonRenderer = (SkeletonRenderer)menuCommand.context;
 			return (skeletonRenderer.GetComponent<SkeletonRendererCustomMaterials>() == null);
 		}
 		#endregion
@@ -74,7 +76,7 @@ namespace Spine.Unity.Editor {
 
 		public override void OnInspectorGUI () {
 			component = (SkeletonRendererCustomMaterials)target;
-			SkeletonRenderer skeletonRenderer = component.skeletonRenderer;
+			var skeletonRenderer = component.skeletonRenderer;
 
 			// Draw the default inspector
 			DrawDefaultInspector();
@@ -86,7 +88,7 @@ namespace Spine.Unity.Editor {
 				Type cm = typeof(SkeletonRendererCustomMaterials);
 				componentCustomMaterialOverrides = cm.GetField("customMaterialOverrides", PrivateInstance).GetValue(component) as List<SkeletonRendererCustomMaterials.AtlasMaterialOverride>;
 				componentCustomSlotMaterials = cm.GetField("customSlotMaterials", PrivateInstance).GetValue(component) as List<SkeletonRendererCustomMaterials.SlotMaterialOverride>;
-				if (componentCustomMaterialOverrides == null || componentCustomSlotMaterials == null) {
+				if (componentCustomMaterialOverrides == null) {
 					Debug.Log("Reflection failed.");
 					return;
 				}
@@ -135,7 +137,9 @@ namespace Spine.Unity.Editor {
 
 			if (SpineInspectorUtility.LargeCenteredButton(SpineInspectorUtility.TempContent("Clear and Reapply Changes", tooltip: "Removes all non-serialized overrides in the SkeletonRenderer and reapplies the overrides on this component."))) {
 				if (skeletonRenderer != null) {
+#if SPINE_OPTIONAL_MATERIALOVERRIDE
 					skeletonRenderer.CustomMaterialOverride.Clear();
+#endif
 					skeletonRenderer.CustomSlotMaterials.Clear();
 					RemoveCustomMaterials();
 					SetCustomMaterials();

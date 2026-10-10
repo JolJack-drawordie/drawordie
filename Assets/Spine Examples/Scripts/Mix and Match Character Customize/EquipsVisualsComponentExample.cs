@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -43,23 +43,19 @@ namespace Spine.Unity.Examples {
 		Spine.Skin equipsSkin;
 		Spine.Skin collectedSkin;
 
-		AtlasUtilities.RepackAttachmentsOutput repackingOutput;
+		public Material runtimeMaterial;
+		public Texture2D runtimeAtlas;
 
 		void Start () {
 			equipsSkin = new Skin("Equips");
 
 			// OPTIONAL: Add all the attachments from the template skin.
-			Skin templateSkin = skeletonAnimation.Skeleton.Data.FindSkin(templateSkinName);
+			var templateSkin = skeletonAnimation.Skeleton.Data.FindSkin(templateSkinName);
 			if (templateSkin != null)
 				equipsSkin.AddSkin(templateSkin);
 
 			skeletonAnimation.Skeleton.Skin = equipsSkin;
 			RefreshSkeletonAttachments();
-		}
-
-		void OnDestroy () {
-			// Note: materials and textures returned by GetRepackedSkin() behave like 'new Texture2D()' and need to be destroyed
-			repackingOutput.DestroyGeneratedAssets();
 		}
 
 		public void Equip (int slotIndex, string attachmentName, Attachment attachment) {
@@ -76,13 +72,13 @@ namespace Spine.Unity.Examples {
 			collectedSkin.AddSkin(equipsSkin);
 
 			// 2. Create a repacked skin.
-			// Note: materials and textures returned by previous GetRepackedSkin() calls behave like 'new Texture2D()'
-			// and need to be destroyed.
-			repackingOutput.DestroyGeneratedAssets();
-			AtlasUtilities.RepackAttachmentsSettings settings = AtlasUtilities.RepackAttachmentsSettings.Default;
-			settings.UseSourceMaterialsFrom(skeletonAnimation.SkeletonDataAsset);
-			settings.maxAtlasSize = 1024;
-			Skin repackedSkin = collectedSkin.GetRepackedSkin("repacked skin", settings, ref repackingOutput);
+			// Note: materials and textures returned by GetRepackedSkin() behave like 'new Texture2D()' and need to be destroyed
+			if (runtimeMaterial)
+				Destroy(runtimeMaterial);
+			if (runtimeAtlas)
+				Destroy(runtimeAtlas);
+			var repackedSkin = collectedSkin.GetRepackedSkin("Repacked skin", skeletonAnimation.SkeletonDataAsset.atlasAssets[0].PrimaryMaterial,
+				out runtimeMaterial, out runtimeAtlas, maxAtlasSize: 1024, clearCache: false);
 			collectedSkin.Clear();
 
 			// You can optionally clear the textures cache after each ore multiple repack operations are done.
@@ -95,7 +91,7 @@ namespace Spine.Unity.Examples {
 		}
 
 		void RefreshSkeletonAttachments () {
-			skeletonAnimation.Skeleton.SetupPoseSlots();
+			skeletonAnimation.Skeleton.SetSlotsToSetupPose();
 			skeletonAnimation.AnimationState.Apply(skeletonAnimation.Skeleton); //skeletonAnimation.Update(0);
 		}
 

@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -48,10 +48,10 @@ namespace Spine.Unity.Prototyping {
 
 #if UNITY_EDITOR
 		void OnValidate () {
-			ISkeletonComponent skeletonComponent = GetComponent<ISkeletonComponent>();
+			var skeletonComponent = GetComponent<ISkeletonComponent>();
 			if (skeletonComponent != null) {
-				skeletonComponent.Skeleton.SetupPoseSlots();
-				IAnimationStateComponent animationStateComponent = GetComponent<IAnimationStateComponent>();
+				skeletonComponent.Skeleton.SetSlotsToSetupPose();
+				var animationStateComponent = GetComponent<IAnimationStateComponent>();
 				if (animationStateComponent != null && animationStateComponent.AnimationState != null) {
 					animationStateComponent.AnimationState.Apply(skeletonComponent.Skeleton);
 				}
@@ -65,13 +65,13 @@ namespace Spine.Unity.Prototyping {
 		}
 
 		void ApplySettings () {
-			ISkeletonComponent skeletonComponent = GetComponent<ISkeletonComponent>();
+			var skeletonComponent = GetComponent<ISkeletonComponent>();
 			if (skeletonComponent != null) {
-				Skeleton skeleton = skeletonComponent.Skeleton;
+				var skeleton = skeletonComponent.Skeleton;
 				skeleton.SetColor(skeletonColor);
 
-				foreach (SlotSettings s in slotSettings) {
-					Slot slot = skeleton.FindSlot(s.slot);
+				foreach (var s in slotSettings) {
+					var slot = skeleton.FindSlot(s.slot);
 					if (slot != null) slot.SetColor(s.color);
 				}
 

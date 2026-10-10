@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -63,12 +63,12 @@ namespace Spine.Unity.Examples {
 		}
 
 		public void Equip (EquipAssetExample asset) {
-			EquipType equipType = asset.equipType;
+			var equipType = asset.equipType;
 			EquipHook howToEquip = equippables.Find(x => x.type == equipType);
 
-			SkeletonData skeletonData = skeletonDataAsset.GetSkeletonData(true);
+			var skeletonData = skeletonDataAsset.GetSkeletonData(true);
 			int slotIndex = skeletonData.FindSlot(howToEquip.slot).Index;
-			Attachment attachment = GenerateAttachmentFromEquipAsset(asset, slotIndex, howToEquip.templateSkin, howToEquip.templateAttachment);
+			var attachment = GenerateAttachmentFromEquipAsset(asset, slotIndex, howToEquip.templateSkin, howToEquip.templateAttachment);
 			target.Equip(slotIndex, howToEquip.templateAttachment, attachment);
 		}
 
@@ -77,12 +77,11 @@ namespace Spine.Unity.Examples {
 			cachedAttachments.TryGetValue(asset, out attachment);
 
 			if (attachment == null) {
-				SkeletonData skeletonData = skeletonDataAsset.GetSkeletonData(true);
-				Skin templateSkin = skeletonData.FindSkin(templateSkinName);
+				var skeletonData = skeletonDataAsset.GetSkeletonData(true);
+				var templateSkin = skeletonData.FindSkin(templateSkinName);
 				Attachment templateAttachment = templateSkin.GetAttachment(slotIndex, templateAttachmentName);
-				attachment = templateAttachment.Copy();
-				attachment.SetRegion(asset.sprite, sourceMaterial, premultiplyAlpha: this.applyPMA);
-				// Note: Each call to `SetRegion()` with parameter `premultiplyAlpha` set to `true` creates
+				attachment = templateAttachment.GetRemappedClone(asset.sprite, sourceMaterial, premultiplyAlpha: this.applyPMA);
+				// Note: Each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true` creates
 				// a cached Texture copy which can be cleared by calling AtlasUtilities.ClearCache() as shown in the method below.
 
 				cachedAttachments.Add(asset, attachment); // Cache this value for next time this asset is used.
@@ -93,7 +92,7 @@ namespace Spine.Unity.Examples {
 
 		public void Done () {
 			target.OptimizeSkin();
-			// `GetRepackedSkin()` and each call to `SetRegion()` with parameter `premultiplyAlpha` set to `true`
+			// `GetRepackedSkin()` and each call to `GetRemappedClone()` with parameter `premultiplyAlpha` set to `true`
 			// creates cached Texture copies which can be cleared by calling AtlasUtilities.ClearCache().
 			// You can optionally clear the textures cache after multiple repack operations.
 			// Just be aware that while this cleanup frees up memory, it is also a costly operation

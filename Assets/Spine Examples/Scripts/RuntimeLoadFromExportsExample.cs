@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -46,27 +46,14 @@ namespace Spine.Unity.Examples {
 		SpineAtlasAsset runtimeAtlasAsset;
 		SkeletonDataAsset runtimeSkeletonDataAsset;
 		SkeletonAnimation runtimeSkeletonAnimation;
-		SkeletonGraphic runtimeSkeletonGraphic;
-
-		public bool blendModeMaterials = false;
-		public bool applyAdditiveMaterial = false;
-		public BlendModeMaterials.TemplateMaterials blendModeTemplateMaterials;
-		public BlendModeMaterials.TemplateMaterials graphicBlendModeMaterials;
-		public Material skeletonGraphicMaterial;
 
 		void CreateRuntimeAssetsAndGameObject () {
 			// 1. Create the AtlasAsset (needs atlas text asset and textures, and materials/shader);
 			// 2. Create SkeletonDataAsset (needs json or binary asset file, and an AtlasAsset)
-			// 2.1 Optional: Setup blend mode materials at SkeletonDataAsset. Only required if the skeleton
-			//    uses blend modes which require blend mode materials.
-			// 3.a Create SkeletonAnimation (needs a valid SkeletonDataAsset)
-			// 3.b Create SkeletonGraphic (needs a valid SkeletonDataAsset)
+			// 3. Create SkeletonAnimation (needs a valid SkeletonDataAsset)
 
-			runtimeAtlasAsset = SpineAtlasAsset.CreateRuntimeInstance(atlasText, textures, materialPropertySource, true, null, true);
+			runtimeAtlasAsset = SpineAtlasAsset.CreateRuntimeInstance(atlasText, textures, materialPropertySource, true);
 			runtimeSkeletonDataAsset = SkeletonDataAsset.CreateRuntimeInstance(skeletonJson, runtimeAtlasAsset, true);
-			if (blendModeMaterials)
-				runtimeSkeletonDataAsset.SetupRuntimeBlendModeMaterials(
-					applyAdditiveMaterial, blendModeTemplateMaterials);
 		}
 
 		IEnumerator Start () {
@@ -75,50 +62,16 @@ namespace Spine.Unity.Examples {
 				runtimeSkeletonDataAsset.GetSkeletonData(false); // preload
 				yield return new WaitForSeconds(delay);
 			}
-			InstantiateSkeletonAnimation();
-
-			InstantiateSkeletonGraphic();
-		}
-
-		void InstantiateSkeletonAnimation () {
-			SkeletonComponents<SkeletonRenderer, SkeletonAnimation> components
-				= SkeletonAnimation.NewSkeletonAnimationGameObject(runtimeSkeletonDataAsset);
-			runtimeSkeletonAnimation = components.skeletonAnimation;
-			runtimeSkeletonAnimation.transform.parent = transform;
-			runtimeSkeletonAnimation.name = "SkeletonAnimation Instance";
+			runtimeSkeletonAnimation = SkeletonAnimation.NewSkeletonAnimationGameObject(runtimeSkeletonDataAsset);
 
 			// additional initialization
 			runtimeSkeletonAnimation.Initialize(false);
 			if (skinName != "")
 				runtimeSkeletonAnimation.Skeleton.SetSkin(skinName);
-			runtimeSkeletonAnimation.Skeleton.SetupPoseSlots();
+			runtimeSkeletonAnimation.Skeleton.SetSlotsToSetupPose();
 			if (animationName != "")
 				runtimeSkeletonAnimation.AnimationState.SetAnimation(0, animationName, true);
 		}
-
-		void InstantiateSkeletonGraphic () {
-			Canvas canvas = this.GetComponentInChildren<Canvas>();
-			Transform parent = canvas.transform;
-
-			SkeletonComponents<SkeletonGraphic, SkeletonAnimation> components =
-				SkeletonGraphic.NewSkeletonGraphicGameObject(runtimeSkeletonDataAsset, parent, skeletonGraphicMaterial);
-			runtimeSkeletonGraphic = components.skeletonRenderer;
-			runtimeSkeletonGraphic.name = "SkeletonGraphic Instance";
-
-			if (blendModeMaterials) {
-				runtimeSkeletonGraphic.allowMultipleCanvasRenderers = true;
-				runtimeSkeletonGraphic.additiveMaterial = graphicBlendModeMaterials.additiveTemplate;
-				runtimeSkeletonGraphic.multiplyMaterial = graphicBlendModeMaterials.multiplyTemplate;
-				runtimeSkeletonGraphic.screenMaterial = graphicBlendModeMaterials.screenTemplate;
-			}
-
-			// additional initialization
-			runtimeSkeletonGraphic.Initialize(false);
-			if (skinName != "")
-				runtimeSkeletonGraphic.Skeleton.SetSkin(skinName);
-			runtimeSkeletonGraphic.Skeleton.SetupPoseSlots();
-			if (animationName != "")
-				components.skeletonAnimation.AnimationState.SetAnimation(0, animationName, true);
-		}
 	}
+
 }

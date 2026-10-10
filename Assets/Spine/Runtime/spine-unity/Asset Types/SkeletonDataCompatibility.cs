@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,16 +27,6 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-//#define SPINE_ALLOW_UNSAFE // note: this define can be set via Edit - Preferences - Spine.
-
-#if UNITY_2021_2_OR_NEWER
-#define TEXT_ASSET_HAS_GET_DATA_BYTES
-#endif
-
-#if SPINE_ALLOW_UNSAFE && TEXT_ASSET_HAS_GET_DATA_BYTES
-#define UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
-#endif
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,8 +41,8 @@ namespace Spine.Unity {
 	public static class SkeletonDataCompatibility {
 
 #if UNITY_EDITOR
-		static readonly int[][] compatibleBinaryVersions = { new[] { 4, 3, 0 } };
-		static readonly int[][] compatibleJsonVersions = { new[] { 4, 3, 0 } };
+		static readonly int[][] compatibleBinaryVersions = { new[] { 4, 0, 0 } };
+		static readonly int[][] compatibleJsonVersions = { new[] { 4, 0, 0 } };
 
 		static bool wasVersionDialogShown = false;
 		static readonly Regex jsonVersionRegex = new Regex(@"""spine""\s*:\s*""([^""]+)""", RegexOptions.CultureInvariant);
@@ -116,12 +106,8 @@ namespace Spine.Unity {
 
 			if (fileVersion.sourceType == SourceType.Binary) {
 				try {
-#if UNSAFE_DIRECT_ACCESS_TEXT_ASSET_DATA
-					using (Stream stream = asset.GetStreamUnsafe()) {
-#else
-					using (MemoryStream stream = new MemoryStream(asset.bytes)) {
-#endif
-						fileVersion.rawVersion = SkeletonBinary.GetVersionString(stream);
+					using (var memStream = new MemoryStream(asset.bytes)) {
+						fileVersion.rawVersion = SkeletonBinary.GetVersionString(memStream);
 					}
 				} catch (System.Exception e) {
 					problemDescription = string.Format("Failed to read '{0}'. It is likely not a binary Spine SkeletonData file.\n{1}", asset.name, e);
@@ -140,7 +126,7 @@ namespace Spine.Unity {
 						return null;
 					}
 
-					Dictionary<string, object> root = obj as Dictionary<string, object>;
+					var root = obj as Dictionary<string, object>;
 					if (root == null) {
 						problemDescription = string.Format("'{0}' is not compatible JSON. Parser returned an incorrect type while parsing version info.", asset.name);
 						isSpineSkeletonData = false;
@@ -148,7 +134,7 @@ namespace Spine.Unity {
 					}
 
 					if (root.ContainsKey("skeleton")) {
-						Dictionary<string, object> skeletonInfo = (Dictionary<string, object>)root["skeleton"];
+						var skeletonInfo = (Dictionary<string, object>)root["skeleton"];
 						object jv;
 						skeletonInfo.TryGetValue("spine", out jv);
 						fileVersion.rawVersion = jv as string;
@@ -162,19 +148,12 @@ namespace Spine.Unity {
 				return null;
 			}
 
-			string[] versionSplit = fileVersion.rawVersion.Split('.');
+			var versionSplit = fileVersion.rawVersion.Split('.');
 			try {
 				fileVersion.version = new[]{ int.Parse(versionSplit[0], CultureInfo.InvariantCulture),
 									int.Parse(versionSplit[1], CultureInfo.InvariantCulture) };
 			} catch (System.Exception e) {
-				if (fileVersion.rawVersion.Contains("-from-")) {
-					problemDescription = string.Format("Failed to import skeleton downgrade asset '{0}'. " +
-						"Lower-version exports like 4.2 from Spine 4.3 are only for project downgrades and can't be loaded by runtimes directly.\n" +
-						"Open in the matching Spine version and re-export for runtime use.\n", asset.name);
-				} else {
-					problemDescription = string.Format("Failed to read version info at skeleton '{0}'. It is likely not a valid Spine SkeletonData file.\n{1}", asset.name, e);
-				}
-
+				problemDescription = string.Format("Failed to read version info at skeleton '{0}'. It is likely not a valid Spine SkeletonData file.\n{1}", asset.name, e);
 				isSpineSkeletonData = false;
 				return null;
 			}
@@ -183,16 +162,7 @@ namespace Spine.Unity {
 		}
 
 		public static bool IsJsonFile (TextAsset file) {
-#if TEXT_ASSET_HAS_GET_DATA_BYTES
-			var content = file.GetData<byte>();
-#else
 			byte[] content = file.bytes;
-#endif
-			// check for binary skeleton version number string, starts after 8 byte hash
-			char majorVersionChar = compatibleBinaryVersions[0][0].ToString()[0];
-			if (content.Length > 10 && content[9] == majorVersionChar && content[10] == '.')
-				return false;
-
 			const int maxCharsToCheck = 256;
 			int numCharsToCheck = Math.Min(content.Length, maxCharsToCheck);
 			int i = 0;
@@ -224,7 +194,7 @@ namespace Spine.Unity {
 			info.compatibleVersions = (fileVersion.sourceType == SourceType.Binary) ? compatibleBinaryVersions
 				: compatibleJsonVersions;
 
-			foreach (int[] compatibleVersion in info.compatibleVersions) {
+			foreach (var compatibleVersion in info.compatibleVersions) {
 				bool majorMatch = fileVersion.version[0] == compatibleVersion[0];
 				bool minorMatch = fileVersion.version[1] == compatibleVersion[1];
 				if (majorMatch && minorMatch) {
@@ -237,9 +207,7 @@ namespace Spine.Unity {
 		public static void DisplayCompatibilityProblem (string descriptionString, TextAsset spineJson) {
 			if (!wasVersionDialogShown) {
 				wasVersionDialogShown = true;
-				UnityEditor.EditorUtility.DisplayDialog("Version mismatch!",
-					string.Format("Skeleton '{0}'\n\n{1}", spineJson.name, descriptionString), "OK");
-				UnityEditor.EditorGUIUtility.PingObject(spineJson);
+				UnityEditor.EditorUtility.DisplayDialog("Version mismatch!", descriptionString, "OK");
 			}
 			Debug.LogError(string.Format("Error importing skeleton '{0}': {1}",
 				spineJson.name, descriptionString), spineJson);

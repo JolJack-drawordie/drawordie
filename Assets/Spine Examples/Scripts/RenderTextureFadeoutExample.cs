@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2022, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -39,7 +39,6 @@ namespace Spine.Unity.Examples {
 	public class RenderTextureFadeoutExample : MonoBehaviour {
 
 		public SkeletonRenderTextureFadeout renderTextureFadeout;
-		public SkeletonRenderTextureFadeout renderTextureFadeoutCanvas;
 		public SkeletonRenderer normalSkeletonRenderer;
 
 		float fadeoutSeconds = 2.0f;
@@ -48,9 +47,8 @@ namespace Spine.Unity.Examples {
 		IEnumerator Start () {
 			while (true) {
 				StartFadeoutBad();
-				StartFadeoutGood(renderTextureFadeout);
-				StartFadeoutGood(renderTextureFadeoutCanvas);
-				yield return new WaitForSeconds(fadeoutSeconds + 1.0f);
+				StartFadeoutGood();
+				yield return new WaitForSeconds(5.0f);
 			}
 		}
 		void Update () {
@@ -77,12 +75,12 @@ namespace Spine.Unity.Examples {
 			fadeoutSecondsRemaining = fadeoutSeconds;
 		}
 
-		void StartFadeoutGood (SkeletonRenderTextureFadeout fadeoutComponent) {
-			fadeoutComponent.gameObject.SetActive(true);
+		void StartFadeoutGood () {
+			renderTextureFadeout.gameObject.SetActive(true);
 			// enabling the SkeletonRenderTextureFadeout component starts the fadeout.
-			fadeoutComponent.enabled = true;
-			fadeoutComponent.OnFadeoutComplete -= DisableGameObject;
-			fadeoutComponent.OnFadeoutComplete += DisableGameObject;
+			renderTextureFadeout.enabled = true;
+			renderTextureFadeout.OnFadeoutComplete -= DisableGameObject;
+			renderTextureFadeout.OnFadeoutComplete += DisableGameObject;
 		}
 
 		void DisableGameObject (SkeletonRenderTextureFadeout target) {

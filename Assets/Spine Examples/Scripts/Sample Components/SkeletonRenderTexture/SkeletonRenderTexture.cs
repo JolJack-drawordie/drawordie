@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2022, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -50,48 +50,51 @@ namespace Spine.Unity.Examples {
 	/// because of the additional rendering overhead. Only enable it when alpha blending is required.
 	/// </summary>
 	[RequireComponent(typeof(SkeletonRenderer))]
-	public class SkeletonRenderTexture : SkeletonRenderTextureBase {
+	public class SkeletonRenderTexture : MonoBehaviour {
 #if HAS_GET_SHARED_MATERIALS
+		public Color color = Color.white;
+		public Material quadMaterial;
+		public Camera targetCamera;
+		public int maxRenderTextureSize = 1024;
 		protected SkeletonRenderer skeletonRenderer;
 		protected MeshRenderer meshRenderer;
 		protected MeshFilter meshFilter;
+		public GameObject quad;
 		protected MeshRenderer quadMeshRenderer;
 		protected MeshFilter quadMeshFilter;
+		protected Mesh quadMesh;
+		public RenderTexture renderTexture;
 
+		private CommandBuffer commandBuffer;
 		private MaterialPropertyBlock propertyBlock;
 		private readonly List<Material> materials = new List<Material>();
-		protected override void Awake () {
-			base.Awake();
+
+		protected Vector2Int requiredRenderTextureSize;
+		protected Vector2Int allocatedRenderTextureSize;
+
+		void Awake () {
 			meshRenderer = this.GetComponent<MeshRenderer>();
 			meshFilter = this.GetComponent<MeshFilter>();
 			skeletonRenderer = this.GetComponent<SkeletonRenderer>();
 			if (targetCamera == null)
 				targetCamera = Camera.main;
 
+			commandBuffer = new CommandBuffer();
 			propertyBlock = new MaterialPropertyBlock();
+
 			CreateQuadChild();
 		}
 
-#if UNITY_EDITOR
-		protected void Reset () {
-			string[] folders = { "Assets", "Packages" };
-			string[] assets = UnityEditor.AssetDatabase.FindAssets("t:material RenderQuadMaterial", folders);
-			if (assets.Length > 0) {
-				string materialPath = UnityEditor.AssetDatabase.GUIDToAssetPath(assets[0]);
-				quadMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(materialPath);
-			}
+		void OnDestroy () {
+			if (renderTexture)
+				RenderTexture.ReleaseTemporary(renderTexture);
 		}
-#endif
 
 		void CreateQuadChild () {
 			quad = new GameObject(this.name + " RenderTexture", typeof(MeshRenderer), typeof(MeshFilter));
 			quad.transform.SetParent(this.transform.parent, false);
-			quad.layer = meshRenderer.gameObject.layer;
 			quadMeshRenderer = quad.GetComponent<MeshRenderer>();
 			quadMeshFilter = quad.GetComponent<MeshFilter>();
-
-			quadMeshRenderer.sortingOrder = meshRenderer.sortingOrder;
-			quadMeshRenderer.sortingLayerID = meshRenderer.sortingLayerID;
 
 			quadMesh = new Mesh();
 			quadMesh.MarkDynamic();
@@ -128,93 +131,117 @@ namespace Spine.Unity.Examples {
 			allocatedRenderTextureSize = Vector2Int.zero;
 		}
 
-		void RenderOntoQuad (ISkeletonRenderer skeletonRenderer) {
-			if (meshFilter == null)
-				meshFilter = this.GetComponent<MeshFilter>();
-			Vector3 size = meshFilter.sharedMesh.bounds.size;
-			if (size.x == 0f || size.y == 0f) {
-				AssignNullMeshAtQuad();
-				return;
-			}
+		void RenderOntoQuad (SkeletonRenderer skeletonRenderer) {
 			PrepareForMesh();
 			RenderToRenderTexture();
 			AssignAtQuad();
 		}
 
 		protected void PrepareForMesh () {
-			// We need to get the min/max of all four corners, rotation of the skeleton
-			// in combination with perspective projection otherwise might lead to incorrect
-			// screen space min/max.
 			Bounds boundsLocalSpace = meshFilter.sharedMesh.bounds;
-			Vector3 localCorner0 = boundsLocalSpace.min;
-			Vector3 localCorner3 = boundsLocalSpace.max;
-			Vector3 localCorner1 = new Vector3(localCorner0.x, localCorner3.y, localCorner0.z);
-			Vector3 localCorner2 = new Vector3(localCorner3.x, localCorner0.y, localCorner3.z);
+			Vector3 meshMinWorldSpace = transform.TransformPoint(boundsLocalSpace.min);
+			Vector3 meshMaxWorldSpace = transform.TransformPoint(boundsLocalSpace.max);
+			Vector3 meshMinXMaxYWorldSpace = new Vector3(meshMinWorldSpace.x, meshMaxWorldSpace.y);
+			Vector3 meshMaxXMinYWorldSpace = new Vector3(meshMaxWorldSpace.x, meshMinWorldSpace.y);
 
-			Vector3 worldCorner0 = transform.TransformPoint(localCorner0);
-			Vector3 worldCorner1 = transform.TransformPoint(localCorner1);
-			Vector3 worldCorner2 = transform.TransformPoint(localCorner2);
-			Vector3 worldCorner3 = transform.TransformPoint(localCorner3);
+			// We need to get the min/max of all four corners, close position and rotation of the skeleton
+			// in combination with perspective projection otherwise might lead to incorrect screen space min/max.
+			Vector3 meshMinProjected = targetCamera.WorldToScreenPoint(meshMinWorldSpace);
+			Vector3 meshMaxProjected = targetCamera.WorldToScreenPoint(meshMaxWorldSpace);
+			Vector3 meshMinXMaxYProjected = targetCamera.WorldToScreenPoint(meshMinXMaxYWorldSpace);
+			Vector3 meshMaxXMinYProjected = targetCamera.WorldToScreenPoint(meshMaxXMinYWorldSpace);
+			// To handle 180 degree rotation and thus min/max inversion, we get min/max of all four corners
+			Vector3 meshMinScreenSpace =
+				Vector3.Min(meshMinProjected, Vector3.Min(meshMaxProjected,
+				Vector3.Min(meshMinXMaxYProjected, meshMaxXMinYProjected)));
+			Vector3 meshMaxScreenSpace =
+				Vector3.Max(meshMinProjected, Vector3.Max(meshMaxProjected,
+				Vector3.Max(meshMinXMaxYProjected, meshMaxXMinYProjected)));
 
-			Vector3 screenCorner0 = targetCamera.WorldToScreenPoint(worldCorner0);
-			Vector3 screenCorner1 = targetCamera.WorldToScreenPoint(worldCorner1);
-			Vector3 screenCorner2 = targetCamera.WorldToScreenPoint(worldCorner2);
-			Vector3 screenCorner3 = targetCamera.WorldToScreenPoint(worldCorner3);
+			requiredRenderTextureSize = new Vector2Int(
+				Mathf.Min(maxRenderTextureSize, Mathf.CeilToInt(Mathf.Abs(meshMaxScreenSpace.x - meshMinScreenSpace.x))),
+				Mathf.Min(maxRenderTextureSize, Mathf.CeilToInt(Mathf.Abs(meshMaxScreenSpace.y - meshMinScreenSpace.y))));
 
-			// To avoid perspective distortion when rotated, we project all vertices
-			// onto a plane parallel to the view frustum near plane.
-			// Avoids the requirement of 'noperspective' vertex attribute interpolation modifier in shaders.
-			float averageScreenDepth = (screenCorner0.z + screenCorner1.z + screenCorner2.z + screenCorner3.z) / 4.0f;
-			screenCorner0.z = screenCorner1.z = screenCorner2.z = screenCorner3.z = averageScreenDepth;
-			worldCornerNoDistortion0 = targetCamera.ScreenToWorldPoint(screenCorner0);
-			worldCornerNoDistortion1 = targetCamera.ScreenToWorldPoint(screenCorner1);
-			worldCornerNoDistortion2 = targetCamera.ScreenToWorldPoint(screenCorner2);
-			worldCornerNoDistortion3 = targetCamera.ScreenToWorldPoint(screenCorner3);
-
-			Vector3 screenSpaceMin, screenSpaceMax;
-			PrepareTextureMapping(out screenSpaceMin, out screenSpaceMax,
-				screenCorner0, screenCorner1, screenCorner2, screenCorner3);
-			PrepareCommandBuffer(targetCamera, screenSpaceMin, screenSpaceMax);
+			PrepareRenderTexture();
+			PrepareCommandBuffer(meshMinWorldSpace, meshMaxWorldSpace);
 		}
 
-		protected void PrepareCommandBuffer (Camera targetCamera, Vector3 screenSpaceMin, Vector3 screenSpaceMax) {
+		protected void PrepareCommandBuffer (Vector3 meshMinWorldSpace, Vector3 meshMaxWorldSpace) {
 			commandBuffer.Clear();
 			commandBuffer.SetRenderTarget(renderTexture);
 			commandBuffer.ClearRenderTarget(true, true, Color.clear);
 
-			commandBuffer.SetViewMatrix(targetCamera.worldToCameraMatrix);
+			Matrix4x4 projectionMatrix = Matrix4x4.Ortho(
+				meshMinWorldSpace.x, meshMaxWorldSpace.x,
+				meshMinWorldSpace.y, meshMaxWorldSpace.y,
+				float.MinValue, float.MaxValue);
 
-			Matrix4x4 projectionMatrix = CalculateProjectionMatrix(targetCamera,
-				screenSpaceMin, screenSpaceMax, targetCamera.pixelRect.size);
 			commandBuffer.SetProjectionMatrix(projectionMatrix);
-
-			Vector2 targetViewportSize = new Vector2(
-				screenSpaceMax.x - screenSpaceMin.x,
-				screenSpaceMax.y - screenSpaceMin.y);
-			Rect viewportRect = new Rect(Vector2.zero, targetViewportSize * downScaleFactor);
-			commandBuffer.SetViewport(viewportRect);
+			commandBuffer.SetViewport(new Rect(Vector2.zero, requiredRenderTextureSize));
 		}
 
 		protected void RenderToRenderTexture () {
 			meshRenderer.GetPropertyBlock(propertyBlock);
 			meshRenderer.GetSharedMaterials(materials);
 
-			for (int i = 0; i < materials.Count; i++) {
-				foreach (int shaderPass in shaderPasses)
-					commandBuffer.DrawMesh(meshFilter.sharedMesh, transform.localToWorldMatrix,
-						materials[i], meshRenderer.subMeshStartIndex + i, shaderPass, propertyBlock);
-			}
+			for (int i = 0; i < materials.Count; i++)
+				commandBuffer.DrawMesh(meshFilter.sharedMesh, transform.localToWorldMatrix,
+					materials[i], meshRenderer.subMeshStartIndex + i, -1, propertyBlock);
 			Graphics.ExecuteCommandBuffer(commandBuffer);
 		}
 
-		protected override void AssignMeshAtRenderer () {
+		protected void AssignAtQuad () {
+			Vector2 min = meshFilter.sharedMesh.bounds.min;
+			Vector2 max = meshFilter.sharedMesh.bounds.max;
+
+			Vector3[] vertices = new Vector3[4] {
+				new Vector3(min.x, min.y, 0),
+				new Vector3(max.x, min.y, 0),
+				new Vector3(min.x, max.y, 0),
+				new Vector3(max.x, max.y, 0)
+			};
+			quadMesh.vertices = vertices;
+
+			int[] indices = new int[6] { 0, 2, 1, 2, 3, 1 };
+			quadMesh.triangles = indices;
+
+			Vector3[] normals = new Vector3[4] {
+				-Vector3.forward,
+				-Vector3.forward,
+				-Vector3.forward,
+				-Vector3.forward
+			};
+			quadMesh.normals = normals;
+
+			float maxU = (float)(requiredRenderTextureSize.x) / allocatedRenderTextureSize.x;
+			float maxV = (float)(requiredRenderTextureSize.y) / allocatedRenderTextureSize.y;
+			Vector2[] uv = new Vector2[4] {
+				new Vector2(0, 0),
+				new Vector2(maxU, 0),
+				new Vector2(0, maxV),
+				new Vector2(maxU, maxV)
+			};
+			quadMesh.uv = uv;
 			quadMeshFilter.mesh = quadMesh;
 			quadMeshRenderer.sharedMaterial.mainTexture = this.renderTexture;
 			quadMeshRenderer.sharedMaterial.color = color;
+
+			quadMeshRenderer.transform.position = this.transform.position;
+			quadMeshRenderer.transform.rotation = this.transform.rotation;
+			quadMeshRenderer.transform.localScale = this.transform.localScale;
 		}
 
-		protected void AssignNullMeshAtQuad () {
-			quadMeshFilter.mesh = null;
+		protected void PrepareRenderTexture () {
+			Vector2Int textureSize = new Vector2Int(
+				Mathf.NextPowerOfTwo(requiredRenderTextureSize.x),
+				Mathf.NextPowerOfTwo(requiredRenderTextureSize.y));
+
+			if (textureSize != allocatedRenderTextureSize) {
+				if (renderTexture)
+					RenderTexture.ReleaseTemporary(renderTexture);
+				renderTexture = RenderTexture.GetTemporary(textureSize.x, textureSize.y);
+				allocatedRenderTextureSize = textureSize;
+			}
 		}
 #endif
 	}

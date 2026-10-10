@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2026, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -26,10 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
-
-#if !SPINE_DISABLE_THREADING && !UNITY_WEBGL
-#define USE_THREADED_ANIMATION_UPDATE
-#endif
 
 using System.Collections;
 using System.Collections.Generic;
@@ -62,7 +58,7 @@ namespace Spine.Unity.Examples {
 			if (audioSource == null) return;
 			if (skeletonAnimation == null) return;
 			skeletonAnimation.Initialize(false);
-			if (!skeletonAnimation.IsValid) return;
+			if (!skeletonAnimation.valid) return;
 
 			eventData = skeletonAnimation.Skeleton.Data.FindEvent(eventName);
 			skeletonAnimation.AnimationState.Event += HandleAnimationStateEvent;
