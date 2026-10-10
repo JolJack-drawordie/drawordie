@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7ab953651743ae845b89f8245c5ac13f
+guid: c6367ac6178661e4686631e7bee32b8e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 723143072797822049
-    second: "ChatGPT Image 2026\uB144 9\uC6D4 27\uC77C \uC624\uD6C4 02_57_31_0"
+      213: -6906145219021380444
+    second: a_wide_composite_image_made_of_three_horizontal_s_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -34,7 +34,7 @@ TextureImporter:
   cubemapConvolution: 0
   seamlessCubemap: 0
   textureFormat: 1
-  maxTextureSize: 4096
+  maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
     filterMode: 1
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -85,7 +85,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -100,67 +100,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ActMapBackground_Act1
+      name: Act1_Battle_Top
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 654
+        width: 1727
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9335d05bdecb40946855a5b4990a46b4
+      internalID: -855697905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Act2_Battle_Top
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 343
+        width: 1727
+        height: 264
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 094a598cae24dea4eb0f4411e5b509e8
+      internalID: 1961287170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Act3_Battle_Top
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 53
+        width: 1727
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f472a6a49e05e59478f87fc8e1568a7e
+      internalID: -2047639489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Act1_Battle_Floor
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 607
+        width: 1726
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad36c5aff9408634c86f2943409e60da
+      internalID: 1833513829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Act2_Battle_Floor
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 311
+        width: 1727
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74cef6fbd84b80e4982c09eaf4c51a54
+      internalID: 1015366628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Act3_Battle_Floor
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 720
-        height: 724
+        width: 1727
+        height: 52
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c034e9d533463b64e80b140cf1612f37
-      internalID: 1608864150
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ActMapBackground_Act2
-      rect:
-        serializedVersion: 2
-        x: 727
-        y: 0
-        width: 720
-        height: 724
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3705e7eac472fda4a840d5032b96b89e
-      internalID: -2119364509
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ActMapBackground_Act3
-      rect:
-        serializedVersion: 2
-        x: 1452
-        y: 0
-        width: 720
-        height: 724
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f897361c1c21d5a4e9f31b0a1ba2140c
-      internalID: -2127732219
+      spriteID: 55abd410867ca1446976ccd6825270e7
+      internalID: 2142343295
       vertices: []
       indices: 
       edges: []
@@ -169,7 +235,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b8f31ee659349814494698367b9629ab
+    spriteID: 1cf4087fb04cd95468963cb504616ba3
     internalID: 0
     vertices: []
     indices: 
@@ -179,11 +245,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":1.0},"gridSpriteSize":{"x":724.0,"y":724.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":3.0},"gridSpriteSize":{"x":1727.0,"y":303.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      ActMapBackground_Act1: 1608864150
-      ActMapBackground_Act2: -2119364509
-      ActMapBackground_Act3: -2127732219
+      Act1_Battle_Floor: 1833513829
+      Act1_Battle_Top: -855697905
+      Act2_Battle_Floor: 1015366628
+      Act2_Battle_Top: 1961287170
+      Act3_Battle_Floor: 2142343295
+      Act3_Battle_Top: -2047639489
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

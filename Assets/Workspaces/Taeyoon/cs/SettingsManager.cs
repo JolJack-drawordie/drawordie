@@ -124,6 +124,16 @@ public class SettingsManager : MonoBehaviour
     {
         if (isLeaving || !CanLeaveToLobby()) return;
 
+        // 맵 씬은 저장을 지원하지 않으므로 저장 없이 이동할지만 묻는다
+        if (!SaveManager.IsSaveSupportedScene())
+        {
+            if (confirmDialog != null)
+                confirmDialog.Show("맵에서는 저장할 수 없습니다.\n저장하지 않고 로비로 돌아가시겠습니까?", GoToLobby);
+            else
+                GoToLobby();
+            return;
+        }
+
         // 예: 저장 후 이동 / 아니오: 저장하지 않고 이동 / 취소: 그대로 머무름
         if (confirmDialog != null)
             confirmDialog.ShowWithCancel("로비로 돌아가기 전에\n저장하시겠습니까?", SaveAndGoToLobby, GoToLobby);

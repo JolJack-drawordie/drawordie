@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance;
 
     private const string SaveUrl = "http://localhost:8080/api/game/save";
+
+    private const string MapSceneName = "MapScene";
 
     // 씬에 미리 배치하지 않아도 자동으로 생성되도록 함 (MonsterDatabase / StatManager와 동일한 방식)
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -52,12 +55,26 @@ public class SaveManager : MonoBehaviour
         return !game.isGameOver && game.currentState == BattleState.PlayerTurn && !EnemyTarget.IsActing;
     }
 
+    // 지금 씬에서 저장을 지원하는지.
+    // 맵 씬은 불러오기 시 돌아갈 경로가 없어(LoadManager는 휴식 / 전투 씬으로만 이동) 저장하지 않음
+    public static bool IsSaveSupportedScene()
+    {
+        return SceneManager.GetActiveScene().name != MapSceneName;
+    }
+
     // onComplete: 저장 성공 여부 (저장이 끝난 뒤 씬을 옮길 때 사용)
     public void SaveGame(Action<bool> onComplete = null)
     {
         if (!AuthManager.isLoggedIn)
         {
             Debug.LogWarning("[SaveManager] 로그인되어 있지 않아 저장할 수 없습니다.");
+            onComplete?.Invoke(false);
+            return;
+        }
+
+        if (!IsSaveSupportedScene())
+        {
+            Debug.LogWarning("[SaveManager] 맵 씬에서는 저장할 수 없습니다.");
             onComplete?.Invoke(false);
             return;
         }
