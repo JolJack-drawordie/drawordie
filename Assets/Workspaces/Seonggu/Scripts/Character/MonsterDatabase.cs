@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -103,12 +103,15 @@ public class MonsterDatabase : MonoBehaviour
 
         foreach (var prefab in loadedPrefabs)
         {
+            // 전투 유닛(EnemyUnit)이 없는 프리팹(예: Rat_Charater 같은 외형 전용 프리팹)은 제외
+            if (prefab.GetComponent<EnemyUnit>() == null) continue;
+
             foreach (MonsterType type in System.Enum.GetValues(typeof(MonsterType)))
             {
-                string typeName = type.ToString(); // 예: "Slime"
+                string typeName = type.ToString(); // 예: "Bat"
 
-                // 프리팹 이름에 타입 이름이 포함되어 있거나, 해당 컨트롤러 컴포넌트가 붙어있는지 확인
-                bool isMatch = prefab.name.Contains(typeName) ||
+                // 프리팹 이름에 타입 이름이 포함되어 있거나(대소문자 무시, 예: rat → Rat), 해당 컨트롤러 컴포넌트가 붙어있는지 확인
+                bool isMatch = prefab.name.IndexOf(typeName, System.StringComparison.OrdinalIgnoreCase) >= 0 ||
                                prefab.GetComponent(typeName + "Controller") != null;
 
                 if (isMatch)
@@ -172,7 +175,12 @@ public class MonsterDatabase : MonoBehaviour
 
         foreach (int id in serverStatDict.Keys)
         {
-            if (id / IdPerAct == act) result.Add(id);
+            if (id / IdPerAct != act) continue;
+
+            // 보스 id(150, 250 등)처럼 MonsterType에 없거나 프리팹이 없는 id는 일반 몬스터 풀에서 제외
+            if (!System.Enum.IsDefined(typeof(MonsterType), id) || GetPrefab((MonsterType)id) == null) continue;
+
+            result.Add(id);
         }
 
         result.Sort();

@@ -40,6 +40,8 @@ public class BossController2 : EnemyController
     public Vector3 spawnOffset = Vector3.zero;
     [Tooltip("시작할 때 보이는 몸의 가로 중심을 스폰 포인트(루트) 위치에 맞춤")]
     public bool autoCenterBody = true;
+    [Tooltip("시작할 때 보이는 몸의 발밑 높이를 플레이어 발밑 높이에 맞춤 (켜면 spawnOffset.y는 무시됨)")]
+    public bool alignFeetToPlayer = false;
 
     [Header("의도 아이콘 위치 (몸의 머리 꼭대기 기준)")]
     public Vector3 iconOffsetAboveHead = new Vector3(0f, 0.6f, 0f);
@@ -140,6 +142,13 @@ public class BossController2 : EnemyController
             body.center += new Vector3(dx, 0f, 0f);
         }
 
+        if (alignFeetToPlayer && TryGetPlayerFeetY(out float playerFeetY))
+        {
+            float dy = playerFeetY - body.min.y;
+            transform.position += new Vector3(0f, dy, 0f);
+            body.center += new Vector3(0f, dy, 0f);
+        }
+
         basePos = transform.position;
         baseRot = transform.rotation;
         baseScale3 = transform.localScale;
@@ -180,6 +189,18 @@ public class BossController2 : EnemyController
             Debug.LogWarning($"[{name}] Attack/Defend Sprite 중 비어있는 게 있습니다.", this);
 
         DecideIntent();
+    }
+
+    // 플레이어(Spine)의 보이는 몸 범위에서 발밑 높이를 구함
+    private bool TryGetPlayerFeetY(out float feetY)
+    {
+        feetY = 0f;
+        PlayerUnit player = GameManager.Instance != null ? GameManager.Instance.Player : null;
+        if (player == null) return false;
+
+        MeshRenderer body = player.GetComponentInChildren<MeshRenderer>();
+        feetY = body != null ? body.bounds.min.y : player.transform.position.y;
+        return true;
     }
 
     private static float SafeDiv(float a, float b)
