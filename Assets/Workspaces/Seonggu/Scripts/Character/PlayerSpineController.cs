@@ -168,7 +168,7 @@ public class PlayerSpineController : MonoBehaviour
     {
         if (skeletonAnimation == null) yield break;
 
-        if (SoundManager.Instance != null && SoundManager.Instance.hitSound != null)
+        if (SoundManager.Instance != null && SoundManager.Instance.healSound != null)
         {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.healSound);
         }
@@ -206,7 +206,7 @@ public class PlayerSpineController : MonoBehaviour
 
         isActing = true;
 
-        if (SoundManager.Instance != null && SoundManager.Instance.hitSound != null)
+        if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
         {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
         }
