@@ -168,6 +168,40 @@ public class GerundCard : ICard
     }
 }
 
+// 카드 설명 아래에 공격 / 방어 / 치유 수치 줄을 붙인다 (0인 값은 생략).
+// 형용사는 단독으로 쓰지 않는 보정 카드라 설명만 보여준다.
+public static class CardText
+{
+    public static string Describe(ICard card)
+    {
+        return Describe(card.Type, card.Description, card.Damage, card.Shield, card.Heal);
+    }
+
+    public static string Describe(Combination combo)
+    {
+        return WithStats(combo.description, combo.finalDamage, combo.finalShield, combo.finalHeal);
+    }
+
+    public static string Describe(CardType type, string desc, int damage, int shield, int heal)
+    {
+        return type == CardType.Adjective ? desc : WithStats(desc, damage, shield, heal);
+    }
+
+    private static string WithStats(string desc, int damage, int shield, int heal)
+    {
+        List<string> stats = new List<string>();
+        if (damage > 0) stats.Add($"공격 {damage}");
+        if (shield > 0) stats.Add($"방어 {shield}");
+        if (heal > 0) stats.Add($"치유 {heal}");
+        else if (heal < 0) stats.Add($"체력 {heal}"); // 체력 소모 (독한 조합 카드 등)
+
+        if (stats.Count == 0) return desc;
+
+        string statLine = $"({string.Join(", ", stats)})";
+        return string.IsNullOrEmpty(desc) ? statLine : $"{desc}\n{statLine}";
+    }
+}
+
 [Serializable]
 public class DefaultDeckData
 {

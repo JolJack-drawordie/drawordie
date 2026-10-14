@@ -22,7 +22,7 @@ public class ViewerCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         // UI 텍스트 갱신 (네 카드 데이터 구조에 맞춰서 수정 가능)
         if (nameText != null) nameText.text = card.Name;
         if (costText != null) costText.text = card.Cost.ToString();
-        if (descriptionText != null) descriptionText.text = card.Description;
+        if (descriptionText != null) descriptionText.text = CardText.Describe(card);
 
         // 카드 프레임/아이콘 적용
         CardVisual cardVisual = GetComponent<CardVisual>();

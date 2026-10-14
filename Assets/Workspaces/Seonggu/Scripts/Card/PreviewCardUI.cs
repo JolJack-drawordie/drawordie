@@ -13,7 +13,7 @@ public class PreviewCardUI : MonoBehaviour
         // UI 텍스트 갱신 (네 카드 데이터 구조에 맞춰서 수정 가능)  
         if (nameText != null) nameText.text = combo.skillName;
         if (costText != null) costText.text = combo.finalCost.ToString();
-        if (descriptionText != null) descriptionText.text = combo.description.ToString();
+        if (descriptionText != null) descriptionText.text = CardText.Describe(combo);
 
         // 카드 프레임/아이콘 적용
         CardVisual cardVisual = GetComponent<CardVisual>();

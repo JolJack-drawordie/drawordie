@@ -74,6 +74,20 @@ public class UnitBase : MonoBehaviour
         Debug.Log($"{statData.unitName} 체력 {amount} 회복!");
     }
 
+    // 체력 소모 (독한 카드 등 자해 효과). 방어도를 무시하고 체력에서 바로 깎음
+    public virtual void LoseHp(int amount)
+    {
+        statData.currentHp = Mathf.Max(0, statData.currentHp - amount);
+
+        if (TryGetComponent<PlayerSpineController>(out var playerSpine))
+        {
+            playerSpine.StartCoroutine(playerSpine.HurtRoutine());
+        }
+
+        UpdateBarUI();
+        Debug.Log($"{statData.unitName} 체력 {amount} 소모! 현재 HP: {statData.currentHp}");
+    }
+
     protected void UpdateBarUI()
     {
         //if (hpBar != null) hpBar.SetValue(statData.currentHp);

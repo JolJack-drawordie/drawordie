@@ -101,6 +101,11 @@ public class EnemyTarget : MonoBehaviour
 
             GameManager.Instance.Player.Heal(heal);
         }
+        else if (heal < 0)
+        {
+            // 치유량이 음수면 체력 소모 (예: 독한 조합 카드)
+            GameManager.Instance.Player.LoseHp(-heal);
+        }
 
         GameManager.Instance.CheckBattleResult();
 

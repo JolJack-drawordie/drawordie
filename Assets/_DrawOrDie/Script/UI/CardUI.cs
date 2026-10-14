@@ -48,7 +48,7 @@ public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         CardID = id; 
         nameText.text = name;
         costText.text = cost;
-        descText.text = desc;
+        descText.text = CardText.Describe(type, desc, actualDamage, actualShield, actualHeal);
         
         cardType = type;
         AdjectiveId = type == CardType.Adjective ? id : 0;
