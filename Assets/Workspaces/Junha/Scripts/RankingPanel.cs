@@ -170,11 +170,13 @@ public class RankingPanel : MonoBehaviour
                 ? entry.endedAt.Substring(0, 10)
                 : "-";
 
+            // 열 위치는 RankingScene의 Header 텍스트(Tools > Ranking > 랭킹 씬 생성)와 맞춰야 함
             sb.Append(entry.rank);
-            sb.Append("<pos=8%><noparse>").Append(TrimNickname(entry.nickname)).Append("</noparse>");
-            sb.Append("<pos=35%>").Append(progress);
-            sb.Append("<pos=55%>").Append(entry.score.ToString("N0"));
-            sb.Append("<pos=71%>").Append(PlayTimeTracker.FormatTime(entry.playTime));
+            sb.Append("<pos=6%><noparse>").Append(TrimNickname(entry.nickname)).Append("</noparse>");
+            sb.Append("<pos=32%>").Append(progress);
+            sb.Append("<pos=48%>").Append(entry.eliteKills);
+            sb.Append("<pos=58%>").Append(entry.score.ToString("N0"));
+            sb.Append("<pos=73%>").Append(PlayTimeTracker.FormatTime(entry.playTime));
             sb.Append("<pos=84%>").Append(date);
 
             if (isMine) sb.Append("</color>");

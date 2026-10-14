@@ -165,7 +165,7 @@ public static class RankingSceneSetup
 
         // 열 제목 (목록과 같은 좌우 여백 60)
         TextMeshProUGUI header = RankingUIFactory.CreateText(box.transform, "Header",
-            "순위<pos=8%>닉네임<pos=35%>진행도<pos=55%>점수<pos=71%>시간<pos=84%>날짜",
+            "순위<pos=6%>닉네임<pos=32%>진행도<pos=48%>중간보스<pos=58%>점수<pos=73%>시간<pos=84%>날짜",
             28f, new Color(0.65f, 0.65f, 0.65f));
         header.alignment = TextAlignmentOptions.Left;
         RankingUIFactory.SetTopArea(header.rectTransform, -170f, 40f, 60f);

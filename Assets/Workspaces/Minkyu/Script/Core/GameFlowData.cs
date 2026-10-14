@@ -32,6 +32,9 @@ public static class GameFlowData
     // MapGenerator가 생성
     public static int currentNodeSeed = 0;
 
+    // 이번 판에서 처치한 중간보스(Elite) 수 (랭킹 점수에 반영, 세이브에 저장됨)
+    public static int eliteKills = 0;
+
 
     // =========================
     // Master Seed
@@ -104,6 +107,7 @@ public static class GameFlowData
         currentNodeType = default;
         currentNodeSeed = 0;
         hasRested = false;
+        eliteKills = 0;
 
         masterSeed = 0;
         hasMasterSeed = false;

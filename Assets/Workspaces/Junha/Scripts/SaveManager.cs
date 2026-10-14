@@ -205,6 +205,7 @@ public class SaveManager : MonoBehaviour
         form.AddField("rested", GameFlowData.hasRested ? "true" : "false");
         form.AddField("playTime",
             PlayTimeTracker.Instance != null ? PlayTimeTracker.Instance.GetElapsedSecondsInt() : 0);
+        form.AddField("eliteKills", GameFlowData.eliteKills);
 
         IsSaving = true;
         using (UnityWebRequest www = UnityWebRequest.Post(SaveUrl, form))

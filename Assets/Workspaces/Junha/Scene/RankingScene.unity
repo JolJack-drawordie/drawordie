@@ -773,7 +773,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC21C\uC704<pos=8%>\uB2C9\uB124\uC784<pos=35%>\uC9C4\uD589\uB3C4<pos=55%>\uC810\uC218<pos=71%>\uC2DC\uAC04<pos=84%>\uB0A0\uC9DC"
+  m_text: "\uC21C\uC704<pos=6%>\uB2C9\uB124\uC784<pos=32%>\uC9C4\uD589\uB3C4<pos=48%>\uC911\uAC04\uBCF4\uC2A4<pos=58%>\uC810\uC218<pos=73%>\uC2DC\uAC04<pos=84%>\uB0A0\uC9DC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 87b7a5c12adc07c4fa07bec4ec66bf03, type: 2}
   m_sharedMaterial: {fileID: -3100820859504666852, guid: 87b7a5c12adc07c4fa07bec4ec66bf03, type: 2}

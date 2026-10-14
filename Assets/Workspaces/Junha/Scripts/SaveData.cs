@@ -78,6 +78,7 @@ public class GameSaveDto
     public int currentNodeType;
     public bool rested; // 현재 휴식 노드에서 이미 휴식했는지
     public int playTime; // 누적 플레이 타임(초)
+    public int eliteKills; // 처치한 중간보스 수 (구버전 세이브는 0)
 }
 
 // 서버 /api/game/result 응답: 방금 등록한 기록의 순위
@@ -100,6 +101,7 @@ public class RankingEntry
     public bool cleared;
     public int reachedAct;
     public int reachedFloor;
+    public int eliteKills; // 처치한 중간보스 수
     public int playTime; // 초
     public string endedAt; // "2026-09-27T12:34:56"
 }
