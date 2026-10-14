@@ -28,6 +28,23 @@ public class DeckSaveData
 
     public bool hasGerundSlotCard;
     public CardSaveData gerundSlotCard;
+
+    // 손패에 있는 조합 카드 (덱에 속하지 않고 손패 UI로만 존재하므로 따로 저장)
+    public List<ComboSaveData> comboHand = new List<ComboSaveData>();
+}
+
+// 조합 카드는 재료 형용사 / 동명사 ID로 저장하고, 불러올 때 조합표에서 다시 찾아 만든다
+[Serializable]
+public class ComboSaveData
+{
+    public int adjectiveId;
+    public int gerundId;
+
+    public ComboSaveData(int adjectiveId, int gerundId)
+    {
+        this.adjectiveId = adjectiveId;
+        this.gerundId = gerundId;
+    }
 }
 
 [Serializable]

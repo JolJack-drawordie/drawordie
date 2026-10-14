@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -108,11 +109,21 @@ public class TurnManager : MonoBehaviour
             // ⭐ [로드 기능] 추가 시작
             // 로드된 게임의 첫 턴: 저장된 손패/코스트가 이미 있으므로 버리기/주사위/드로우를 건너뛰고 그대로 이어서 진행
             bool isResumedTurn = isFirstLoop && PendingLoadData.isPending;
+
+            // 세이브에 있던 손패의 조합 카드 (첫 턴에만 사용하고 비움)
+            List<ComboSaveData> savedCombos = null;
+            if (isFirstLoop)
+            {
+                if (isResumedTurn) savedCombos = DeckManager.Instance.LoadedComboHand;
+                DeckManager.Instance.LoadedComboHand = null;
+            }
+            bool hasSavedCombos = savedCombos != null && savedCombos.Count > 0;
+
             isFirstLoop = false;
 
             // 주사위를 굴리기 전(손패를 이미 버렸지만 아직 새로 뽑지 않은 상태)에 저장된 경우
             // 복원할 손패가 없으므로, 이어서 진행하지 않고 새 턴처럼 주사위 굴리기부터 다시 시작한다.
-            if (isResumedTurn && DeckManager.Instance.Hand.Count == 0)
+            if (isResumedTurn && DeckManager.Instance.Hand.Count == 0 && !hasSavedCombos)
             {
                 isResumedTurn = false;
             }
@@ -124,6 +135,13 @@ public class TurnManager : MonoBehaviour
                 if (DataManager.Instance != null)
                 {
                     DataManager.Instance.RestoreHand(DeckManager.Instance.Hand);
+
+                    // 조합 카드는 조합표를 받아온 뒤에 다시 만든다
+                    if (hasSavedCombos)
+                    {
+                        yield return new WaitUntil(() => ComboManager.Instance == null || ComboManager.Instance.IsLoadFinished);
+                        DataManager.Instance.RestoreComboCards(savedCombos);
+                    }
                 }
             }
             // ⭐ [로드 기능] 추가 끝
