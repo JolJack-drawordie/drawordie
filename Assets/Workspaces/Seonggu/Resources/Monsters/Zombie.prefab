@@ -910,7 +910,8 @@ MonoBehaviour:
   guardTintDuration: 0.5
   motionPreset: 0
   useCodeAttack: 1
-  attackDistance: 4
+  playAttackClip: 1
+  attackDistance: 6
   attackWindupBack: 0.2
   attackWindupTime: 0.2
   attackDashTime: 0.2
