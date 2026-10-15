@@ -8,6 +8,7 @@ public class AnimatedEnemyController : EnemyController
 {
     public enum MotionPreset { Custom, Zombie, Vampire, Succubus }
 
+    private EnemyUnit unit;
     private Animator animator;
     private int baseAttackPower;   // 프리팹에 설정된 기본 공격력 (EnemyUnit)
     private SpriteRenderer[] allRenderers;   // 리깅 캐릭터는 몸 조각마다 SpriteRenderer가 따로 있음
@@ -44,7 +45,7 @@ public class AnimatedEnemyController : EnemyController
     [Header("공격 모션 (코드) - Use Code Attack이 켜져 있으면 위치 이동(돌진)을 코드로 재생")]
     public bool useCodeAttack = true;
     public bool playAttackClip = true;      // 코드 돌진과 동시에 몬스터 고유 Attack 애니메이션 클립도 재생 (몬스터마다 동작이 달라 보이게 함)
-    public float attackDistance = 4f;       // 플레이어 쪽(왼쪽)으로 돌진할 거리
+    public float attackDistance = 10f;       // 플레이어 쪽(왼쪽)으로 돌진할 거리
     public float attackWindupBack = 0.2f;   // 돌진 전에 뒤(오른쪽)로 물러나는 거리 (0이면 생략)
     public float attackWindupTime = 0.2f;
     public float attackDashTime = 0.2f;
@@ -239,12 +240,25 @@ public class AnimatedEnemyController : EnemyController
         {
             // 방어 클립이 지정돼 있으면 그걸 재생
             yield return StartCoroutine(PlayAndWait(defendState, fallbackDuration));
+
+            hitUnit.AddShield(5);
+
             if (!hitIsDead) ReturnToIdle();
+            if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
+            }
         }
         else if (pulseDuration > 0f)
         {
             // 없으면 코드로 만든 펄스 재생
             yield return StartCoroutine(PulseRoutine());
+
+            hitUnit.AddShield(5);
+            if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
+            }
         }
         else
         {

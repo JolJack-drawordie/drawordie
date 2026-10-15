@@ -11189,7 +11189,7 @@ PrefabInstance:
     - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
       propertyPath: shieldSound
       value: 
-      objectReference: {fileID: 8300000, guid: 6a0d7d9a9a5b5af44b875b23b743d56c, type: 3}
+      objectReference: {fileID: 8300000, guid: 18486a0ba3ee47a428fa92086770981a, type: 3}
     - target: {fileID: 9115312190690558132, guid: 2a2ae55cc72b0b14496f3421ec298873, type: 3}
       propertyPath: restButtonSound
       value: 
