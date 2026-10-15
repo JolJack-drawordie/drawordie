@@ -26,8 +26,14 @@ public class UnitBase : MonoBehaviour
         UpdateBarUI();
     }
 
+    // 전투 로그에 표시할 이름 (플레이어 / 적 / 보스 등)
+    public virtual string LogName => statData != null ? statData.unitName : name;
+
     public virtual void TakeDamage(int damage)
     {
+        int incoming = damage;
+        int shieldBefore = statData.currentShield;
+
         if (statData.currentShield > 0)
         {
             int tempDamage = damage;
@@ -43,6 +49,14 @@ public class UnitBase : MonoBehaviour
 
         if (statData.currentHp < 0) statData.currentHp = 0;
 
+        // 방어 의도 등으로 공격력이 0인 경우는 기록하지 않음
+        if (incoming > 0)
+        {
+            int blocked = Mathf.Min(incoming, shieldBefore);
+            string blockedText = blocked > 0 ? $" (방어도로 {blocked} 막음)" : "";
+            BattleLog.Add($"{LogName}에게 {damage} 피해{blockedText}", BattleLog.Kind.Damage);
+        }
+
         UpdateBarUI();
         Debug.Log("공격받는 적 이름: " + this.name + " / 인스턴스ID: " + this.GetInstanceID());
         Debug.Log($"{statData.unitName} 이(가) {damage} 데미지를 받음. 현재 HP: {statData.currentHp}");
@@ -51,9 +65,12 @@ public class UnitBase : MonoBehaviour
     // 방어 추가
     public virtual void AddShield(int amount)
     {
+        int shieldBefore = statData.currentShield;
         statData.currentShield += amount;
         // 쉴드 최대치 제한이 필요하면 아래처럼
         if (statData.currentShield > statData.maxShield) statData.currentShield = statData.maxShield;
+
+        BattleLog.Add($"{LogName} 방어도 +{statData.currentShield - shieldBefore}", BattleLog.Kind.Shield);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 방어도 {amount} 증가! 현재 쉴드: {statData.currentShield}");
@@ -61,14 +78,20 @@ public class UnitBase : MonoBehaviour
 
     public void ResetShield()
     {
+        if (statData.currentShield > 0)
+            BattleLog.Add($"{LogName} 방어도 {statData.currentShield} 사라짐");
+
         statData.currentShield = 0;
     }
 
     //회복 추가
     public virtual void Heal(int amount)
     {
+        int hpBefore = statData.currentHp;
         statData.currentHp += amount;
         if(statData.currentHp > statData.maxHp) statData.currentHp = statData.maxHp;
+
+        BattleLog.Add($"{LogName} 체력 +{statData.currentHp - hpBefore}", BattleLog.Kind.Heal);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 체력 {amount} 회복!");
@@ -83,6 +106,8 @@ public class UnitBase : MonoBehaviour
         {
             playerSpine.StartCoroutine(playerSpine.HurtRoutine());
         }
+
+        BattleLog.Add($"{LogName} 체력 -{amount} (카드 효과)", BattleLog.Kind.HpLoss);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 체력 {amount} 소모! 현재 HP: {statData.currentHp}");

@@ -93,6 +93,8 @@ public class GameManager : MonoBehaviour
             if (!isGameOver && GameFlowData.currentNodeType == MapNode.NodeType.Elite)
                 GameFlowData.eliteKills++;
 
+            if (!isGameOver) BattleLog.AddHeader($"{currentEnemy.LogName} 처치! 승리");
+
             currentState = BattleState.Victory;
             isGameOver = true;
             Debug.Log("승리!");
@@ -108,6 +110,8 @@ public class GameManager : MonoBehaviour
         else if (currentPlayer != null && currentPlayer.IsDead())
         {
             PlayerSpineController.Instance.PlayDefeat();
+
+            if (!isGameOver) BattleLog.AddHeader("플레이어 쓰러짐... 패배");
 
             currentState = BattleState.Defeat;
             isGameOver = true;

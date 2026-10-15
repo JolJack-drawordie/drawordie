@@ -4,6 +4,8 @@ public class PlayerUnit : UnitBase
 {
     public int attackPower = 6;
 
+    public override string LogName => "플레이어";
+
     private void Start()
     {
         // ⭐️ 씬에 생성되자마자 GameManager가 있는지 확인하고 자기 자신을 찔러넣음

@@ -79,12 +79,17 @@ public class TurnManager : MonoBehaviour
             SoundManager.Instance.PlayBGM(SoundManager.Instance.GetBattleBGM());
         }
 
+        BattleLog.Clear();
+        bool isLoadedBattle = PendingLoadData.isPending;
+
         gameManager.StartBattle();
 
         if (GameManager.Instance != null)
         {
             player = GameManager.Instance.Player;
             enemy = GameManager.Instance.Enemy;
+
+            BattleLog.AddHeader(isLoadedBattle ? "전투 이어서 진행" : "전투 시작");
             playerSpineController = PlayerSpineController.Instance;
 
             if (enemy != null)
@@ -105,6 +110,7 @@ public class TurnManager : MonoBehaviour
         {
             turnCount++;
             gameManager.currentState = BattleState.TurnStart;
+            BattleLog.AddTurn(turnCount);
 
             // ⭐ [로드 기능] 추가 시작
             // 로드된 게임의 첫 턴: 저장된 손패/코스트가 이미 있으므로 버리기/주사위/드로우를 건너뛰고 그대로 이어서 진행
@@ -155,6 +161,7 @@ public class TurnManager : MonoBehaviour
 
                 int rolledEnergy = diceManager.CurrentEnergy;
                 Debug.Log($"Turn Energy: {rolledEnergy}");
+                BattleLog.Add($"주사위 {diceManager.diceValue} → 에너지 {rolledEnergy}", BattleLog.Kind.Dice);
 
                 // DataManager에 마나를 넘겨주며 카드 드로우 실행!
                 if (DataManager.Instance != null)
@@ -192,6 +199,7 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
+            BattleLog.AddHeader($"{enemy.LogName}의 차례");
 
             // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라짐
             enemy.ResetShield();
