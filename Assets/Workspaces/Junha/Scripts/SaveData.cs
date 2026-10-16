@@ -28,6 +28,23 @@ public class DeckSaveData
 
     public bool hasGerundSlotCard;
     public CardSaveData gerundSlotCard;
+
+    // 손패에 있는 조합 카드 (덱에 속하지 않고 손패 UI로만 존재하므로 따로 저장)
+    public List<ComboSaveData> comboHand = new List<ComboSaveData>();
+}
+
+// 조합 카드는 재료 형용사 / 동명사 ID로 저장하고, 불러올 때 조합표에서 다시 찾아 만든다
+[Serializable]
+public class ComboSaveData
+{
+    public int adjectiveId;
+    public int gerundId;
+
+    public ComboSaveData(int adjectiveId, int gerundId)
+    {
+        this.adjectiveId = adjectiveId;
+        this.gerundId = gerundId;
+    }
 }
 
 [Serializable]
@@ -61,6 +78,7 @@ public class GameSaveDto
     public int currentNodeType;
     public bool rested; // 현재 휴식 노드에서 이미 휴식했는지
     public int playTime; // 누적 플레이 타임(초)
+    public int eliteKills; // 처치한 중간보스 수 (구버전 세이브는 0)
 }
 
 // 서버 /api/game/result 응답: 방금 등록한 기록의 순위
@@ -83,6 +101,7 @@ public class RankingEntry
     public bool cleared;
     public int reachedAct;
     public int reachedFloor;
+    public int eliteKills; // 처치한 중간보스 수
     public int playTime; // 초
     public string endedAt; // "2026-09-27T12:34:56"
 }

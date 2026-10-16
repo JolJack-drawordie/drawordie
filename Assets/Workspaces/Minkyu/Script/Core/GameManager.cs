@@ -89,6 +89,12 @@ public class GameManager : MonoBehaviour
     {
         if (currentEnemy != null && currentEnemy.IsDead())
         {
+            // 연출 중이던 다른 카드가 끝나며 다시 호출될 수 있으므로 처음 승리했을 때만 집계
+            if (!isGameOver && GameFlowData.currentNodeType == MapNode.NodeType.Elite)
+                GameFlowData.eliteKills++;
+
+            if (!isGameOver) BattleLog.AddHeader($"{currentEnemy.LogName} 처치! 승리");
+
             currentState = BattleState.Victory;
             isGameOver = true;
             Debug.Log("승리!");
@@ -104,6 +110,8 @@ public class GameManager : MonoBehaviour
         else if (currentPlayer != null && currentPlayer.IsDead())
         {
             PlayerSpineController.Instance.PlayDefeat();
+
+            if (!isGameOver) BattleLog.AddHeader("플레이어 쓰러짐... 패배");
 
             currentState = BattleState.Defeat;
             isGameOver = true;

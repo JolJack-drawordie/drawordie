@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 // 게임이 끝났을 때(최종 보스 처치 / 사망) 결과를 서버 랭킹에 등록한다.
-// 점수는 서버에서 계산하므로 원래 값(클리어 여부, 도달 Act/층, 플레이 타임)만 보낸다.
+// 점수는 서버에서 계산하므로 원래 값(클리어 여부, 도달 Act/층, 중간보스 처치 수, 플레이 타임)만 보낸다.
 // 서버는 결과 등록 시 해당 유저의 세이브 데이터를 삭제한다.
 public class GameResultManager : MonoBehaviour
 {
@@ -60,15 +60,17 @@ public class GameResultManager : MonoBehaviour
             GameFlowData.currentAct,
             // currentFloor는 0부터 시작하므로 1부터 세도록 보정 (맵 진입 전이면 0)
             Mathf.Max(0, GameFlowData.currentFloor + 1),
+            GameFlowData.eliteKills,
             PlayTimeTracker.Instance.GetElapsedSecondsInt()));
     }
 
-    private IEnumerator SubmitResultRoutine(bool cleared, int reachedAct, int reachedFloor, int playTime)
+    private IEnumerator SubmitResultRoutine(bool cleared, int reachedAct, int reachedFloor, int eliteKills, int playTime)
     {
         WWWForm form = new WWWForm();
         form.AddField("cleared", cleared ? "true" : "false");
         form.AddField("reachedAct", reachedAct);
         form.AddField("reachedFloor", reachedFloor);
+        form.AddField("eliteKills", eliteKills);
         form.AddField("playTime", playTime);
 
         using (UnityWebRequest www = UnityWebRequest.Post(ResultUrl, form))
@@ -81,7 +83,7 @@ public class GameResultManager : MonoBehaviour
             {
                 LastResult = JsonUtility.FromJson<GameResultResponse>(www.downloadHandler.text);
                 Debug.Log($"<color=green>[GameResultManager] 결과 등록 완료! {LastResult.rank}위 " +
-                          $"(클리어: {cleared}, Act {reachedAct}, {reachedFloor}층, {playTime}초)</color>");
+                          $"(클리어: {cleared}, Act {reachedAct}, {reachedFloor}층, 중간보스 {eliteKills}회, {playTime}초)</color>");
             }
             else if (www.responseCode == 401)
             {

@@ -153,6 +153,10 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+        // 조합 카드는 DeckManager에 없고 손패 UI에만 있음
+        if (DataManager.Instance != null)
+            deck.comboHand = DataManager.Instance.GetComboCardsInHand();
+
         string deckDataJson = JsonUtility.ToJson(deck);
 
         // 휴식 씬 세이브를 불러온 뒤 아직 전투에서 덱을 복원하지 않았다면, 불러온 덱을 그대로 다시 저장
@@ -201,6 +205,7 @@ public class SaveManager : MonoBehaviour
         form.AddField("rested", GameFlowData.hasRested ? "true" : "false");
         form.AddField("playTime",
             PlayTimeTracker.Instance != null ? PlayTimeTracker.Instance.GetElapsedSecondsInt() : 0);
+        form.AddField("eliteKills", GameFlowData.eliteKills);
 
         IsSaving = true;
         using (UnityWebRequest www = UnityWebRequest.Post(SaveUrl, form))

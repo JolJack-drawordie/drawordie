@@ -45,9 +45,15 @@ public class EnemyTarget : MonoBehaviour
         else
         {
             Debug.Log("마나가 부족합니다!");
+            BattleLog.Add($"에너지가 부족해 [{CardName(card)}] 사용 불가 (필요 {card.Cost})");
             card.transform.SetParent(DataManager.Instance.handArea);
             DataManager.Instance.RearrangeHand();
         }
+    }
+
+    private static string CardName(CardUI card)
+    {
+        return card.nameText != null ? card.nameText.text : "카드";
     }
 
     // 기존 AttackSequence에서 ActionSequence로 변경
@@ -66,6 +72,8 @@ public class EnemyTarget : MonoBehaviour
         int shield = card.Shield;
         int heal = card.Heal;
         GameObject cardObj = card.gameObject;
+
+        BattleLog.Add($"[{CardName(card)}] 사용 (에너지 -{card.Cost})", BattleLog.Kind.Card);
 
         if (card.GerundId != 0 && SkillEffectManager.Instance != null)
         {
@@ -100,6 +108,11 @@ public class EnemyTarget : MonoBehaviour
             }
 
             GameManager.Instance.Player.Heal(heal);
+        }
+        else if (heal < 0)
+        {
+            // 치유량이 음수면 체력 소모 (예: 독한 조합 카드)
+            GameManager.Instance.Player.LoseHp(-heal);
         }
 
         GameManager.Instance.CheckBattleResult();

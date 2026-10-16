@@ -91,6 +91,7 @@ public class LoadManager : MonoBehaviour
         GameFlowData.currentAct = data.currentAct > 0 ? data.currentAct : 1;
         GameFlowData.currentNodeType = (MapNode.NodeType)data.currentNodeType;
         GameFlowData.hasRested = data.rested;
+        GameFlowData.eliteKills = data.eliteKills;
         GameFlowData.debugUnlockBoss = false; // 불러온 게임에는 테스트 설정을 적용하지 않음
 
         // 저장 시점의 플레이 타임부터 이어서 측정 (구버전 세이브는 0)

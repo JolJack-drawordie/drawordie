@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,12 +79,17 @@ public class TurnManager : MonoBehaviour
             SoundManager.Instance.PlayBGM(SoundManager.Instance.GetBattleBGM());
         }
 
+        BattleLog.Clear();
+        bool isLoadedBattle = PendingLoadData.isPending;
+
         gameManager.StartBattle();
 
         if (GameManager.Instance != null)
         {
             player = GameManager.Instance.Player;
             enemy = GameManager.Instance.Enemy;
+
+            BattleLog.AddHeader(isLoadedBattle ? "전투 이어서 진행" : "전투 시작");
             playerSpineController = PlayerSpineController.Instance;
 
             if (enemy != null)
@@ -104,15 +110,26 @@ public class TurnManager : MonoBehaviour
         {
             turnCount++;
             gameManager.currentState = BattleState.TurnStart;
+            BattleLog.AddTurn(turnCount);
 
             // ⭐ [로드 기능] 추가 시작
             // 로드된 게임의 첫 턴: 저장된 손패/코스트가 이미 있으므로 버리기/주사위/드로우를 건너뛰고 그대로 이어서 진행
             bool isResumedTurn = isFirstLoop && PendingLoadData.isPending;
+
+            // 세이브에 있던 손패의 조합 카드 (첫 턴에만 사용하고 비움)
+            List<ComboSaveData> savedCombos = null;
+            if (isFirstLoop)
+            {
+                if (isResumedTurn) savedCombos = DeckManager.Instance.LoadedComboHand;
+                DeckManager.Instance.LoadedComboHand = null;
+            }
+            bool hasSavedCombos = savedCombos != null && savedCombos.Count > 0;
+
             isFirstLoop = false;
 
             // 주사위를 굴리기 전(손패를 이미 버렸지만 아직 새로 뽑지 않은 상태)에 저장된 경우
             // 복원할 손패가 없으므로, 이어서 진행하지 않고 새 턴처럼 주사위 굴리기부터 다시 시작한다.
-            if (isResumedTurn && DeckManager.Instance.Hand.Count == 0)
+            if (isResumedTurn && DeckManager.Instance.Hand.Count == 0 && !hasSavedCombos)
             {
                 isResumedTurn = false;
             }
@@ -124,6 +141,13 @@ public class TurnManager : MonoBehaviour
                 if (DataManager.Instance != null)
                 {
                     DataManager.Instance.RestoreHand(DeckManager.Instance.Hand);
+
+                    // 조합 카드는 조합표를 받아온 뒤에 다시 만든다
+                    if (hasSavedCombos)
+                    {
+                        yield return new WaitUntil(() => ComboManager.Instance == null || ComboManager.Instance.IsLoadFinished);
+                        DataManager.Instance.RestoreComboCards(savedCombos);
+                    }
                 }
             }
             // ⭐ [로드 기능] 추가 끝
@@ -137,6 +161,7 @@ public class TurnManager : MonoBehaviour
 
                 int rolledEnergy = diceManager.CurrentEnergy;
                 Debug.Log($"Turn Energy: {rolledEnergy}");
+                BattleLog.Add($"주사위 {diceManager.diceValue} → 에너지 {rolledEnergy}", BattleLog.Kind.Dice);
 
                 // DataManager에 마나를 넘겨주며 카드 드로우 실행!
                 if (DataManager.Instance != null)
@@ -174,6 +199,7 @@ public class TurnManager : MonoBehaviour
 
             gameManager.currentState = BattleState.EnemyTurn;
             Debug.Log("Enemy Turn Start");
+            BattleLog.AddHeader($"{enemy.LogName}의 차례");
 
             // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라짐
             enemy.ResetShield();

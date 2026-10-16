@@ -60,6 +60,38 @@ public class DataManager : MonoBehaviour
         RearrangeHand();
     }
 
+    // 저장용: 손패에 있는 조합 카드의 재료 ID (묘지로 날아가는 중인 카드는 제외)
+    public List<ComboSaveData> GetComboCardsInHand()
+    {
+        List<ComboSaveData> combos = new List<ComboSaveData>();
+        if (handArea == null) return combos;
+
+        foreach (Transform child in handArea)
+        {
+            CardUI ui = child.GetComponent<CardUI>();
+            if (ui == null || ui.cardType != CardType.Synergy || discardingCards.Contains(child.gameObject)) continue;
+
+            combos.Add(new ComboSaveData(ui.AdjectiveId, ui.GerundId));
+        }
+
+        return combos;
+    }
+
+    // 세이브 로드 시 저장된 조합 카드를 조합표에서 다시 찾아 손패에 생성 (RestoreHand 뒤에 호출)
+    public void RestoreComboCards(List<ComboSaveData> combos)
+    {
+        if (combos == null || ComboManager.Instance == null) return;
+
+        foreach (ComboSaveData saved in combos)
+        {
+            Combination combo = ComboManager.Instance.Combine(saved.adjectiveId, saved.gerundId);
+            if (combo != null)
+                AddSynergyCardToHand(combo);
+            else
+                Debug.LogWarning($"[DataManager] 저장된 조합 카드를 찾을 수 없음: {saved.adjectiveId}_{saved.gerundId}");
+        }
+    }
+
     IEnumerator FetchAndDrawCards()
     {
         ClearHand();

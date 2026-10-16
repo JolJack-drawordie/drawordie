@@ -23,6 +23,9 @@ public class DeckManager : MonoBehaviour
     public ICard AdjectiveSlot; // 형용사 슬롯에 올라간 카드
     public ICard GerundSlot;    // 동명사 슬롯에 올라간 카드 (또는 복수일 경우 List<ICard>)
 
+    // 세이브 로드 시 복원할 손패의 조합 카드 (전투 첫 턴에 TurnManager가 손패 UI로 생성 후 비움)
+    public List<ComboSaveData> LoadedComboHand { get; set; }
+
     public void Awake()
     {
         // 싱글톤 중복 방지 로직
@@ -55,6 +58,7 @@ public class DeckManager : MonoBehaviour
         Hand.Clear();
         AdjectiveSlot = null;
         GerundSlot = null;
+        LoadedComboHand = null;
         IsDeckInitialized = false;
     }
 
@@ -86,6 +90,7 @@ public class DeckManager : MonoBehaviour
         Hand.Clear();
         AdjectiveSlot = null;
         GerundSlot = null;
+        LoadedComboHand = null;
 
         if (!string.IsNullOrEmpty(deckDataJson))
         {
@@ -103,6 +108,9 @@ public class DeckManager : MonoBehaviour
 
             if (saved.hasGerundSlotCard && saved.gerundSlotCard != null)
                 Hand.Add(CreateCardFromSave(saved.gerundSlotCard));
+
+            // 구버전 세이브에는 없음 (null)
+            LoadedComboHand = saved.comboHand;
         }
 
         IsDeckInitialized = true;

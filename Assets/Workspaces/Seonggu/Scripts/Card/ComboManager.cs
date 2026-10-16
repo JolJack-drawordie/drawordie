@@ -14,6 +14,9 @@ public class ComboManager : MonoBehaviour
     private CombinationList ComboList;
     private Dictionary<string, Combination> comboTable = new Dictionary<string, Combination>();
 
+    // 서버에서 조합표 요청이 끝났는지 (성공 / 실패 무관). 세이브의 조합 카드 복원은 이후에 해야 함
+    public bool IsLoadFinished { get; private set; }
+
     void Awake() { Instance = this; }
 
     void Start()
@@ -114,12 +117,14 @@ public class ComboManager : MonoBehaviour
                 ComboList = JsonUtility.FromJson<CombinationList>(json);
                 comboTable.Clear();
 
-                if (ComboList?.combinations == null || ComboList.combinations.Count == 0)
-                    yield break;
-
-                foreach (Combination combo in ComboList.combinations)
-                    comboTable[$"{combo.adjectiveId}_{combo.gerundId}"] = combo;
+                if (ComboList?.combinations != null)
+                {
+                    foreach (Combination combo in ComboList.combinations)
+                        comboTable[$"{combo.adjectiveId}_{combo.gerundId}"] = combo;
+                }
             }
         }
+
+        IsLoadFinished = true;
     }
 }
