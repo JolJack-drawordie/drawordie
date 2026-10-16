@@ -273,7 +273,8 @@ public class UIManager : MonoBehaviour
 
         GameFlowData.clearedNodeLevel++;
 
-        SceneManager.LoadScene("MapScene");
+        // 보스를 잡으면 월드맵에서 다음 Act 섬이 열린 걸 보여주고, 섬을 눌러 다음 맵으로 이동
+        SceneManager.LoadScene(isBossNode ? "WorldMapScene" : "MapScene");
 
         if (SoundManager.Instance != null)
             SoundManager.Instance.StopBGM();

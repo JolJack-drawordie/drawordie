@@ -31,6 +31,21 @@ public class SoundManager : MonoBehaviour
     [Header("휴식 배경음악")]
     public AudioClip restBackgroundSound;
 
+    [Header("월드맵")]
+    public AudioClip worldMapBackgroundSound;
+    public AudioClip worldMapHoverSound;  // 갈 수 있는 섬에 마우스를 올림
+    public AudioClip worldMapClickSound;  // 갈 수 있는 섬을 클릭
+    public AudioClip worldMapLockedSound; // 잠긴 섬을 클릭 (거부)
+    public AudioClip worldMapEnterSound;  // 섬으로 빨려 들어가는 연출
+    public AudioClip fogCoverSound;       // 안개가 몰려와 화면을 덮음
+    public AudioClip fogClearSound;       // 맵 씬에서 안개가 걷힘
+    public AudioClip worldMapRevealSound; // 월드맵에서 새로 열린 섬의 안개가 걷힘
+    public AudioClip worldMapStampSound;  // 방금 클리어한 섬에 클리어 도장이 찍힘
+    public AudioClip worldMapPathSound;   // 다음 섬으로 점선이 그려지기 시작 (한 번)
+    public AudioClip worldMapPathDotSound; // 점선의 점이 하나 찍힐 때마다 (피치 랜덤)
+
+    private Coroutine bgmFadeRoutine;
+
     private void Awake()
     {
         if (Instance == null)
@@ -68,7 +83,10 @@ public class SoundManager : MonoBehaviour
     {
         if (clip != null && bgmSource != null)
         {
-            if (bgmSource.clip == clip) return;
+            CancelBGMFade();
+
+            // 같은 곡이라도 StopBGM으로 멈춰 있었다면 다시 재생 (예: 월드맵 → 맵 → 월드맵)
+            if (bgmSource.clip == clip && bgmSource.isPlaying) return;
 
             bgmSource.clip = clip;
             bgmSource.loop = true;
@@ -103,9 +121,46 @@ public class SoundManager : MonoBehaviour
         return clips[index];
     }
 
+    // 배경음악을 duration초 동안 서서히 줄인 뒤 정지 (씬 전환 연출용)
+    public void FadeOutBGM(float duration)
+    {
+        if (bgmSource == null || !bgmSource.isPlaying) return;
+
+        CancelBGMFade();
+        bgmFadeRoutine = StartCoroutine(FadeOutBGMRoutine(duration));
+    }
+
+    private System.Collections.IEnumerator FadeOutBGMRoutine(float duration)
+    {
+        float startVolume = bgmSource.volume;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            yield return null;
+        }
+
+        bgmSource.Stop();
+        bgmFadeRoutine = null;
+        ApplyVolumes(); // 다음 곡은 원래 볼륨으로
+    }
+
+    private void CancelBGMFade()
+    {
+        if (bgmFadeRoutine == null) return;
+
+        StopCoroutine(bgmFadeRoutine);
+        bgmFadeRoutine = null;
+        ApplyVolumes();
+    }
+
     // 배경음악 정지 함수
     public void StopBGM()
     {
+        CancelBGMFade();
+
         if (bgmSource != null && bgmSource.isPlaying)
         {
             bgmSource.Stop();

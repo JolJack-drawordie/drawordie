@@ -35,6 +35,9 @@ public static class GameFlowData
     // 이번 판에서 처치한 중간보스(Elite) 수 (랭킹 점수에 반영, 세이브에 저장됨)
     public static int eliteKills = 0;
 
+    // 월드맵에서 안개 걷힘 연출을 마지막으로 보여준 Act (0이면 아직 없음, 새 게임 시 초기화)
+    public static int worldMapRevealedAct = 0;
+
 
     // =========================
     // Master Seed
@@ -108,6 +111,7 @@ public static class GameFlowData
         currentNodeSeed = 0;
         hasRested = false;
         eliteKills = 0;
+        worldMapRevealedAct = 0;
 
         masterSeed = 0;
         hasMasterSeed = false;

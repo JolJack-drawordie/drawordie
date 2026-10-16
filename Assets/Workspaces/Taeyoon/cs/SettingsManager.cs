@@ -124,11 +124,12 @@ public class SettingsManager : MonoBehaviour
     {
         if (isLeaving || !CanLeaveToLobby()) return;
 
-        // 맵 씬은 저장을 지원하지 않으므로 저장 없이 이동할지만 묻는다
+        // 맵 / 월드맵 씬은 저장을 지원하지 않으므로 저장 없이 이동할지만 묻는다
         if (!SaveManager.IsSaveSupportedScene())
         {
+            string where = SceneManager.GetActiveScene().name == "WorldMapScene" ? "월드 맵" : "맵";
             if (confirmDialog != null)
-                confirmDialog.Show("맵에서는 저장할 수 없습니다.\n저장하지 않고 로비로 돌아가시겠습니까?", GoToLobby);
+                confirmDialog.Show($"{where}에서는 저장할 수 없습니다.\n저장하지 않고 로비로 돌아가시겠습니까?", GoToLobby);
             else
                 GoToLobby();
             return;

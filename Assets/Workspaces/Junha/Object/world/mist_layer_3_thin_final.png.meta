@@ -1,0 +1,2821 @@
+fileFormatVersion: 2
+guid: 97b568f690c89ea4381c798029e0b884
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -309313456098093866
+    second: mist_layer_3_thin_final_0
+  - first:
+      213: -8837219303267048828
+    second: mist_layer_3_thin_final_1
+  - first:
+      213: 6477671172355520387
+    second: mist_layer_3_thin_final_2
+  - first:
+      213: 1837594566301877954
+    second: mist_layer_3_thin_final_3
+  - first:
+      213: -7255041598832522565
+    second: mist_layer_3_thin_final_4
+  - first:
+      213: -4637963323714099343
+    second: mist_layer_3_thin_final_5
+  - first:
+      213: 328201459023846758
+    second: mist_layer_3_thin_final_6
+  - first:
+      213: -5507792417010422407
+    second: mist_layer_3_thin_final_7
+  - first:
+      213: -3666617523311921352
+    second: mist_layer_3_thin_final_8
+  - first:
+      213: -8756592620179402716
+    second: mist_layer_3_thin_final_9
+  - first:
+      213: -3716785990331850309
+    second: mist_layer_3_thin_final_10
+  - first:
+      213: 5040975972428534476
+    second: mist_layer_3_thin_final_11
+  - first:
+      213: 5926948908146412055
+    second: mist_layer_3_thin_final_12
+  - first:
+      213: 2061158856246809425
+    second: mist_layer_3_thin_final_13
+  - first:
+      213: 7543617545213610513
+    second: mist_layer_3_thin_final_14
+  - first:
+      213: -6529758388790631265
+    second: mist_layer_3_thin_final_15
+  - first:
+      213: -4942085993829617753
+    second: mist_layer_3_thin_final_16
+  - first:
+      213: 4264602409588028844
+    second: mist_layer_3_thin_final_17
+  - first:
+      213: 6105454940400731083
+    second: mist_layer_3_thin_final_18
+  - first:
+      213: -7603483298349082466
+    second: mist_layer_3_thin_final_19
+  - first:
+      213: 5688596533562306571
+    second: mist_layer_3_thin_final_20
+  - first:
+      213: -8741431721587298600
+    second: mist_layer_3_thin_final_21
+  - first:
+      213: 8900184848285975943
+    second: mist_layer_3_thin_final_22
+  - first:
+      213: 7469898013781347776
+    second: mist_layer_3_thin_final_23
+  - first:
+      213: 7200084681146451740
+    second: mist_layer_3_thin_final_24
+  - first:
+      213: 8512701606785179652
+    second: mist_layer_3_thin_final_25
+  - first:
+      213: -227017235255427622
+    second: mist_layer_3_thin_final_26
+  - first:
+      213: -4006618005242482515
+    second: mist_layer_3_thin_final_27
+  - first:
+      213: -5691947342854068573
+    second: mist_layer_3_thin_final_28
+  - first:
+      213: -4453700420210352757
+    second: mist_layer_3_thin_final_29
+  - first:
+      213: -3712172590394011973
+    second: mist_layer_3_thin_final_30
+  - first:
+      213: -6778218485533443295
+    second: mist_layer_3_thin_final_31
+  - first:
+      213: -1684029246611831965
+    second: mist_layer_3_thin_final_32
+  - first:
+      213: -376518331287488595
+    second: mist_layer_3_thin_final_33
+  - first:
+      213: -2532074175185394646
+    second: mist_layer_3_thin_final_34
+  - first:
+      213: -6439035255614023552
+    second: mist_layer_3_thin_final_35
+  - first:
+      213: 7042697168388548088
+    second: mist_layer_3_thin_final_36
+  - first:
+      213: 5619355943199292718
+    second: mist_layer_3_thin_final_37
+  - first:
+      213: -593343593814778960
+    second: mist_layer_3_thin_final_38
+  - first:
+      213: -3573532777084548678
+    second: mist_layer_3_thin_final_39
+  - first:
+      213: -1097948815719722147
+    second: mist_layer_3_thin_final_40
+  - first:
+      213: -3624344817478367111
+    second: mist_layer_3_thin_final_41
+  - first:
+      213: -641994149533915037
+    second: mist_layer_3_thin_final_42
+  - first:
+      213: 5319330203589919863
+    second: mist_layer_3_thin_final_43
+  - first:
+      213: -6324241891848016878
+    second: mist_layer_3_thin_final_44
+  - first:
+      213: 8182041949476836269
+    second: mist_layer_3_thin_final_45
+  - first:
+      213: 3786242030709827181
+    second: mist_layer_3_thin_final_46
+  - first:
+      213: -4085921412778973146
+    second: mist_layer_3_thin_final_47
+  - first:
+      213: -4054270061970720767
+    second: mist_layer_3_thin_final_48
+  - first:
+      213: 2378041276208788738
+    second: mist_layer_3_thin_final_49
+  - first:
+      213: 15187474831463369
+    second: mist_layer_3_thin_final_50
+  - first:
+      213: -595066147218623701
+    second: mist_layer_3_thin_final_51
+  - first:
+      213: 1628080059703803506
+    second: mist_layer_3_thin_final_52
+  - first:
+      213: -230024838670008210
+    second: mist_layer_3_thin_final_53
+  - first:
+      213: -4644851169563442549
+    second: mist_layer_3_thin_final_54
+  - first:
+      213: 9220412752083200571
+    second: mist_layer_3_thin_final_55
+  - first:
+      213: 7383644889070007581
+    second: mist_layer_3_thin_final_56
+  - first:
+      213: 3415220675847546930
+    second: mist_layer_3_thin_final_57
+  - first:
+      213: 2502586742540128632
+    second: mist_layer_3_thin_final_58
+  - first:
+      213: 1001963590767252599
+    second: mist_layer_3_thin_final_59
+  - first:
+      213: 1437442397744535062
+    second: mist_layer_3_thin_final_60
+  - first:
+      213: 863949182849815262
+    second: mist_layer_3_thin_final_61
+  - first:
+      213: 4801874896255058949
+    second: mist_layer_3_thin_final_62
+  - first:
+      213: 8985497992665790090
+    second: mist_layer_3_thin_final_63
+  - first:
+      213: -3657905994645670274
+    second: mist_layer_3_thin_final_64
+  - first:
+      213: 2015342716431511347
+    second: mist_layer_3_thin_final_65
+  - first:
+      213: 7516574169382357032
+    second: mist_layer_3_thin_final_66
+  - first:
+      213: 7059406748105498130
+    second: mist_layer_3_thin_final_67
+  - first:
+      213: 348141842166242346
+    second: mist_layer_3_thin_final_68
+  - first:
+      213: -3331472117135441696
+    second: mist_layer_3_thin_final_69
+  - first:
+      213: -2500156130567269864
+    second: mist_layer_3_thin_final_70
+  - first:
+      213: 7736862237994887782
+    second: mist_layer_3_thin_final_71
+  - first:
+      213: -2762501784092657081
+    second: mist_layer_3_thin_final_72
+  - first:
+      213: 4124593727281200480
+    second: mist_layer_3_thin_final_73
+  - first:
+      213: 5200801906447517814
+    second: mist_layer_3_thin_final_74
+  - first:
+      213: 12536380483415604
+    second: mist_layer_3_thin_final_75
+  - first:
+      213: 2753525985113175188
+    second: mist_layer_3_thin_final_76
+  - first:
+      213: -483987920770881586
+    second: mist_layer_3_thin_final_77
+  - first:
+      213: 8417363640231259013
+    second: mist_layer_3_thin_final_78
+  - first:
+      213: -6973986988830033942
+    second: mist_layer_3_thin_final_79
+  - first:
+      213: 3210448544013091985
+    second: mist_layer_3_thin_final_80
+  - first:
+      213: -9189760237090588135
+    second: mist_layer_3_thin_final_81
+  - first:
+      213: 1384987777259944217
+    second: mist_layer_3_thin_final_82
+  - first:
+      213: -2855102671572019207
+    second: mist_layer_3_thin_final_83
+  - first:
+      213: 2299530547212460487
+    second: mist_layer_3_thin_final_84
+  - first:
+      213: -5427332527157571881
+    second: mist_layer_3_thin_final_85
+  - first:
+      213: -3334945307662778783
+    second: mist_layer_3_thin_final_86
+  - first:
+      213: 5578198936650230550
+    second: mist_layer_3_thin_final_87
+  - first:
+      213: -8892257388392153658
+    second: mist_layer_3_thin_final_88
+  - first:
+      213: 6554677366809685634
+    second: mist_layer_3_thin_final_89
+  - first:
+      213: -3114871160886109090
+    second: mist_layer_3_thin_final_90
+  - first:
+      213: 1410444898476165622
+    second: mist_layer_3_thin_final_91
+  - first:
+      213: 6282326924678578667
+    second: mist_layer_3_thin_final_92
+  - first:
+      213: -3572815635600210941
+    second: mist_layer_3_thin_final_93
+  - first:
+      213: -8450576823648916627
+    second: mist_layer_3_thin_final_94
+  - first:
+      213: -1994703552864376515
+    second: mist_layer_3_thin_final_95
+  - first:
+      213: 4717832335002323986
+    second: mist_layer_3_thin_final_96
+  - first:
+      213: 5001651031019088277
+    second: mist_layer_3_thin_final_97
+  - first:
+      213: 6794655474118854556
+    second: mist_layer_3_thin_final_98
+  - first:
+      213: -2603267277864297052
+    second: mist_layer_3_thin_final_99
+  - first:
+      213: 8136759866791097864
+    second: mist_layer_3_thin_final_100
+  - first:
+      213: 1179862381477795866
+    second: mist_layer_3_thin_final_101
+  - first:
+      213: 8020654260173075426
+    second: mist_layer_3_thin_final_102
+  - first:
+      213: -6575732554467975055
+    second: mist_layer_3_thin_final_103
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2560
+        height: 1440
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d4560dec0915bbf0800000000000000
+      internalID: -309313456098093866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_1
+      rect:
+        serializedVersion: 2
+        x: 1512
+        y: 1433
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 482ea828dd3eb5580800000000000000
+      internalID: -8837219303267048828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_2
+      rect:
+        serializedVersion: 2
+        x: 2200
+        y: 1399
+        width: 263
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 387f9007c9f45e950800000000000000
+      internalID: 6477671172355520387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_3
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 1412
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c68c95a582708910800000000000000
+      internalID: 1837594566301877954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_4
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 1385
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbac7eeca1ae05b90800000000000000
+      internalID: -7255041598832522565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_5
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 1383
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1772bb81ee4a2afb0800000000000000
+      internalID: -4637963323714099343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_6
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 1385
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66d91e3fc710e8400800000000000000
+      internalID: 328201459023846758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_7
+      rect:
+        serializedVersion: 2
+        x: 1746
+        y: 1373
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97de08f6af36093b0800000000000000
+      internalID: -5507792417010422407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_8
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 1351
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83735c30ace8d1dc0800000000000000
+      internalID: -3666617523311921352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_9
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 1319
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 420566708655a7680800000000000000
+      internalID: -8756592620179402716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_10
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 1326
+        width: 11
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb12f1c85d25b6cc0800000000000000
+      internalID: -3716785990331850309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_11
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 1315
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc2d1ed40f425f540800000000000000
+      internalID: 5040975972428534476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_12
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 1314
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71ac4ff21a0c04250800000000000000
+      internalID: 5926948908146412055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_13
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 1315
+        width: 15
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 153dd3c2f05ba9c10800000000000000
+      internalID: 2061158856246809425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_14
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 1318
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11a8cd7803050b860800000000000000
+      internalID: 7543617545213610513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_15
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 1278
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f94e10f6753a165a0800000000000000
+      internalID: -6529758388790631265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_16
+      rect:
+        serializedVersion: 2
+        x: 652
+        y: 1295
+        width: 26
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7af2a5019fe2a6bb0800000000000000
+      internalID: -4942085993829617753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_17
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 1279
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca5f4c3fb49ee2b30800000000000000
+      internalID: 4264602409588028844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_18
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1279
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc34db29beeeab450800000000000000
+      internalID: 6105454940400731083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_19
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 1279
+        width: 11
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e989942a9300b7690800000000000000
+      internalID: -7603483298349082466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_20
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 1279
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b00ff756864f1fe40800000000000000
+      internalID: 5688596533562306571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_21
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1271
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de257ec92230b680800000000000000
+      internalID: -8741431721587298600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_22
+      rect:
+        serializedVersion: 2
+        x: 1128
+        y: 1271
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 785466dd6fec38b70800000000000000
+      internalID: 8900184848285975943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_23
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 1243
+        width: 27
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cd45d39aa86aa760800000000000000
+      internalID: 7469898013781347776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_24
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 1257
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c17477caed6dbe360800000000000000
+      internalID: 7200084681146451740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_25
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 1251
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 400e3575201332670800000000000000
+      internalID: 8512701606785179652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_26
+      rect:
+        serializedVersion: 2
+        x: 1312
+        y: 1255
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: add75bef60979dcf0800000000000000
+      internalID: -227017235255427622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_27
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 1225
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da076d6f622a568c0800000000000000
+      internalID: -4006618005242482515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_28
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 1231
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a664f48c042201b0800000000000000
+      internalID: -5691947342854068573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_29
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 1217
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8d9a5580174132c0800000000000000
+      internalID: -4453700420210352757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_30
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 1200
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbe8f9c62b6bb7cc0800000000000000
+      internalID: -3712172590394011973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_31
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 1202
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12bfacf233eeee1a0800000000000000
+      internalID: -6778218485533443295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_32
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1197
+        width: 31
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3634554925021a8e0800000000000000
+      internalID: -1684029246611831965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_33
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 1149
+        width: 59
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da7bf24929656caf0800000000000000
+      internalID: -376518331287488595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_34
+      rect:
+        serializedVersion: 2
+        x: 850
+        y: 1132
+        width: 64
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a24622304f34cdcd0800000000000000
+      internalID: -2532074175185394646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_35
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 1187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 088d8ecec83f3a6a0800000000000000
+      internalID: -6439035255614023552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_36
+      rect:
+        serializedVersion: 2
+        x: 1656
+        y: 1183
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f5e276c2cfacb160800000000000000
+      internalID: 7042697168388548088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_37
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 1147
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2dbfdc2576fbfd40800000000000000
+      internalID: 5619355943199292718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_38
+      rect:
+        serializedVersion: 2
+        x: 2238
+        y: 1155
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bb9ae4252504c7f0800000000000000
+      internalID: -593343593814778960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_39
+      rect:
+        serializedVersion: 2
+        x: 2250
+        y: 1133
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab909a46fd2486ec0800000000000000
+      internalID: -3573532777084548678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_40
+      rect:
+        serializedVersion: 2
+        x: 2294
+        y: 1121
+        width: 123
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5317798e5d43c0f0800000000000000
+      internalID: -1097948815719722147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_41
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 1159
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9788ca2579db3bdc0800000000000000
+      internalID: -3624344817478367111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_42
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 289
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 368e621f8bd2717f0800000000000000
+      internalID: -641994149533915037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_43
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 289
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 774cbfb13ae02d940800000000000000
+      internalID: 5319330203589919863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_44
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 289
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21c21c2b187cb38a0800000000000000
+      internalID: -6324241891848016878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_45
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 297
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da359ef7dc37c8170800000000000000
+      internalID: 8182041949476836269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_46
+      rect:
+        serializedVersion: 2
+        x: 1478
+        y: 253
+        width: 41
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d66ec1a011f6b8430800000000000000
+      internalID: 3786242030709827181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_47
+      rect:
+        serializedVersion: 2
+        x: 2422
+        y: 284
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 628a52b8f14eb47c0800000000000000
+      internalID: -4085921412778973146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_48
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 289
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 108fbbcebd65cb7c0800000000000000
+      internalID: -4054270061970720767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_49
+      rect:
+        serializedVersion: 2
+        x: 2372
+        y: 257
+        width: 15
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20534a9f0ff700120800000000000000
+      internalID: 2378041276208788738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_50
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 275
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c35d5a8de4f53000800000000000000
+      internalID: 15187474831463369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_51
+      rect:
+        serializedVersion: 2
+        x: 1430
+        y: 260
+        width: 10
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b237c2ded76edb7f0800000000000000
+      internalID: -595066147218623701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_52
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 261
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27eba88303a189610800000000000000
+      internalID: 1628080059703803506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_53
+      rect:
+        serializedVersion: 2
+        x: 2386
+        y: 257
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e60ce81c0a9ceccf0800000000000000
+      internalID: -230024838670008210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_54
+      rect:
+        serializedVersion: 2
+        x: 2486
+        y: 253
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b820d93887c2a8fb0800000000000000
+      internalID: -4644851169563442549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_55
+      rect:
+        serializedVersion: 2
+        x: 1362
+        y: 239
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3aa662db8c75ff70800000000000000
+      internalID: 9220412752083200571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_56
+      rect:
+        serializedVersion: 2
+        x: 1374
+        y: 237
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1575a808e9f77660800000000000000
+      internalID: 7383644889070007581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_57
+      rect:
+        serializedVersion: 2
+        x: 1386
+        y: 237
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 238667d2c1d456f20800000000000000
+      internalID: 3415220675847546930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_58
+      rect:
+        serializedVersion: 2
+        x: 1404
+        y: 247
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 871d4b01269fab220800000000000000
+      internalID: 2502586742540128632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_59
+      rect:
+        serializedVersion: 2
+        x: 1414
+        y: 242
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7749e81c390b7ed00800000000000000
+      internalID: 1001963590767252599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_60
+      rect:
+        serializedVersion: 2
+        x: 626
+        y: 215
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61616aeae32d2f310800000000000000
+      internalID: 1437442397744535062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_61
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 205
+        width: 21
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed290c3543d5dfb00800000000000000
+      internalID: 863949182849815262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_62
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 186
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5040627d6cfa3a240800000000000000
+      internalID: 4801874896255058949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_63
+      rect:
+        serializedVersion: 2
+        x: 1368
+        y: 221
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8674de21d6e2bc70800000000000000
+      internalID: 8985497992665790090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_64
+      rect:
+        serializedVersion: 2
+        x: 1554
+        y: 223
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e767f57d0e18c3dc0800000000000000
+      internalID: -3657905994645670274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_65
+      rect:
+        serializedVersion: 2
+        x: 2350
+        y: 225
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33f2299d58fe7fb10800000000000000
+      internalID: 2015342716431511347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_66
+      rect:
+        serializedVersion: 2
+        x: 808
+        y: 209
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82889ede16c305860800000000000000
+      internalID: 7516574169382357032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_67
+      rect:
+        serializedVersion: 2
+        x: 813
+        y: 209
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21ed2d9f80d08f160800000000000000
+      internalID: 7059406748105498130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_68
+      rect:
+        serializedVersion: 2
+        x: 824
+        y: 207
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2cd4c13929d4d400800000000000000
+      internalID: 348141842166242346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_69
+      rect:
+        serializedVersion: 2
+        x: 2254
+        y: 191
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e00607a2cb34c1d0800000000000000
+      internalID: -3331472117135441696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_70
+      rect:
+        serializedVersion: 2
+        x: 2302
+        y: 191
+        width: 15
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 812d582ee39ad4dd0800000000000000
+      internalID: -2500156130567269864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_71
+      rect:
+        serializedVersion: 2
+        x: 1584
+        y: 191
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66aa1dbb63bde5b60800000000000000
+      internalID: 7736862237994887782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_72
+      rect:
+        serializedVersion: 2
+        x: 1894
+        y: 157
+        width: 43
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74a36c3834f99a9d0800000000000000
+      internalID: -2762501784092657081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_73
+      rect:
+        serializedVersion: 2
+        x: 2214
+        y: 174
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06d766554208d3930800000000000000
+      internalID: 4124593727281200480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_74
+      rect:
+        serializedVersion: 2
+        x: 2222
+        y: 177
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6788af467c5fc2840800000000000000
+      internalID: 5200801906447517814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_75
+      rect:
+        serializedVersion: 2
+        x: 1224
+        y: 159
+        width: 9
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43eab7985c98c2000800000000000000
+      internalID: 12536380483415604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_76
+      rect:
+        serializedVersion: 2
+        x: 1416
+        y: 167
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4947a7e6b4d763620800000000000000
+      internalID: 2753525985113175188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_77
+      rect:
+        serializedVersion: 2
+        x: 1722
+        y: 162
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec72fd2ec878849f0800000000000000
+      internalID: -483987920770881586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_78
+      rect:
+        serializedVersion: 2
+        x: 1878
+        y: 175
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58be54932ab70d470800000000000000
+      internalID: 8417363640231259013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_79
+      rect:
+        serializedVersion: 2
+        x: 1110
+        y: 145
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7f69e88cb673f90800000000000000
+      internalID: -6973986988830033942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_80
+      rect:
+        serializedVersion: 2
+        x: 1166
+        y: 145
+        width: 25
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 194029be0fdcd8c20800000000000000
+      internalID: 3210448544013091985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_81
+      rect:
+        serializedVersion: 2
+        x: 1686
+        y: 157
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91ab439f0c9677080800000000000000
+      internalID: -9189760237090588135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_82
+      rect:
+        serializedVersion: 2
+        x: 1766
+        y: 142
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91936d1ab07783310800000000000000
+      internalID: 1384987777259944217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_83
+      rect:
+        serializedVersion: 2
+        x: 1812
+        y: 146
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f75ea74f33a068d0800000000000000
+      internalID: -2855102671572019207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_84
+      rect:
+        serializedVersion: 2
+        x: 2196
+        y: 143
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c122c869d299ef10800000000000000
+      internalID: 2299530547212460487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_85
+      rect:
+        serializedVersion: 2
+        x: 1006
+        y: 129
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7de89d062dd3ea4b0800000000000000
+      internalID: -5427332527157571881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_86
+      rect:
+        serializedVersion: 2
+        x: 1090
+        y: 135
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16e776779e4e7b1d0800000000000000
+      internalID: -3334945307662778783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_87
+      rect:
+        serializedVersion: 2
+        x: 1126
+        y: 142
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61baf79d06eb96d40800000000000000
+      internalID: 5578198936650230550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_88
+      rect:
+        serializedVersion: 2
+        x: 1312
+        y: 135
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cdfa89b40b589480800000000000000
+      internalID: -8892257388392153658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_89
+      rect:
+        serializedVersion: 2
+        x: 1982
+        y: 118
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28eebf14654e6fa50800000000000000
+      internalID: 6554677366809685634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_90
+      rect:
+        serializedVersion: 2
+        x: 2006
+        y: 125
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5c5646be21c5c4d0800000000000000
+      internalID: -3114871160886109090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_91
+      rect:
+        serializedVersion: 2
+        x: 2008
+        y: 143
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f90fec8928e29310800000000000000
+      internalID: 1410444898476165622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_92
+      rect:
+        serializedVersion: 2
+        x: 2024
+        y: 137
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be1c6548d0f4f2750800000000000000
+      internalID: 6282326924678578667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_93
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 119
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3048618eb1fca6ec0800000000000000
+      internalID: -3572815635600210941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_94
+      rect:
+        serializedVersion: 2
+        x: 2198
+        y: 127
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6be147e62589ba80800000000000000
+      internalID: -8450576823648916627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_95
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 103
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d392f43efa36154e0800000000000000
+      internalID: -1994703552864376515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_96
+      rect:
+        serializedVersion: 2
+        x: 2066
+        y: 107
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21c4aa5338b197140800000000000000
+      internalID: 4717832335002323986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_97
+      rect:
+        serializedVersion: 2
+        x: 2078
+        y: 105
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 599eb52ec1f696540800000000000000
+      internalID: 5001651031019088277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_98
+      rect:
+        serializedVersion: 2
+        x: 2104
+        y: 111
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c97840277277b4e50800000000000000
+      internalID: 6794655474118854556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_99
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 75
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ad108714365fdbd0800000000000000
+      internalID: -2603267277864297052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_100
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 89
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 806fcba0df39be070800000000000000
+      internalID: 8136759866791097864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_101
+      rect:
+        serializedVersion: 2
+        x: 1990
+        y: 74
+        width: 9
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1894d3b596bf5010800000000000000
+      internalID: 1179862381477795866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_102
+      rect:
+        serializedVersion: 2
+        x: 1312
+        y: 71
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e3f6dbed861f4f60800000000000000
+      internalID: 8020654260173075426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mist_layer_3_thin_final_103
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 53
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 170e6f8d41e4eb4a0800000000000000
+      internalID: -6575732554467975055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      mist_layer_3_thin_final_0: -309313456098093866
+      mist_layer_3_thin_final_1: -8837219303267048828
+      mist_layer_3_thin_final_10: -3716785990331850309
+      mist_layer_3_thin_final_100: 8136759866791097864
+      mist_layer_3_thin_final_101: 1179862381477795866
+      mist_layer_3_thin_final_102: 8020654260173075426
+      mist_layer_3_thin_final_103: -6575732554467975055
+      mist_layer_3_thin_final_11: 5040975972428534476
+      mist_layer_3_thin_final_12: 5926948908146412055
+      mist_layer_3_thin_final_13: 2061158856246809425
+      mist_layer_3_thin_final_14: 7543617545213610513
+      mist_layer_3_thin_final_15: -6529758388790631265
+      mist_layer_3_thin_final_16: -4942085993829617753
+      mist_layer_3_thin_final_17: 4264602409588028844
+      mist_layer_3_thin_final_18: 6105454940400731083
+      mist_layer_3_thin_final_19: -7603483298349082466
+      mist_layer_3_thin_final_2: 6477671172355520387
+      mist_layer_3_thin_final_20: 5688596533562306571
+      mist_layer_3_thin_final_21: -8741431721587298600
+      mist_layer_3_thin_final_22: 8900184848285975943
+      mist_layer_3_thin_final_23: 7469898013781347776
+      mist_layer_3_thin_final_24: 7200084681146451740
+      mist_layer_3_thin_final_25: 8512701606785179652
+      mist_layer_3_thin_final_26: -227017235255427622
+      mist_layer_3_thin_final_27: -4006618005242482515
+      mist_layer_3_thin_final_28: -5691947342854068573
+      mist_layer_3_thin_final_29: -4453700420210352757
+      mist_layer_3_thin_final_3: 1837594566301877954
+      mist_layer_3_thin_final_30: -3712172590394011973
+      mist_layer_3_thin_final_31: -6778218485533443295
+      mist_layer_3_thin_final_32: -1684029246611831965
+      mist_layer_3_thin_final_33: -376518331287488595
+      mist_layer_3_thin_final_34: -2532074175185394646
+      mist_layer_3_thin_final_35: -6439035255614023552
+      mist_layer_3_thin_final_36: 7042697168388548088
+      mist_layer_3_thin_final_37: 5619355943199292718
+      mist_layer_3_thin_final_38: -593343593814778960
+      mist_layer_3_thin_final_39: -3573532777084548678
+      mist_layer_3_thin_final_4: -7255041598832522565
+      mist_layer_3_thin_final_40: -1097948815719722147
+      mist_layer_3_thin_final_41: -3624344817478367111
+      mist_layer_3_thin_final_42: -641994149533915037
+      mist_layer_3_thin_final_43: 5319330203589919863
+      mist_layer_3_thin_final_44: -6324241891848016878
+      mist_layer_3_thin_final_45: 8182041949476836269
+      mist_layer_3_thin_final_46: 3786242030709827181
+      mist_layer_3_thin_final_47: -4085921412778973146
+      mist_layer_3_thin_final_48: -4054270061970720767
+      mist_layer_3_thin_final_49: 2378041276208788738
+      mist_layer_3_thin_final_5: -4637963323714099343
+      mist_layer_3_thin_final_50: 15187474831463369
+      mist_layer_3_thin_final_51: -595066147218623701
+      mist_layer_3_thin_final_52: 1628080059703803506
+      mist_layer_3_thin_final_53: -230024838670008210
+      mist_layer_3_thin_final_54: -4644851169563442549
+      mist_layer_3_thin_final_55: 9220412752083200571
+      mist_layer_3_thin_final_56: 7383644889070007581
+      mist_layer_3_thin_final_57: 3415220675847546930
+      mist_layer_3_thin_final_58: 2502586742540128632
+      mist_layer_3_thin_final_59: 1001963590767252599
+      mist_layer_3_thin_final_6: 328201459023846758
+      mist_layer_3_thin_final_60: 1437442397744535062
+      mist_layer_3_thin_final_61: 863949182849815262
+      mist_layer_3_thin_final_62: 4801874896255058949
+      mist_layer_3_thin_final_63: 8985497992665790090
+      mist_layer_3_thin_final_64: -3657905994645670274
+      mist_layer_3_thin_final_65: 2015342716431511347
+      mist_layer_3_thin_final_66: 7516574169382357032
+      mist_layer_3_thin_final_67: 7059406748105498130
+      mist_layer_3_thin_final_68: 348141842166242346
+      mist_layer_3_thin_final_69: -3331472117135441696
+      mist_layer_3_thin_final_7: -5507792417010422407
+      mist_layer_3_thin_final_70: -2500156130567269864
+      mist_layer_3_thin_final_71: 7736862237994887782
+      mist_layer_3_thin_final_72: -2762501784092657081
+      mist_layer_3_thin_final_73: 4124593727281200480
+      mist_layer_3_thin_final_74: 5200801906447517814
+      mist_layer_3_thin_final_75: 12536380483415604
+      mist_layer_3_thin_final_76: 2753525985113175188
+      mist_layer_3_thin_final_77: -483987920770881586
+      mist_layer_3_thin_final_78: 8417363640231259013
+      mist_layer_3_thin_final_79: -6973986988830033942
+      mist_layer_3_thin_final_8: -3666617523311921352
+      mist_layer_3_thin_final_80: 3210448544013091985
+      mist_layer_3_thin_final_81: -9189760237090588135
+      mist_layer_3_thin_final_82: 1384987777259944217
+      mist_layer_3_thin_final_83: -2855102671572019207
+      mist_layer_3_thin_final_84: 2299530547212460487
+      mist_layer_3_thin_final_85: -5427332527157571881
+      mist_layer_3_thin_final_86: -3334945307662778783
+      mist_layer_3_thin_final_87: 5578198936650230550
+      mist_layer_3_thin_final_88: -8892257388392153658
+      mist_layer_3_thin_final_89: 6554677366809685634
+      mist_layer_3_thin_final_9: -8756592620179402716
+      mist_layer_3_thin_final_90: -3114871160886109090
+      mist_layer_3_thin_final_91: 1410444898476165622
+      mist_layer_3_thin_final_92: 6282326924678578667
+      mist_layer_3_thin_final_93: -3572815635600210941
+      mist_layer_3_thin_final_94: -8450576823648916627
+      mist_layer_3_thin_final_95: -1994703552864376515
+      mist_layer_3_thin_final_96: 4717832335002323986
+      mist_layer_3_thin_final_97: 5001651031019088277
+      mist_layer_3_thin_final_98: 6794655474118854556
+      mist_layer_3_thin_final_99: -2603267277864297052
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
