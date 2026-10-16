@@ -89,6 +89,8 @@ public class LoadManager : MonoBehaviour
         GameFlowData.currentIndex = data.currentIndex;
         // 구버전 세이브(act 컬럼이 없던 시절)는 0으로 내려오므로 1로 보정
         GameFlowData.currentAct = data.currentAct > 0 ? data.currentAct : 1;
+        // 불러온 Act의 섬은 이미 열린 상태 → 다음 Act로 넘어갈 때 월드맵에서 안개 걷힘 연출
+        GameFlowData.worldMapRevealedAct = GameFlowData.currentAct;
         GameFlowData.currentNodeType = (MapNode.NodeType)data.currentNodeType;
         GameFlowData.hasRested = data.rested;
         GameFlowData.eliteKills = data.eliteKills;

@@ -81,7 +81,8 @@ public class LobbyManager : MonoBehaviour
 
         ApplyDebugStart();
 
-        StartCoroutine(FadeAndLoad("MapScene"));
+        // 새 게임은 월드맵(Act 진행도)에서 시작 → Act 1 섬을 눌러 맵으로 이동
+        StartCoroutine(FadeAndLoad("WorldMapScene"));
     }
 
     // 설정 창의 "로비로"나 클리어 후 로비로 돌아온 경우 이전 런의 진행도 / 체력 / 덱이 남아 있으므로 초기화

@@ -11,8 +11,12 @@ public class PlayTimeTracker : MonoBehaviour
 {
     public static PlayTimeTracker Instance;
 
-    // 플레이 타임을 표시하지 않는 씬 (타이틀 / 로그인 / 로비)
-    private static readonly string[] HiddenScenes = { "TitleScreen", "AuthScene", "LobbyScene" };
+    // 플레이 타임을 표시하지 않고 재지도 않는 씬 (타이틀 / 로그인 / 로비 / 월드맵)
+    // 새 게임은 월드맵에서 시작하므로 실제 측정은 맵 씬에 들어간 순간부터
+    private static readonly string[] HiddenScenes = { "TitleScreen", "AuthScene", "LobbyScene", "WorldMapScene" };
+
+    // 지금 씬이 플레이 타임을 재는 씬인지
+    private bool inTimedScene;
 
     // 누적 플레이 타임(초)
     public float ElapsedSeconds { get; private set; }
@@ -78,7 +82,7 @@ public class PlayTimeTracker : MonoBehaviour
 
     private void Update()
     {
-        if (IsRunning && !IsPaused && hasFocus)
+        if (IsRunning && !IsPaused && hasFocus && inTimedScene)
             ElapsedSeconds += Time.unscaledDeltaTime;
 
         RefreshTimerText();
@@ -150,6 +154,7 @@ public class PlayTimeTracker : MonoBehaviour
         if (mode == LoadSceneMode.Additive) return;
 
         bool isHiddenScene = System.Array.IndexOf(HiddenScenes, scene.name) >= 0;
+        inTimedScene = !isHiddenScene;
         timerCanvas.SetActive(hasRun && !isHiddenScene);
     }
 
