@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 1342543106394541043}
   - component: {fileID: 9104679387271695705}
   m_Layer: 0
-  m_Name: Rat
+  m_Name: rat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204,7 +204,7 @@ Transform:
   m_GameObject: {fileID: 5244728445324722914}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: -4.5, z: 0}
+  m_LocalPosition: {x: 4, y: -2.5, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -247,7 +247,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
-  spawnOffset: {x: 0, y: -2, z: 0}
+  spawnOffset: {x: 0, y: 0, z: 0}
   intentCanvasOffset: {x: 0, y: 3.5, z: 0}
   intentCanvasSortingBoost: 10
   stateSuffix: 
@@ -260,7 +260,8 @@ MonoBehaviour:
   guardTintDuration: 0.5
   motionPreset: 0
   useCodeAttack: 1
-  attackDistance: 4
+  playAttackClip: 1
+  attackDistance: 6
   attackWindupBack: 0.2
   attackWindupTime: 0.2
   attackDashTime: 0.2
