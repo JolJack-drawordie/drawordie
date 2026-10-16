@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &976991367553397188
 Transform:
   m_ObjectHideFlags: 0
@@ -83,7 +83,8 @@ MonoBehaviour:
   guardTintDuration: 0.5
   motionPreset: 0
   useCodeAttack: 1
-  attackDistance: 4
+  playAttackClip: 1
+  attackDistance: 6
   attackWindupBack: 0.2
   attackWindupTime: 0.2
   attackDashTime: 0.2
