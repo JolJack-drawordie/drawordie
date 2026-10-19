@@ -106,6 +106,7 @@ public class AnimatedEnemyController : EnemyController
         }
 
         allRenderers = GetComponentsInChildren<SpriteRenderer>();
+        PrepareBodyRenderers(allRenderers);
         baseColors = new Color[allRenderers.Length];
         for (int i = 0; i < allRenderers.Length; i++) baseColors[i] = allRenderers[i].color;
 
