@@ -29,8 +29,6 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private bool debugStartAtBoss = false;
     [Tooltip("플레이어가 적에게 주는 피해를 최소 150으로 (테스트 때 전투를 빨리 넘기기용)")]
     [SerializeField] private bool debugBigDamage = false;
-    [Tooltip("맵의 랜덤 층(3층) 노드를 전부 중간보스로 생성 (중간보스 테스트용)")]
-    [SerializeField] private bool debugForceElite = false;
 
     private bool isTransitioning;
     private Coroutine messageRoutine;
@@ -109,7 +107,6 @@ public class LobbyManager : MonoBehaviour
     {
         GameFlowData.debugUnlockBoss = false;
         GameFlowData.debugBigDamage = false;
-        GameFlowData.debugForceElite = false;
 
 #if UNITY_EDITOR
         if (debugStartAct > 0)
@@ -128,12 +125,6 @@ public class LobbyManager : MonoBehaviour
         {
             GameFlowData.debugBigDamage = true;
             Debug.LogWarning($"[LobbyManager] 테스트: 플레이어 피해 최소 {GameFlowData.DebugBigDamageAmount}");
-        }
-
-        if (debugForceElite)
-        {
-            GameFlowData.debugForceElite = true;
-            Debug.LogWarning("[LobbyManager] 테스트: 맵 3층 노드를 전부 중간보스로 생성");
         }
 #endif
     }
