@@ -24,6 +24,13 @@ public class AnimatedEnemyController : EnemyController
 
     [Header("의도 아이콘 위치 (몬스터 루트 위치 기준으로 머리 위에 띄울 거리)")]
     public Vector3 intentCanvasOffset = new Vector3(0f, 2f, 0f);
+    [Tooltip("켜면 몸의 Head 조각(없으면 몸 전체) 꼭대기 바로 위에 아이콘을 자동으로 띄움. 끄면 위의 Intent Canvas Offset 사용")]
+    public bool autoIconAboveHead = false;
+    public float iconGapAboveHead = 0.4f;        // 머리 꼭대기와 아이콘 사이 간격
+    public string headPartName = "Head";
+    public string[] iconIgnoreKeywords = { "Weapon", "Effect", "Fire", "Smoke", "Spell", "Projectile", "Stone", "Arrow" };
+    private Vector3 autoIconOffset;
+    private bool hasAutoIconOffset;
     public int intentCanvasSortingBoost = 10;   // 아이콘을 몸 조각들의 가장 높은 정렬 순서보다 얼마나 더 위에 그릴지
 
     [Header("Animator 상태 이름 (Animator 창의 상태 이름과 같아야 함)")]
@@ -131,6 +138,7 @@ public class AnimatedEnemyController : EnemyController
         pulseBasePos = transform.localPosition;
         pulseBaseRot = transform.localRotation;
         ApplyMotionPreset();
+        ComputeAutoIconOffset();
 
         if (intentCanvas != null) canvasBaseRot = intentCanvas.transform.rotation;
 
@@ -147,9 +155,57 @@ public class AnimatedEnemyController : EnemyController
 
     // 아이콘 이미지의 "중심"이 (몬스터 루트 위치 + intentCanvasOffset)에 오도록 Canvas를 이동
     // -> Canvas의 크기/Pivot 설정과 상관없이 아이콘이 머리 위에 정확히 놓임
+    // 몸 조각 범위로 "루트 -> 머리 꼭대기 위" 거리를 한 번 계산 (몬스터마다 키가 달라도 아이콘이 머리 위에 오도록)
+    private void ComputeAutoIconOffset()
+    {
+        hasAutoIconOffset = false;
+        if (!autoIconAboveHead || allRenderers == null || allRenderers.Length == 0) return;
+
+        // Idle 자세를 먼저 적용해야 숨겨진 이펙트 조각이 빠진 정확한 범위를 잴 수 있음
+        if (animator != null && animator.isActiveAndEnabled && animator.runtimeAnimatorController != null)
+            animator.Update(0f);
+
+        bool has = false;
+        bool hasHead = false;
+        Bounds body = new Bounds(transform.position, Vector3.zero);
+        Bounds head = body;
+
+        foreach (SpriteRenderer r in allRenderers)
+        {
+            if (r == null || r.sprite == null || !r.enabled || !r.gameObject.activeInHierarchy || r.color.a < 0.05f) continue;
+            if (IsIconIgnoredPart(r)) continue;
+
+            if (!has) { body = r.bounds; has = true; }
+            else body.Encapsulate(r.bounds);
+
+            if (!hasHead && string.Equals(r.gameObject.name, headPartName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                head = r.bounds;
+                hasHead = true;
+            }
+        }
+
+        if (!has) return;
+
+        float x = hasHead ? head.center.x : body.center.x;
+        float top = hasHead ? Mathf.Max(body.max.y, head.max.y) : body.max.y;
+        autoIconOffset = new Vector3(x, top + iconGapAboveHead, transform.position.z) - transform.position;
+        hasAutoIconOffset = true;
+    }
+
+    private bool IsIconIgnoredPart(SpriteRenderer r)
+    {
+        if (iconIgnoreKeywords == null) return false;
+        foreach (string k in iconIgnoreKeywords)
+        {
+            if (!string.IsNullOrEmpty(k) && r.gameObject.name.IndexOf(k, System.StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        }
+        return false;
+    }
+
     private void PlaceIntentCanvas()
     {
-        Vector3 target = transform.position + intentCanvasOffset;
+        Vector3 target = transform.position + (hasAutoIconOffset ? autoIconOffset : intentCanvasOffset);
 
         if (intentIcon != null)
         {
