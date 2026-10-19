@@ -29,6 +29,7 @@ public class HpProvider : MonoBehaviour, IValueProvider
             }
             return 0f;
         }
+        if (activeUnit.statData == null) return 0f; // stat not injected yet (same as ShieldProvider)
         return activeUnit.statData.currentHp;
     }
 
@@ -45,6 +46,7 @@ public class HpProvider : MonoBehaviour, IValueProvider
             return 100f;
         }
 
+        if (activeUnit.statData == null) return 100f;
         return activeUnit.statData.maxHp;
     }
 }
