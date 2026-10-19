@@ -120,6 +120,7 @@ public static class GameFlowData
 
         debugUnlockBoss = false;
         debugBigDamage = false;
+        debugForceElite = false;
     }
 
     // 지정한 Act의 맵 처음부터 시작 (테스트용, LobbyManager 테스트 설정에서 사용)
@@ -143,6 +144,9 @@ public static class GameFlowData
     // 테스트용: 플레이어가 적에게 주는 피해를 최소 이 값으로 (LobbyManager 테스트 설정에서 켬, 빌드에서는 항상 꺼짐)
     public static bool debugBigDamage = false;
     public const int DebugBigDamageAmount = 150;
+
+    // 테스트용: 맵의 랜덤 층(3층) 노드를 전부 중간보스로 생성 (LobbyManager 테스트 설정에서 켬, 빌드에서는 항상 꺼짐)
+    public static bool debugForceElite = false;
 
     // 현재 Act가 마지막 Act인지 확인
     public static bool IsFinalAct()

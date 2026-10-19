@@ -182,8 +182,17 @@ public class MapGenerator : MonoBehaviour
                             double randomValue =
                                 mapRandom.NextDouble();
 
+                            // 테스트용: 중간보스 노드 항상 생성 (LobbyManager의 Debug Force Elite)
+                            // 랜덤 값은 그대로 뽑아서 다른 시드 결과에는 영향 없음
+                            if (GameFlowData.debugForceElite)
+                            {
+                                prefab = elitePrefab;
+
+                                nodeType =
+                                    MapNode.NodeType.Elite;
+                            }
                             // Rest
-                            if (randomValue < restChance)
+                            else if (randomValue < restChance)
                             {
                                 prefab = restPrefab;
 
