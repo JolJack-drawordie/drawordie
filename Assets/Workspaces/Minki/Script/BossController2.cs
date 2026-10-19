@@ -37,6 +37,7 @@ public class BossController2 : EnemyController
     private Quaternion canvasBaseRot;
 
     private BossIntent currentIntent = BossIntent.Attack;
+    private bool currentActionStrong;
 
     // 기믹 상태
     private int patternIndex;
@@ -44,6 +45,7 @@ public class BossController2 : EnemyController
     private bool isPhase2;
     private Color persistentTint = Color.white;   // 분노/페이즈 때 계속 유지되는 몸 색
     private Vector3 iconBaseScale = Vector3.one;
+    private Color iconBaseColor = Color.white;
 
     [Header("스폰 위치 보정 (스폰 포인트 기준으로 이동)")]
     public Vector3 spawnOffset = Vector3.zero;
@@ -90,6 +92,20 @@ public class BossController2 : EnemyController
     public float attackLean = 6f;
     public float attackStrikeScale = 1.08f;
 
+    [Header("공격 모션 타이밍 (공격 클립이 끝난 뒤에 돌아가기)")]
+    public bool waitAttackClipBeforeReturn = true;          // 공격 클립을 끝까지 보여준 뒤 복귀
+    [Range(0.3f, 1f)] public float attackClipEndRatio = 0.9f; // 클립이 이 비율까지 재생되면 복귀 시작
+    public float attackReturnDelay = 0.15f;                  // 클립이 끝나고 잠깐 머무는 시간
+
+    [Header("강공격 (차지 다음 턴) 동작")]
+    public string specialAttackState = "SpecialAttack";       // 없으면 일반 Attack 클립 사용
+    public float strongAttackShakeMultiplier = 1.8f;
+
+    [Header("몸 기준 조각 (위치 보정/아이콘 위치 계산용)")]
+    public string bodyPartName = "Body";   // 가로 중심 기준 (없으면 전체 범위)
+    public string headPartName = "Head";   // 아이콘 가로 위치 기준 (없으면 몸 기준)
+    public string[] boundsIgnoreKeywords = { "Weapon", "Effect", "Fire", "Smoke", "Spell", "Projectile", "Stone" };
+
     [Header("의도 효과")]
     public int defendShield = 15;  // 방어(Cast) 턴에 보스가 얻는 쉴드
 
@@ -101,9 +117,17 @@ public class BossController2 : EnemyController
     public bool useCharge = false;
     [Range(0f, 1f)] public float chargeChance = 0.3f;   // 패턴을 안 쓸 때 기 모으기가 나올 확률
     public float chargeMultiplier = 2.5f;               // 강공격 배율
-    public Sprite chargeSprite;                         // 비워두면 방어 아이콘 사용
-    public Sprite strongAttackSprite;                   // 비워두면 공격 아이콘을 크게 표시
+    public Sprite chargeSprite;                         // 비워두면 공격 아이콘을 노란색으로 표시 (추천: 08_Mage_Staff_nobg)
+    public Sprite strongAttackSprite;                   // 비워두면 공격 아이콘을 빨갛고 크게 표시 (추천: 03_Greataxe_nobg)
+    public Color chargeIconColor = new Color(1f, 0.85f, 0.3f, 1f);
+    public Color strongAttackIconColor = new Color(1f, 0.45f, 0.45f, 1f);
     public Color chargeTintColor = new Color(1f, 0.9f, 0.45f, 1f);
+    [Tooltip("기 모으기 때 재생할 Animator 상태 (비우면 코드 동작만: 웅크리며 떨림 + 노란 번쩍임). 방어(Talk)와 다른 걸 쓰세요")]
+    public string chargeState = "";
+    public float chargeDuration = 1.1f;
+    public float chargeShake = 0.06f;      // 떨림 세기 (점점 세짐)
+    public float chargeCrouch = 0.08f;     // 웅크리는 정도
+    public int chargeFlashCount = 3;       // 노랗게 번쩍이는 횟수
 
     [Header("기믹 - 재생 (매 턴 체력 회복)")]
     public bool useRegen = false;
@@ -181,20 +205,24 @@ public class BossController2 : EnemyController
         for (int i = 0; i < allRenderers.Length; i++) baseColors[i] = allRenderers[i].color;
 
         // ----- 몸 위치 측정 + 자동 보정 -----
+        // body: 무기/이펙트를 뺀 전체 범위 (발밑, 머리 꼭대기)
+        // core: Body 조각 (가로 중심), head: Head 조각 (아이콘 가로 위치)
         Bounds body = GetBodyBounds();
+        Bounds core = GetPartBounds(bodyPartName, body);
+        Bounds head = GetPartBounds(headPartName, core);
 
         if (autoCenterBody)
         {
-            float dx = transform.position.x - body.center.x;
-            transform.position += new Vector3(dx, 0f, 0f);
-            body.center += new Vector3(dx, 0f, 0f);
+            Vector3 d = new Vector3(transform.position.x - core.center.x, 0f, 0f);
+            transform.position += d;
+            body.center += d; core.center += d; head.center += d;
         }
 
         if (alignFeetToPlayer && TryGetPlayerFeetY(out float playerFeetY))
         {
-            float dy = playerFeetY - body.min.y;
-            transform.position += new Vector3(0f, dy, 0f);
-            body.center += new Vector3(0f, dy, 0f);
+            Vector3 d = new Vector3(0f, playerFeetY - body.min.y, 0f);
+            transform.position += d;
+            body.center += d; core.center += d; head.center += d;
         }
 
         basePos = transform.position;
@@ -202,15 +230,15 @@ public class BossController2 : EnemyController
         baseScale3 = transform.localScale;
         currentOffset = Vector3.zero;
 
-        pivotWorld = new Vector3(body.center.x, body.min.y, basePos.z);
+        pivotWorld = new Vector3(core.center.x, body.min.y, basePos.z);
         Vector3 local = Quaternion.Inverse(baseRot) * (pivotWorld - basePos);
         pivotLocal = new Vector3(
             SafeDiv(local.x, baseScale3.x),
             SafeDiv(local.y, baseScale3.y),
             SafeDiv(local.z, baseScale3.z));
 
-        headOffset = new Vector3(body.center.x, body.max.y, basePos.z) - basePos;
-        bodyCenterOffset = new Vector3(body.center.x, body.center.y, basePos.z) - basePos;
+        headOffset = new Vector3(head.center.x, Mathf.Max(body.max.y, head.max.y), basePos.z) - basePos;
+        bodyCenterOffset = new Vector3(core.center.x, body.center.y, basePos.z) - basePos;
 
         // ----- 의도 아이콘 정렬 순서 -----
         if (intentCanvas != null && allRenderers.Length > 0)
@@ -233,7 +261,11 @@ public class BossController2 : EnemyController
             hitUnit.OnAttackHit += HandleAttackHitForLifesteal;
         }
 
-        if (intentIcon != null) iconBaseScale = intentIcon.rectTransform.localScale;
+        if (intentIcon != null)
+        {
+            iconBaseScale = intentIcon.rectTransform.localScale;
+            iconBaseColor = intentIcon.color;
+        }
 
         if (hitUnit == null) Debug.LogWarning($"[{name}] EnemyUnit이 없어 체력/공격이 동작하지 않습니다.", this);
         else if (baseAttackPower <= 0) Debug.LogWarning($"[{name}] EnemyUnit의 Attack Power가 {baseAttackPower}입니다.", this);
@@ -263,18 +295,50 @@ public class BossController2 : EnemyController
         return Mathf.Abs(b) < 0.0001f ? 0f : a / b;
     }
 
-    // 실제로 보이는 몸 조각들의 범위 (투명하게 숨겨진 돌멩이 같은 건 제외)
+    private bool IsIgnoredPart(SpriteRenderer r)
+    {
+        if (boundsIgnoreKeywords == null) return false;
+        foreach (string k in boundsIgnoreKeywords)
+        {
+            if (!string.IsNullOrEmpty(k) && r.gameObject.name.IndexOf(k, System.StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        }
+        return false;
+    }
+
+    // 이름이 partName인 조각의 범위 (정확히 같은 이름 우선, 없으면 이름에 포함된 것). 못 찾으면 fallback
+    private Bounds GetPartBounds(string partName, Bounds fallback)
+    {
+        if (string.IsNullOrEmpty(partName) || allRenderers == null) return fallback;
+
+        for (int exact = 1; exact >= 0; exact--)
+        {
+            foreach (SpriteRenderer r in allRenderers)
+            {
+                if (r == null || r.sprite == null || !r.gameObject.activeInHierarchy) continue;
+                string n = r.gameObject.name;
+                bool match = exact == 1
+                    ? string.Equals(n, partName, System.StringComparison.OrdinalIgnoreCase)
+                    : n.IndexOf(partName, System.StringComparison.OrdinalIgnoreCase) >= 0;
+                if (match) return r.bounds;
+            }
+        }
+
+        return fallback;
+    }
+
+    // 실제로 보이는 몸 조각들의 범위 (투명하게 숨겨진 돌멩이, 무기/이펙트 같은 건 제외)
     private Bounds GetBodyBounds()
     {
         bool has = false;
         Bounds b = new Bounds(transform.position, Vector3.zero);
 
-        for (int pass = 0; pass < 2 && !has; pass++)
+        for (int pass = 0; pass < 3 && !has; pass++)
         {
             foreach (SpriteRenderer r in allRenderers)
             {
                 if (r == null || r.sprite == null || !r.gameObject.activeInHierarchy) continue;
-                if (pass == 0 && (!r.enabled || r.color.a < 0.05f)) continue;
+                if (pass == 0 && (!r.enabled || r.color.a < 0.05f || IsIgnoredPart(r))) continue;
+                if (pass == 1 && (!r.enabled || r.color.a < 0.05f)) continue;
 
                 if (!has) { b = r.bounds; has = true; }
                 else b.Encapsulate(r.bounds);
@@ -385,6 +449,7 @@ public class BossController2 : EnemyController
         if (intentIcon == null) return;
 
         Vector3 scale = iconBaseScale;
+        Color color = iconBaseColor;
 
         switch (currentIntent)
         {
@@ -395,15 +460,19 @@ public class BossController2 : EnemyController
                 intentIcon.sprite = defendSprite;
                 break;
             case BossIntent.Charge:
-                intentIcon.sprite = chargeSprite != null ? chargeSprite : defendSprite;
+                // 방어 아이콘과 헷갈리지 않도록: 전용 아이콘이 없으면 공격 아이콘을 노란색으로
+                intentIcon.sprite = chargeSprite != null ? chargeSprite : attackSprite;
+                color = chargeIconColor;
                 break;
             case BossIntent.StrongAttack:
                 intentIcon.sprite = strongAttackSprite != null ? strongAttackSprite : attackSprite;
-                if (strongAttackSprite == null) scale = iconBaseScale * 1.4f; // 전용 아이콘이 없으면 크게 표시
+                color = strongAttackIconColor;
+                scale = iconBaseScale * 1.4f;
                 break;
         }
 
         intentIcon.rectTransform.localScale = scale;
+        intentIcon.color = color;
     }
 
     // ===================== 턴 행동 =====================
@@ -434,7 +503,9 @@ public class BossController2 : EnemyController
             {
                 case BossIntent.Attack:
                 case BossIntent.StrongAttack:
+                    currentActionStrong = acted == BossIntent.StrongAttack;
                     yield return StartCoroutine(PlayCustomAttack());
+                    currentActionStrong = false;
                     break;
                 case BossIntent.Defend:
                     yield return StartCoroutine(PlayCustomDefend());
@@ -489,28 +560,57 @@ public class BossController2 : EnemyController
 
     protected override IEnumerator PlayCustomAttack()
     {
+        // 강공격(차지 다음 턴)이면 SpecialAttack 클립 + 더 센 흔들림
+        bool strong = currentActionStrong;
+        string strikeClip = "";
+        if (playAttackClip) strikeClip = (strong && HasState(specialAttackState)) ? specialAttackState : attackState;
+        float shake = strong ? attackStrikeShake * strongAttackShakeMultiplier : attackStrikeShake;
+
         yield return StartCoroutine(DashMotionRoutine(
             attackDistance, attackWindupBack, attackWindupTime, attackDashTime,
-            attackStrikeTime, attackReturnTime, attackArcHeight, attackStrikeShake,
+            attackStrikeTime, attackReturnTime, attackArcHeight, shake,
             attackLean, attackStrikeScale,
-            playMoveClip ? moveState : "", playAttackClip ? attackState : ""));
+            playMoveClip ? moveState : "", strikeClip));
 
         if (!hitIsDead) ReturnToIdle();
     }
 
-    // 기 모으기: 노란빛 + 펄스 (공격은 하지 않음)
+    // 기 모으기 (공격은 하지 않음): 방어 펄스와 다르게 "웅크리며 점점 세게 떨림 + 노랗게 여러 번 번쩍임"
     private IEnumerator PlayChargeRoutine()
     {
         if (hitUnit != null) BattleLog.Add($"{hitUnit.LogName}이(가) 힘을 모은다! 다음 턴 강공격");
 
-        StartTint(chargeTintColor, Mathf.Max(guardTintDuration, pulseDuration));
-        if (HasState(defendState)) animator.CrossFadeInFixedTime(defendState, crossFadeTime);
+        if (HasState(chargeState)) animator.CrossFadeInFixedTime(chargeState, crossFadeTime);
 
-        if (pulseDuration > 0f)
-            yield return StartCoroutine(PulseRoutine());
-        else
-            yield return new WaitForSeconds(fallbackDuration);
+        float duration = Mathf.Max(0.1f, chargeDuration);
+        int flashes = Mathf.Max(1, chargeFlashCount);
+        int lastFlash = -1;
+        float t = 0f;
 
+        while (t < duration && !hitIsDead)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / duration);
+
+            // 처음 30% 동안 웅크리고, 마지막 15%에 펴짐
+            float crouch = p < 0.85f ? Mathf.Clamp01(p / 0.3f) : Mathf.Clamp01((1f - p) / 0.15f);
+            // 떨림은 점점 세지다가 펴질 때 멈춤
+            float shake = p < 0.85f ? chargeShake * p : 0f;
+            Vector3 offset = new Vector3(Random.Range(-1f, 1f) * shake, Random.Range(-1f, 1f) * shake * 0.5f, 0f);
+
+            ApplyPose(offset, 0f, 1f + chargeCrouch * crouch, 1f - chargeCrouch * crouch);
+
+            int flash = (int)(p * flashes);
+            if (flash != lastFlash && flash < flashes)
+            {
+                lastFlash = flash;
+                StartTint(chargeTintColor, duration / flashes * 0.5f);
+            }
+
+            yield return null;
+        }
+
+        ResetPose();
         if (!hitIsDead) ReturnToIdle();
     }
 
@@ -597,11 +697,41 @@ public class BossController2 : EnemyController
                 yield return null;
             }
 
+            ApplyPose(target, lean, 1f, 1f);
+
+            // 공격 클립을 끝까지 보여준 뒤 잠깐 머물렀다가 복귀 (휘두르는 도중에 뒤로 미끄러지지 않도록)
+            if (waitAttackClipBeforeReturn && HasState(strikeClip))
+                yield return StartCoroutine(WaitForStateEnd(strikeClip, attackClipEndRatio, t));
+            if (attackReturnDelay > 0f && !hitIsDead)
+                yield return new WaitForSeconds(attackReturnDelay);
+
             yield return StartCoroutine(MoveOverTime(target, Vector3.zero, returnTime, 0f, lean, 0f));
         }
         finally
         {
             ResetPose();
+        }
+    }
+
+    // stateName 상태가 endRatio까지 재생되거나 다른 상태로 넘어갈 때까지 대기 (안전장치: maxActionTime)
+    private IEnumerator WaitForStateEnd(string stateName, float endRatio, float alreadyWaited)
+    {
+        float timer = alreadyWaited;
+
+        // 크로스페이드 중이라 아직 그 상태가 아니면 들어갈 때까지 대기
+        while (timer < maxActionTime && !hitIsDead && !animator.GetCurrentAnimatorStateInfo(0).IsName(stateName))
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        while (timer < maxActionTime && !hitIsDead)
+        {
+            AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+            if (!info.IsName(stateName) || info.normalizedTime >= endRatio) break;
+
+            timer += Time.deltaTime;
+            yield return null;
         }
     }
 
@@ -887,7 +1017,9 @@ public class BossController2 : EnemyController
         idleState = ResolveState(idleState);
         attackState = ResolveState(attackState);
         moveState = ResolveState(moveState);
+        specialAttackState = ResolveState(specialAttackState);
         defendState = ResolveState(defendState);
+        chargeState = ResolveState(chargeState);
         hurtState = ResolveState(hurtState);
         deathState = ResolveState(deathState);
 

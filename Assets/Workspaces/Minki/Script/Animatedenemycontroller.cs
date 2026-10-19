@@ -55,6 +55,9 @@ public class AnimatedEnemyController : EnemyController
     public float attackStrikeShake = 0.1f;  // 타격 순간 떨림 세기
     public float attackLean = 0f;           // 돌진 중 앞으로 기울어지는 각도(도)
     public float attackStrikeScale = 1f;    // 타격 순간 크기 배율 (1이면 변화 없음)
+    public bool waitAttackClipBeforeReturn = true;           // Attack 클립이 끝날 때까지 그 자리에서 기다렸다가 복귀
+    [Range(0.3f, 1f)] public float attackClipEndRatio = 0.9f; // 클립이 이 비율까지 재생되면 복귀 시작
+    public float attackReturnDelay = 0.15f;                  // 복귀 전에 잠깐 머무는 시간
 
     [Header("방어 펄스 (Defend State가 비어 있을 때 코드로 재생되는 방어 동작)")]
     public float pulseDuration = 0.6f;   // 전체 시간 (0이면 펄스 없이 대기만)
@@ -341,6 +344,24 @@ public class AnimatedEnemyController : EnemyController
 
             yield return null;
         }
+
+        transform.localPosition = target;
+        transform.localScale = pulseBaseScale;
+
+        // 3-2) Attack 클립을 끝까지 보여준 뒤 잠깐 머물렀다가 복귀 (휘두르는 도중에 뒤로 미끄러지지 않도록)
+        if (waitAttackClipBeforeReturn && playAttackClip && HasState(attackState))
+        {
+            float timer = 0f;
+            while (timer < maxActionTime && !hitIsDead)
+            {
+                AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+                if (!info.IsName(attackState) || info.normalizedTime >= attackClipEndRatio) break;
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+        if (attackReturnDelay > 0f && !hitIsDead) yield return new WaitForSeconds(attackReturnDelay);
 
         // 4) 복귀
         yield return StartCoroutine(MoveOverTime(target, start, attackReturnTime, 0f, attackLean, 0f));
