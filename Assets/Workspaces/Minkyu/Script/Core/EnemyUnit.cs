@@ -45,6 +45,11 @@ public class EnemyUnit : UnitBase
     public override void TakeDamage(int damage)
     {
         int shieldBefore = statData != null ? statData.currentShield : 0;
+
+        // 테스트용 한 방 데미지 (LobbyManager의 Debug Big Damage)
+        if (GameFlowData.debugBigDamage && damage > 0)
+            damage = Mathf.Max(damage, GameFlowData.DebugBigDamageAmount);
+
         base.TakeDamage(damage);
         OnDamaged?.Invoke(damage, shieldBefore);
     }

@@ -27,6 +27,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField, Range(0, 3)] private int debugStartAct = 0;
     [Tooltip("맵 시작 시 보스 노드를 바로 선택 가능")]
     [SerializeField] private bool debugStartAtBoss = false;
+    [Tooltip("플레이어가 적에게 주는 피해를 최소 150으로 (테스트 때 전투를 빨리 넘기기용)")]
+    [SerializeField] private bool debugBigDamage = false;
 
     private bool isTransitioning;
     private Coroutine messageRoutine;
@@ -104,6 +106,7 @@ public class LobbyManager : MonoBehaviour
     private void ApplyDebugStart()
     {
         GameFlowData.debugUnlockBoss = false;
+        GameFlowData.debugBigDamage = false;
 
 #if UNITY_EDITOR
         if (debugStartAct > 0)
@@ -116,6 +119,12 @@ public class LobbyManager : MonoBehaviour
         {
             GameFlowData.debugUnlockBoss = true;
             Debug.LogWarning("[LobbyManager] 테스트: 보스 노드 바로 선택 가능");
+        }
+
+        if (debugBigDamage)
+        {
+            GameFlowData.debugBigDamage = true;
+            Debug.LogWarning($"[LobbyManager] 테스트: 플레이어 피해 최소 {GameFlowData.DebugBigDamageAmount}");
         }
 #endif
     }
