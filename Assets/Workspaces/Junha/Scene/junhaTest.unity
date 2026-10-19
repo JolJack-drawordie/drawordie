@@ -2777,7 +2777,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -7215,7 +7215,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4290756543
   m_fontColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7228,7 +7228,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -9867,11 +9867,24 @@ MonoBehaviour:
   playerPrefab: {fileID: 3619253469477948751, guid: 90a4022a2969adb43ba5bebff3f029ec, type: 3}
   bossList:
   - act: 1
-    bossPrefab: {fileID: 6090681860200693100, guid: 81e28f0ed86f31b43a1f47f30e837908, type: 3}
+    bossPrefab: {fileID: 2807429286008358175, guid: e6c315cbff7bc384ea332619a477320d, type: 3}
     bossId: 150
   - act: 2
     bossPrefab: {fileID: 6170441368762929513, guid: 23354e285659469f8193470155a9f216, type: 3}
     bossId: 250
+  - act: 3
+    bossPrefab: {fileID: 3046907520114748887, guid: 11b5d6ef3067da84487f80bd474f0f8b, type: 3}
+    bossId: 350
+  eliteList:
+  - act: 1
+    bossPrefab: {fileID: 3551517842536234982, guid: 4b6f0b26bb1e58a488e922f887d5f97e, type: 3}
+    bossId: 140
+  - act: 2
+    bossPrefab: {fileID: 5231891378902260576, guid: a9ab53da5ba46844b82a5a857d8c8814, type: 3}
+    bossId: 240
+  - act: 3
+    bossPrefab: {fileID: 4829285786100293165, guid: 6e5e5e5fa82af6d4a8fb4b57606ba31c, type: 3}
+    bossId: 340
 --- !u!4 &1826100313
 Transform:
   m_ObjectHideFlags: 0

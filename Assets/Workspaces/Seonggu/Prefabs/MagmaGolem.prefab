@@ -107,7 +107,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5456124988682130218}
-  - {fileID: 7412093858112345602}
+  - {fileID: 4042043412745164899}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3245069510178132563
@@ -166,6 +166,30 @@ MonoBehaviour:
   attackLean: 6
   attackStrikeScale: 1.08
   defendShield: 15
+  usePattern: 0
+  pattern: 000000000000000001000000
+  useCharge: 1
+  chargeChance: 0.3
+  chargeMultiplier: 2.5
+  chargeSprite: {fileID: 0}
+  strongAttackSprite: {fileID: 0}
+  chargeTintColor: {r: 1, g: 0.9, b: 0.45, a: 1}
+  useRegen: 0
+  regenAmount: 4
+  useEnrage: 1
+  enrageHpRatio: 0.5
+  enrageAttackMultiplier: 1.5
+  enrageTintColor: {r: 1, g: 0.6, b: 0.6, a: 1}
+  useLifesteal: 0
+  lifestealRatio: 0.5
+  useThorns: 0
+  thornsDamage: 3
+  usePhase2: 0
+  phase2HpRatio: 0.5
+  phase2Shield: 20
+  phase2Heal: 0
+  phase2Pattern: 
+  phase2TintColor: {r: 1, g: 0.5, b: 0.35, a: 1}
   crossFadeTime: 0.05
   maxActionTime: 4
   fallbackDuration: 0.6
@@ -294,9 +318,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 286728192748781352}
     m_Modifications:
-    - target: {fileID: 6828922712980065891, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
-      propertyPath: m_Name
-      value: MagmaGolem
+    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -311,15 +343,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
-      propertyPath: m_LocalScale.z
+      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
@@ -334,16 +358,16 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
+    - target: {fileID: 6828922712980065891, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
+      propertyPath: m_Name
+      value: MagmaGolem
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
---- !u!4 &7412093858112345602 stripped
+--- !u!4 &4042043412745164899 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6828922712980065890, guid: 0c7fdddfb0724a241be092dac8fdf9dc, type: 3}
   m_PrefabInstance: {fileID: 7412093858112345601}
