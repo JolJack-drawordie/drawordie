@@ -1,0 +1,205 @@
+fileFormatVersion: 2
+guid: 7d6e64a73c4873646a67194cfdd18232
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6936352134769729288
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_0"
+  - first:
+      213: 5415498381731110730
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_1"
+  - first:
+      213: 5900155650355605214
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_2"
+  - first:
+      213: -6170324442432331337
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_3"
+  - first:
+      213: -8060779215858027280
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_4"
+  - first:
+      213: -970377438871454216
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_5"
+  - first:
+      213: -1191834934947088570
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_6"
+  - first:
+      213: -5965958687741589004
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_7"
+  - first:
+      213: -7653927225379819732
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_8"
+  - first:
+      213: 6526515042152020377
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_9"
+  - first:
+      213: -6633327271160137195
+    second: "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_10"
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: iron_heart
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 904
+        height: 881
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80fd8f5248fd24060800000000000000
+      internalID: 6936352134769729288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lucky_dice
+      rect:
+        serializedVersion: 2
+        x: 903
+        y: 4
+        width: 854
+        height: 847
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f9c188be28a43da0800000000000000
+      internalID: -5965958687741589004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: eea7540e78d00614dbfb5123e55a388c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      iron_heart: 6936352134769729288
+      lucky_dice: -5965958687741589004
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_1": 5415498381731110730
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_10": -6633327271160137195
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_2": 5900155650355605214
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_3": -6170324442432331337
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_4": -8060779215858027280
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_5": -970377438871454216
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_6": -1191834934947088570
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_8": -7653927225379819732
+      "\uC6A9\uC554 \uC2EC\uC7A5\uACFC \uD669\uAE08 \uB9C8\uBC95 \uC8FC\uC0AC\uC704_9": 6526515042152020377
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

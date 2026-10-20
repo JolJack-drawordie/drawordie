@@ -102,10 +102,16 @@ public class DiceManager : MonoBehaviour
             }
         }
 
-        // 이벤트가 발생하기 전에 최대치를 먼저 갱신해야 UI가 올바른 비율로 그려짐
+        // 기본 에너지 계산
         MaxEnergy = baseEnergy + diceValue;
         CurrentEnergy = MaxEnergy;
-        
+
+        // 유물 효과 처리
+        if (RelicManager.Instance != null)
+        {
+            RelicManager.Instance.OnDiceRolled(diceValue);
+        }
+
         if (diceImage != null && diceSprites.Length >= 6)
             diceImage.sprite = diceSprites[diceValue - 1];
 
@@ -138,5 +144,22 @@ public class DiceManager : MonoBehaviour
         // 저장된 최대치가 없는 구버전 세이브(0)는 남은 코스트를 최대치로 사용
         MaxEnergy = Mathf.Max(maxAmount, amount);
         CurrentEnergy = amount;
+    }
+
+    // 유물 효과로 에너지 추가
+    public void AddEnergy(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        CurrentEnergy += amount;
+        MaxEnergy += amount;
+
+        Debug.Log(
+            $"[DiceManager] 추가 에너지 +{amount} " +
+            $"-> 현재 에너지: {CurrentEnergy}, 최대 에너지: {MaxEnergy}"
+        );
     }
 }
