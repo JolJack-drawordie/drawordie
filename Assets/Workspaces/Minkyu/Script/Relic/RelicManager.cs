@@ -11,9 +11,36 @@ public class RelicManager : MonoBehaviour
     public List<RelicData> AllRelics { get; private set; }
         = new List<RelicData>();
 
-    // 플레이어가 획득한 유물 목록
-    private readonly HashSet<string> ownedRelicKeys =
-        new HashSet<string>();
+    // 플레이어가 획득한 유물 목록 (획득 순서 유지)
+    // RelicManager는 전투 씬에 있으므로, 로비에서 불러오기 할 때도 복원할 수 있도록 static으로 보관
+    private static readonly List<string> ownedRelicKeys =
+        new List<string>();
+
+    // 세이브용: 보유 유물 key 목록 (획득 순서)
+    public static List<string> GetOwnedRelicKeys()
+    {
+        return new List<string>(ownedRelicKeys);
+    }
+
+    // 불러오기: 저장된 보유 목록으로 교체
+    // 최대 HP 같은 획득 효과는 이미 세이브의 maxHp에 반영돼 있으므로 다시 적용하지 않음
+    public static void RestoreOwnedRelics(List<string> relicKeys)
+    {
+        ownedRelicKeys.Clear();
+        if (relicKeys == null) return;
+
+        foreach (string key in relicKeys)
+        {
+            if (!string.IsNullOrEmpty(key) && !ownedRelicKeys.Contains(key))
+                ownedRelicKeys.Add(key);
+        }
+    }
+
+    // 새 게임: 이전 판의 유물 제거
+    public static void ClearOwnedRelics()
+    {
+        ownedRelicKeys.Clear();
+    }
 
     private const string ApiBaseUrl = "http://localhost:8080";
 
@@ -197,7 +224,8 @@ public class RelicManager : MonoBehaviour
                 return false;
         }
 
-        ownedRelicKeys.Add(relic.key);
+        if (!ownedRelicKeys.Contains(relic.key))
+            ownedRelicKeys.Add(relic.key);
 
         Debug.Log(
             $"[RelicManager] 유물 획득 완료: {relic.name}"

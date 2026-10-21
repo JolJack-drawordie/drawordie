@@ -138,6 +138,85 @@ public static class AuthRegisterUISetup
         Debug.Log("<color=green>[AuthRegisterUISetup] 회원가입 UI 배치 완료. 위치를 확인한 뒤 씬을 저장하세요 (Ctrl+S).</color>");
     }
 
+    // 닉네임 입력창 오른쪽에 중복확인 버튼, 아래에 결과 메시지를 추가 (아이디 중복확인과 같은 배치)
+    [MenuItem("Tools/Auth/닉네임 중복확인 UI 추가")]
+    private static void SetupNicknameCheck()
+    {
+        AuthManager authManager = Object.FindFirstObjectByType<AuthManager>();
+        if (authManager == null)
+        {
+            Debug.LogError("[AuthRegisterUISetup] 씬에서 AuthManager를 찾을 수 없습니다. AuthScene을 열어주세요.");
+            return;
+        }
+
+        if (authManager.regNickMessage != null)
+        {
+            Debug.LogWarning("[AuthRegisterUISetup] 이미 배치되어 있는 것 같습니다 (regNickMessage가 이미 연결됨).");
+            return;
+        }
+
+        if (authManager.regNick == null || authManager.registerPanel == null)
+        {
+            Debug.LogError("[AuthRegisterUISetup] AuthManager의 regNick/registerPanel 참조가 비어 있습니다.");
+            return;
+        }
+
+        Transform panel = authManager.registerPanel.transform;
+        GameObject buttonPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
+        if (buttonPrefab == null)
+        {
+            Debug.LogError($"[AuthRegisterUISetup] 버튼 프리팹을 찾을 수 없습니다: {ButtonPrefabPath}");
+            return;
+        }
+
+        Undo.SetCurrentGroupName("닉네임 중복확인 UI 추가");
+        int undoGroup = Undo.GetCurrentGroup();
+
+        // 아이디 중복확인 버튼과 같은 x, 닉네임 입력창과 같은 y
+        RectTransform nickRect = authManager.regNick.GetComponent<RectTransform>();
+        float nickY = nickRect.anchoredPosition.y;
+        float buttonX = 165f;
+        Transform idCheckButton = panel.Find("CheckDuplicate_Btn");
+        if (idCheckButton != null) buttonX = ((RectTransform)idCheckButton).anchoredPosition.x;
+
+        Button checkButton = CreateButton(buttonPrefab, panel, "CheckNickDuplicate_Btn",
+            new Vector2(140, 50), new Vector2(buttonX, nickY), "중복확인");
+        UnityEventTools.AddPersistentListener(checkButton.onClick, authManager.CheckNicknameDuplicateClick);
+
+        // 아이디 결과 메시지를 복제해서 글꼴/크기/정렬을 맞춤
+        GameObject messageGO;
+        if (authManager.regIdMessage != null)
+        {
+            messageGO = Object.Instantiate(authManager.regIdMessage.gameObject, panel);
+        }
+        else
+        {
+            messageGO = new GameObject("RegNickMessage_Text", typeof(RectTransform));
+            messageGO.transform.SetParent(panel, false);
+            messageGO.layer = panel.gameObject.layer;
+            TextMeshProUGUI text = messageGO.AddComponent<TextMeshProUGUI>();
+            text.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(AssetDatabase.GUIDToAssetPath(FontGuid));
+            text.fontSize = 26;
+            text.alignment = TextAlignmentOptions.Center;
+        }
+        Undo.RegisterCreatedObjectUndo(messageGO, "닉네임 메시지 텍스트 생성");
+        messageGO.name = "RegNickMessage_Text";
+
+        TMP_Text messageText = messageGO.GetComponent<TMP_Text>();
+        messageText.text = "";
+        SetRect(messageGO.GetComponent<RectTransform>(), new Vector2(500, 30), new Vector2(0, nickY - 40));
+
+        Undo.RecordObject(authManager, "AuthManager 참조 연결");
+        authManager.regNickMessage = messageText;
+
+        Undo.CollapseUndoOperations(undoGroup);
+
+        EditorUtility.SetDirty(authManager);
+        EditorSceneManager.MarkSceneDirty(authManager.gameObject.scene);
+
+        Debug.Log("<color=green>[AuthRegisterUISetup] 닉네임 중복확인 UI 추가 완료. 메시지가 가입 실패 메시지와 겹치지 않는지 확인한 뒤 씬을 저장하세요 (Ctrl+S).</color>");
+    }
+
     private static Button CreateButton(GameObject prefab, Transform parent, string name, Vector2 size, Vector2 anchoredPosition, string label)
     {
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
