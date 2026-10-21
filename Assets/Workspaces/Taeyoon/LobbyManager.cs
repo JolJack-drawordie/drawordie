@@ -30,6 +30,7 @@ public class LobbyManager : MonoBehaviour
 
     private bool isTransitioning;
     private Coroutine messageRoutine;
+    private GameObject messageCanvas;
 
     void Awake()
     {
@@ -73,6 +74,8 @@ public class LobbyManager : MonoBehaviour
     {
         Debug.Log("[LobbyManager] NewGame 클릭됨");
         if (isTransitioning) return;
+
+        HideMessage();
 
         if (PlayTimeTracker.Instance != null)
             PlayTimeTracker.Instance.StartNewRun();
@@ -206,17 +209,24 @@ public class LobbyManager : MonoBehaviour
         messageRoutine = null;
     }
 
+    // 로비 씬에 속한 전용 오버레이 캔버스에 만든다.
+    // (FindFirstObjectByType<Canvas>로 찾으면 DontDestroyCanvas 같은 씬 전환 후에도 남는 캔버스가 잡혀,
+    //  메시지가 떠 있는 중에 새 게임으로 넘어가면 글자가 다음 씬까지 계속 남는 문제가 있었음)
     private void CreateMessageText()
     {
-        Canvas canvas = fadeImage != null ? fadeImage.canvas : FindFirstObjectByType<Canvas>();
-        if (canvas == null)
-        {
-            Debug.LogWarning("[LobbyManager] 메시지를 표시할 Canvas를 찾을 수 없습니다.");
-            return;
-        }
+        messageCanvas = new GameObject("LobbyMessageCanvas");
+
+        Canvas canvas = messageCanvas.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 100;
+
+        CanvasScaler scaler = messageCanvas.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.matchWidthOrHeight = 0.5f;
 
         GameObject obj = new GameObject("MessageText");
-        obj.transform.SetParent(canvas.transform, false);
+        obj.transform.SetParent(messageCanvas.transform, false);
 
         TextMeshProUGUI text = obj.AddComponent<TextMeshProUGUI>();
         text.fontSize = 40f;
@@ -234,12 +244,24 @@ public class LobbyManager : MonoBehaviour
         rect.anchoredPosition = new Vector2(0f, 120f);
         rect.sizeDelta = new Vector2(1000f, 80f);
 
-        // 페이드 이미지보다 아래에 그려지도록 페이드 이미지 바로 앞에 배치
-        if (fadeImage != null && fadeImage.transform.parent == canvas.transform)
-            obj.transform.SetSiblingIndex(fadeImage.transform.GetSiblingIndex());
-
         obj.SetActive(false);
         messageText = text;
+    }
+
+    private void HideMessage()
+    {
+        if (messageRoutine != null)
+        {
+            StopCoroutine(messageRoutine);
+            messageRoutine = null;
+        }
+        if (messageText != null)
+            messageText.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        if (messageCanvas != null) Destroy(messageCanvas);
     }
 
     private IEnumerator FadeAndLoad(string sceneName)
