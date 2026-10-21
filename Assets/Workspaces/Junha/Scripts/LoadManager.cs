@@ -105,6 +105,15 @@ public class LoadManager : MonoBehaviour
             SoundManager.Instance.StopBGM();
         }
 
+        // 보유 유물과 최대 체력 복원 (휴식 / 전투 어느 쪽이든 먼저 적용)
+        RelicSaveData relics = string.IsNullOrEmpty(data.relicData)
+            ? null
+            : JsonUtility.FromJson<RelicSaveData>(data.relicData);
+        RelicManager.RestoreOwnedRelics(relics != null ? relics.relicKeys : null);
+
+        if (StatManager.Instance != null)
+            StatManager.Instance.SetPlayerMaxHp(data.maxHp);
+
         // 휴식 노드에서 저장한 경우: 체력은 바로 복원하고, 덱은 다음 전투 시작 때 복원
         if (GameFlowData.currentNodeType == MapNode.NodeType.Rest)
         {

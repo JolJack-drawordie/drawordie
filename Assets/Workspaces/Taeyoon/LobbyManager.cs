@@ -96,8 +96,14 @@ public class LobbyManager : MonoBehaviour
         PendingLoadData.Clear();
         PendingLoadData.pendingDeckJson = null;
 
+        // 유물과 유물로 늘어난 최대 체력도 초기화 (ResetStat은 현재 체력을 최대 체력으로 채우므로 먼저 되돌림)
+        RelicManager.ClearOwnedRelics();
+
         if (StatManager.Instance != null && StatManager.Instance.runtimePlayerStat != null)
+        {
+            StatManager.Instance.ResetPlayerMaxHp();
             StatManager.Instance.runtimePlayerStat.ResetStat();
+        }
 
         if (DeckManager.Instance != null)
             DeckManager.Instance.ResetForNewRun();

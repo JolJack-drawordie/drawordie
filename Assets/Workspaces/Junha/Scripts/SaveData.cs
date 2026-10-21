@@ -47,6 +47,13 @@ public class ComboSaveData
     }
 }
 
+// 보유 유물은 key 목록으로 저장하고, 불러올 때 서버 유물 데이터에서 다시 찾는다
+[Serializable]
+public class RelicSaveData
+{
+    public List<string> relicKeys = new List<string>();
+}
+
 [Serializable]
 public class MonsterSaveData
 {
@@ -67,11 +74,13 @@ public class GameSaveDto
     public int mapSeed;
     public int nodeSeed;
     public int currentHp;
+    public int maxHp; // 최대 체력 (유물로 늘어난 값 포함, 구버전 세이브는 0)
     public int currentShield;
     public int currentCost;
     public int maxCost; // 이번 턴 최대 에너지 (구버전 세이브는 0)
     public string deckData;
     public string monsterData;
+    public string relicData; // 보유 유물 (RelicSaveData JSON, 구버전 세이브는 null)
     public int currentFloor;
     public int currentIndex;
     public int currentAct;

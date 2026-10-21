@@ -108,16 +108,19 @@ public class SaveManager : MonoBehaviour
             GameManager.Instance != null ? GameManager.Instance.Player : null;
 
         int playerCurrentHp = 0;
+        int playerMaxHp = 0;
         int playerCurrentShield = 0;
         if (player != null && player.statData != null)
         {
             playerCurrentHp = player.statData.currentHp;
+            playerMaxHp = player.statData.maxHp;
             playerCurrentShield = player.statData.currentShield;
         }
         else if (StatManager.Instance != null && StatManager.Instance.runtimePlayerStat != null)
         {
             // 전투 밖(휴식 씬 등): 씬 간에 유지되는 플레이어 스탯 사용
             playerCurrentHp = StatManager.Instance.runtimePlayerStat.currentHp;
+            playerMaxHp = StatManager.Instance.runtimePlayerStat.maxHp;
             playerCurrentShield = 0;
         }
 
@@ -187,6 +190,12 @@ public class SaveManager : MonoBehaviour
         }
 
         // -----------------------------
+        // 보유 유물 (key 목록)
+        // -----------------------------
+        RelicSaveData relics = new RelicSaveData { relicKeys = RelicManager.GetOwnedRelicKeys() };
+        string relicDataJson = JsonUtility.ToJson(relics);
+
+        // -----------------------------
         // 서버로 전송
         // (Seed는 MasterSeedManager / MapSeedGenerator / MapGenerator가 생성한 값)
         // -----------------------------
@@ -195,11 +204,13 @@ public class SaveManager : MonoBehaviour
         form.AddField("mapSeed", GameFlowData.mapSeed);
         form.AddField("nodeSeed", GameFlowData.currentNodeSeed);
         form.AddField("hp", playerCurrentHp);
+        form.AddField("maxHp", playerMaxHp);
         form.AddField("shield", playerCurrentShield);
         form.AddField("cost", currentCost);
         form.AddField("maxCost", maxCost);
         form.AddField("deckData", deckDataJson);
         form.AddField("monsterData", monsterDataJson);
+        form.AddField("relicData", relicDataJson);
         form.AddField("currentFloor", GameFlowData.currentFloor);
         form.AddField("currentIndex", GameFlowData.currentIndex);
         form.AddField("act", GameFlowData.currentAct);

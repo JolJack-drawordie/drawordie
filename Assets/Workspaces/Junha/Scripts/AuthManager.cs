@@ -51,11 +51,14 @@ public class AuthManager : MonoBehaviour
     [FormerlySerializedAs("regMessage")]
     public TMP_Text regIdMessage;     // 아이디 입력칸 아래 (중복 확인 결과 등)
     public TMP_Text regPwMessage;     // 비밀번호 입력칸 아래 (비밀번호 불일치)
+    public TMP_Text regNickMessage;   // 닉네임 입력칸 아래 (중복 확인 결과 등)
     public TMP_Text regSubmitMessage; // 회원가입 버튼 위 (빈 항목, 가입 실패)
     public TMP_Text togglePasswordButtonLabel;
 
     private bool isUsernameChecked = false;
     private string checkedUsername = "";
+    private bool isNicknameChecked = false;
+    private string checkedNickname = "";
     private bool isPasswordVisible = false;
     private bool isLoggingIn = false;
 
@@ -72,6 +75,16 @@ public class AuthManager : MonoBehaviour
             {
                 isUsernameChecked = false;
                 ShowRegMessage(regIdMessage, "", true); // 이전 중복 확인 결과는 더 이상 유효하지 않음
+            });
+        }
+
+        // 닉네임도 다시 수정하면 중복확인을 다시 받아야 함
+        if (regNick != null)
+        {
+            regNick.onValueChanged.AddListener(_ =>
+            {
+                isNicknameChecked = false;
+                ShowRegMessage(regNickMessage, "", true);
             });
         }
 
@@ -197,6 +210,8 @@ public class AuthManager : MonoBehaviour
 
         isUsernameChecked = false;
         checkedUsername = "";
+        isNicknameChecked = false;
+        checkedNickname = "";
         ClearRegMessages();
 
         if (isPasswordVisible) TogglePasswordVisibilityClick();
@@ -246,6 +261,14 @@ public class AuthManager : MonoBehaviour
             return;
         }
         StartCoroutine(CheckUsernameDuplicateAction());
+    }
+
+    public void CheckNicknameDuplicateClick() {
+        if (string.IsNullOrWhiteSpace(regNick.text)) {
+            ShowRegMessage(regNickMessage, "닉네임을 입력해주세요.", false);
+            return;
+        }
+        StartCoroutine(CheckNicknameDuplicateAction());
     }
 
     public void TogglePasswordVisibilityClick() {
@@ -304,7 +327,7 @@ public class AuthManager : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("username", regID.text);
         form.AddField("password", regPW.text);
-        form.AddField("nickname", regNick.text);
+        form.AddField("nickname", NormalizeNickname(regNick.text));
 
         using (UnityWebRequest www = UnityWebRequest.Post(ApiBaseUrl + "/api/users/register", form))
         {
@@ -320,7 +343,7 @@ public class AuthManager : MonoBehaviour
                 loginPW.ActivateInputField();
             } else {
                 Debug.LogError("회원가입 실패: " + www.error);
-                ShowRegMessage(regSubmitMessage, "회원가입에 실패했습니다.", false);
+                ShowRegisterError(www);
             }
         }
     }
@@ -350,6 +373,63 @@ public class AuthManager : MonoBehaviour
         }
     }
 
+    IEnumerator CheckNicknameDuplicateAction()
+    {
+        string nicknameToCheck = NormalizeNickname(regNick.text);
+        string url = ApiBaseUrl + "/api/users/check-nickname?nickname=" + UnityWebRequest.EscapeURL(nicknameToCheck);
+
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+            if (www.result == UnityWebRequest.Result.Success) {
+                bool isDuplicate = www.downloadHandler.text.Trim().ToLower() == "true";
+
+                if (isDuplicate) {
+                    isNicknameChecked = false;
+                    ShowRegMessage(regNickMessage, "이미 사용중인 닉네임입니다.", false);
+                } else {
+                    isNicknameChecked = true;
+                    checkedNickname = nicknameToCheck;
+                    ShowRegMessage(regNickMessage, "사용 가능한 닉네임입니다.", true);
+                }
+            } else {
+                Debug.LogError("닉네임 중복 확인 실패: " + www.error);
+                ShowRegMessage(regNickMessage, "중복 확인에 실패했습니다.", false);
+            }
+        }
+    }
+
+    // 닉네임 비교 기준: 앞뒤 공백만 제거 (대소문자는 구분). 서버도 같은 기준으로 저장/비교함
+    private static string NormalizeNickname(string raw)
+    {
+        return raw == null ? "" : raw.Trim();
+    }
+
+    // 중복 확인 후 가입 직전에 다른 사람이 먼저 가입한 경우 서버가 409로 알려줌
+    private void ShowRegisterError(UnityWebRequest www)
+    {
+        if (www.result == UnityWebRequest.Result.ConnectionError) {
+            ShowRegMessage(regSubmitMessage, "서버에 연결할 수 없습니다.", false);
+            return;
+        }
+
+        if (www.responseCode == 409) {
+            string body = www.downloadHandler != null ? www.downloadHandler.text : "";
+            if (body.Contains("NICKNAME_DUPLICATE")) {
+                isNicknameChecked = false;
+                ShowRegMessage(regNickMessage, "이미 사용중인 닉네임입니다.", false);
+                return;
+            }
+            if (body.Contains("USERNAME_DUPLICATE")) {
+                isUsernameChecked = false;
+                ShowRegMessage(regIdMessage, "이미 사용중인 아이디입니다.", false);
+                return;
+            }
+        }
+
+        ShowRegMessage(regSubmitMessage, "회원가입에 실패했습니다.", false);
+    }
+
     private bool ValidateRegisterInput()
     {
         if (string.IsNullOrWhiteSpace(regID.text) || string.IsNullOrWhiteSpace(regPW.text) || string.IsNullOrWhiteSpace(regNick.text)) {
@@ -359,6 +439,11 @@ public class AuthManager : MonoBehaviour
 
         if (!isUsernameChecked || checkedUsername != regID.text) {
             ShowRegMessage(regIdMessage, "아이디 중복 확인을 해주세요.", false);
+            return false;
+        }
+
+        if (!isNicknameChecked || checkedNickname != NormalizeNickname(regNick.text)) {
+            ShowRegMessage(regNickMessage, "닉네임 중복 확인을 해주세요.", false);
             return false;
         }
 
@@ -390,6 +475,7 @@ public class AuthManager : MonoBehaviour
         ShowRegMessage(loginMessage, "", true);
         ShowRegMessage(regIdMessage, "", true);
         ShowRegMessage(regPwMessage, "", true);
+        ShowRegMessage(regNickMessage, "", true);
         ShowRegMessage(regSubmitMessage, "", true);
     }
 }

@@ -119,6 +119,25 @@ public class StatManager : MonoBehaviour
         HealPlayer(healAmount);
     }
 
+    // 새 게임: 유물로 늘어난 최대 HP를 원본 값으로 되돌림
+    public void ResetPlayerMaxHp()
+    {
+        if (runtimePlayerStat == null || originalPlayerStat == null) return;
+
+        runtimePlayerStat.maxHp = originalPlayerStat.maxHp;
+    }
+
+    // 불러오기: 저장된 최대 HP 복원 (구버전 세이브처럼 값이 없으면 원본 값)
+    public void SetPlayerMaxHp(int maxHp)
+    {
+        if (runtimePlayerStat == null) return;
+
+        if (maxHp > 0)
+            runtimePlayerStat.maxHp = maxHp;
+        else
+            ResetPlayerMaxHp();
+    }
+
     // 유물 효과: 플레이어 최대 HP 증가
     public void IncreasePlayerMaxHp(int amount)
     {
