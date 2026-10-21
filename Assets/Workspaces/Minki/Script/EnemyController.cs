@@ -28,6 +28,10 @@ public abstract class EnemyController : MonoBehaviour
     public GameObject hitEffectPrefab;          // 선택 사항: 타격 파티클/스프라이트 프리팹 (비워두면 색 반짝임만 재생)
     public Vector3 hitEffectOffset = Vector3.zero;
 
+    [Header("몸 표시 보정 (전투 배경에 가려지지 않도록)")]
+    [Tooltip("몸 조각들의 정렬 순서를 최소 이 값 이상으로 올림 (전투 배경 BackgroundFloor가 2). 0 이하면 사용 안 함")]
+    public int minBodySortingOrder = 10;
+
     // 실제 체력을 관리하는 유닛 (전투 씬에서 BattleFactory가 스폰한 프리팹에 붙어 있음)
     protected EnemyUnit hitUnit;
     protected bool hitIsDead = false;
@@ -121,6 +125,40 @@ public abstract class EnemyController : MonoBehaviour
         hitRenderer.color = hitFlashColor;
         yield return new WaitForSeconds(hitFlashDuration);
         hitRenderer.color = before;
+    }
+
+    // 에셋 프리팹을 자식으로 넣으면 따라오는 문제를 자동 보정
+    // 1) 자식의 Z 위치가 -75 같은 값이면 카메라(Z -10) 뒤로 가서 안 보임 -> Z를 0으로
+    // 2) 몸 조각 정렬 순서가 0~2면 전투 배경(BackgroundFloor 2) 뒤에 가려짐 -> 상대 순서는 유지한 채 위로 올림
+    protected void PrepareBodyRenderers(SpriteRenderer[] renderers)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.GetComponent<Canvas>() != null) continue;
+            if (Mathf.Abs(child.localPosition.z) > 1f)
+            {
+                Debug.LogWarning($"[{name}] 자식 '{child.name}'의 Z 위치({child.localPosition.z})가 카메라 뒤로 갈 수 있어 0으로 맞춥니다. 프리팹에서 0으로 바꿔두세요.", this);
+                Vector3 p = child.localPosition;
+                p.z = 0f;
+                child.localPosition = p;
+            }
+        }
+
+        if (renderers == null || renderers.Length == 0 || minBodySortingOrder <= 0) return;
+
+        int lowest = int.MaxValue;
+        foreach (SpriteRenderer r in renderers)
+        {
+            if (r != null && r.sortingOrder < lowest) lowest = r.sortingOrder;
+        }
+
+        if (lowest >= minBodySortingOrder) return;
+
+        int shift = minBodySortingOrder - lowest;
+        foreach (SpriteRenderer r in renderers)
+        {
+            if (r != null) r.sortingOrder += shift;
+        }
     }
 
     // 데미지를 입는 공통 함수 (외부에서 호출 가능) - 기존 레거시 로직 그대로 유지

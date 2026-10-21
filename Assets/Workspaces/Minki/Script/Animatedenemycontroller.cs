@@ -24,6 +24,13 @@ public class AnimatedEnemyController : EnemyController
 
     [Header("의도 아이콘 위치 (몬스터 루트 위치 기준으로 머리 위에 띄울 거리)")]
     public Vector3 intentCanvasOffset = new Vector3(0f, 2f, 0f);
+    [Tooltip("켜면 몸의 Head 조각(없으면 몸 전체) 꼭대기 바로 위에 아이콘을 자동으로 띄움. 끄면 위의 Intent Canvas Offset 사용")]
+    public bool autoIconAboveHead = false;
+    public float iconGapAboveHead = 0.4f;        // 머리 꼭대기와 아이콘 사이 간격
+    public string headPartName = "Head";
+    public string[] iconIgnoreKeywords = { "Weapon", "Effect", "Fire", "Smoke", "Spell", "Projectile", "Stone", "Arrow" };
+    private Vector3 autoIconOffset;
+    private bool hasAutoIconOffset;
     public int intentCanvasSortingBoost = 10;   // 아이콘을 몸 조각들의 가장 높은 정렬 순서보다 얼마나 더 위에 그릴지
 
     [Header("Animator 상태 이름 (Animator 창의 상태 이름과 같아야 함)")]
@@ -55,6 +62,9 @@ public class AnimatedEnemyController : EnemyController
     public float attackStrikeShake = 0.1f;  // 타격 순간 떨림 세기
     public float attackLean = 0f;           // 돌진 중 앞으로 기울어지는 각도(도)
     public float attackStrikeScale = 1f;    // 타격 순간 크기 배율 (1이면 변화 없음)
+    public bool waitAttackClipBeforeReturn = true;           // Attack 클립이 끝날 때까지 그 자리에서 기다렸다가 복귀
+    [Range(0.3f, 1f)] public float attackClipEndRatio = 0.9f; // 클립이 이 비율까지 재생되면 복귀 시작
+    public float attackReturnDelay = 0.15f;                  // 복귀 전에 잠깐 머무는 시간
 
     [Header("방어 펄스 (Defend State가 비어 있을 때 코드로 재생되는 방어 동작)")]
     public float pulseDuration = 0.6f;   // 전체 시간 (0이면 펄스 없이 대기만)
@@ -106,6 +116,7 @@ public class AnimatedEnemyController : EnemyController
         }
 
         allRenderers = GetComponentsInChildren<SpriteRenderer>();
+        PrepareBodyRenderers(allRenderers);
         baseColors = new Color[allRenderers.Length];
         for (int i = 0; i < allRenderers.Length; i++) baseColors[i] = allRenderers[i].color;
 
@@ -127,6 +138,7 @@ public class AnimatedEnemyController : EnemyController
         pulseBasePos = transform.localPosition;
         pulseBaseRot = transform.localRotation;
         ApplyMotionPreset();
+        ComputeAutoIconOffset();
 
         if (intentCanvas != null) canvasBaseRot = intentCanvas.transform.rotation;
 
@@ -143,9 +155,57 @@ public class AnimatedEnemyController : EnemyController
 
     // 아이콘 이미지의 "중심"이 (몬스터 루트 위치 + intentCanvasOffset)에 오도록 Canvas를 이동
     // -> Canvas의 크기/Pivot 설정과 상관없이 아이콘이 머리 위에 정확히 놓임
+    // 몸 조각 범위로 "루트 -> 머리 꼭대기 위" 거리를 한 번 계산 (몬스터마다 키가 달라도 아이콘이 머리 위에 오도록)
+    private void ComputeAutoIconOffset()
+    {
+        hasAutoIconOffset = false;
+        if (!autoIconAboveHead || allRenderers == null || allRenderers.Length == 0) return;
+
+        // Idle 자세를 먼저 적용해야 숨겨진 이펙트 조각이 빠진 정확한 범위를 잴 수 있음
+        if (animator != null && animator.isActiveAndEnabled && animator.runtimeAnimatorController != null)
+            animator.Update(0f);
+
+        bool has = false;
+        bool hasHead = false;
+        Bounds body = new Bounds(transform.position, Vector3.zero);
+        Bounds head = body;
+
+        foreach (SpriteRenderer r in allRenderers)
+        {
+            if (r == null || r.sprite == null || !r.enabled || !r.gameObject.activeInHierarchy || r.color.a < 0.05f) continue;
+            if (IsIconIgnoredPart(r)) continue;
+
+            if (!has) { body = r.bounds; has = true; }
+            else body.Encapsulate(r.bounds);
+
+            if (!hasHead && string.Equals(r.gameObject.name, headPartName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                head = r.bounds;
+                hasHead = true;
+            }
+        }
+
+        if (!has) return;
+
+        float x = hasHead ? head.center.x : body.center.x;
+        float top = hasHead ? Mathf.Max(body.max.y, head.max.y) : body.max.y;
+        autoIconOffset = new Vector3(x, top + iconGapAboveHead, transform.position.z) - transform.position;
+        hasAutoIconOffset = true;
+    }
+
+    private bool IsIconIgnoredPart(SpriteRenderer r)
+    {
+        if (iconIgnoreKeywords == null) return false;
+        foreach (string k in iconIgnoreKeywords)
+        {
+            if (!string.IsNullOrEmpty(k) && r.gameObject.name.IndexOf(k, System.StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        }
+        return false;
+    }
+
     private void PlaceIntentCanvas()
     {
-        Vector3 target = transform.position + intentCanvasOffset;
+        Vector3 target = transform.position + (hasAutoIconOffset ? autoIconOffset : intentCanvasOffset);
 
         if (intentIcon != null)
         {
@@ -340,6 +400,24 @@ public class AnimatedEnemyController : EnemyController
 
             yield return null;
         }
+
+        transform.localPosition = target;
+        transform.localScale = pulseBaseScale;
+
+        // 3-2) Attack 클립을 끝까지 보여준 뒤 잠깐 머물렀다가 복귀 (휘두르는 도중에 뒤로 미끄러지지 않도록)
+        if (waitAttackClipBeforeReturn && playAttackClip && HasState(attackState))
+        {
+            float timer = 0f;
+            while (timer < maxActionTime && !hitIsDead)
+            {
+                AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+                if (!info.IsName(attackState) || info.normalizedTime >= attackClipEndRatio) break;
+
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+        if (attackReturnDelay > 0f && !hitIsDead) yield return new WaitForSeconds(attackReturnDelay);
 
         // 4) 복귀
         yield return StartCoroutine(MoveOverTime(target, start, attackReturnTime, 0f, attackLean, 0f));

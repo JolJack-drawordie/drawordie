@@ -12,10 +12,18 @@ public enum MonsterType
     Spider = 102,
 
     // Act 2
-    Zombie = 200,
+    Imp = 200,       // (Zombie에서 교체)
     Vampire = 201,
     Succubus = 202,
+
+    // Act 3
+    SkeletonWarrior = 300,
+    SkeletonMage = 301,
+    SkeletonArcher = 302,
 }
+
+// 중간보스 / 보스 id 규칙 (MonsterType에는 넣지 않음 → 일반 몬스터 뽑기에서 자동 제외)
+// x40 = Act x 중간보스, x50 = Act x 보스  (예: 140 = Act 1 중간보스, 350 = Act 3 보스)
 
 [System.Serializable]
 public class MonsterPrefabInfo
@@ -38,9 +46,23 @@ public class MonsterDatabase : MonoBehaviour
     // (임시 수치: 밸런스에 맞게 조정하세요)
     private static readonly List<MonsterServerData> localMonsters = new List<MonsterServerData>
     {
-        new MonsterServerData { id = 200, name = "Zombie",   hp = 45, shield = 30 },
+        new MonsterServerData { id = 200, name = "Imp",      hp = 40, shield = 30 },
         new MonsterServerData { id = 201, name = "Vampire",  hp = 40, shield = 30 },
         new MonsterServerData { id = 202, name = "Succubus", hp = 35, shield = 30 },
+
+        new MonsterServerData { id = 300, name = "SkeletonWarrior", hp = 55, shield = 30 },
+        new MonsterServerData { id = 301, name = "SkeletonMage",    hp = 45, shield = 30 },
+        new MonsterServerData { id = 302, name = "SkeletonArcher",  hp = 50, shield = 30 },
+
+        // 중간보스 (x40)
+        new MonsterServerData { id = 140, name = "Act1Elite", hp = 70,  shield = 30 },
+        new MonsterServerData { id = 240, name = "Act2Elite", hp = 95,  shield = 40 },
+        new MonsterServerData { id = 340, name = "Act3Elite", hp = 120, shield = 50 },
+
+        // 보스 (x50)
+        new MonsterServerData { id = 150, name = "Act1Boss", hp = 100, shield = 30 },
+        new MonsterServerData { id = 250, name = "Act2Boss", hp = 140, shield = 40 },
+        new MonsterServerData { id = 350, name = "Act3Boss", hp = 200, shield = 60 },
     };
 
     // 런타임에 서버에서 받아온 스탯 데이터를 따로 보관

@@ -20,6 +20,9 @@ public class BattleFactory : MonoBehaviour
     [Header("보스 (Boss 노드에서만 등장, Act마다 다른 보스를 리스트에 추가)")]
     public List<BossInfo> bossList = new List<BossInfo>();
 
+    [Header("중간보스 (Elite 노드에서만 등장, Act마다 하나씩. 서버 id는 x40 권장: 140, 240, 340)")]
+    public List<BossInfo> eliteList = new List<BossInfo>();
+
     private void Awake()
     {
         if (Instance == null)
@@ -32,6 +35,12 @@ public class BattleFactory : MonoBehaviour
     private BossInfo GetBossInfo(int act)
     {
         return bossList.Find(b => b.act == act);
+    }
+
+    // 현재 Act에 맞는 중간보스 정보를 찾아줌 (없으면 null)
+    private BossInfo GetEliteInfo(int act)
+    {
+        return eliteList.Find(b => b.act == act);
     }
 
     public GameObject SpawnPlayer(GameObject spawnPoint)
@@ -79,6 +88,16 @@ public class BattleFactory : MonoBehaviour
             Debug.LogWarning($"[BattleFactory] Act {GameFlowData.currentAct}에 등록된 보스가 없습니다. bossList에 추가해주세요.");
         }
 
+        // [중간보스 분기] Elite 노드면 현재 Act에 맞는 중간보스 (없으면 일반 몬스터로 대체)
+        bool isEliteNode = GameFlowData.currentNodeType == MapNode.NodeType.Elite;
+        BossInfo eliteInfo = isEliteNode ? GetEliteInfo(GameFlowData.currentAct) : null;
+        bool isElite = eliteInfo != null && eliteInfo.bossPrefab != null;
+
+        if (isEliteNode && !isElite)
+        {
+            Debug.LogWarning($"[BattleFactory] Act {GameFlowData.currentAct}에 등록된 중간보스가 없어 일반 몬스터로 대체합니다. eliteList에 추가해주세요.");
+        }
+
         int selectedId = -1;
         GameObject enemyPrefab;
 
@@ -87,6 +106,12 @@ public class BattleFactory : MonoBehaviour
             enemyPrefab = bossInfo.bossPrefab;
             selectedId = bossInfo.bossId; // 보스도 몬스터와 동일하게 서버 id로 스탯 조회
             Debug.Log($"보스 노드 → Act {bossInfo.act} 보스 스폰 ({bossInfo.bossPrefab.name}, id={selectedId})");
+        }
+        else if (isElite)
+        {
+            enemyPrefab = eliteInfo.bossPrefab;
+            selectedId = eliteInfo.bossId;
+            Debug.Log($"중간보스 노드 → Act {eliteInfo.act} 중간보스 스폰 ({eliteInfo.bossPrefab.name}, id={selectedId})");
         }
         else
         {
@@ -121,7 +146,7 @@ public class BattleFactory : MonoBehaviour
             }
             else
             {
-                Debug.Log($"{(isBoss ? "보스" : "몬스터")} 스탯을 가져오지 못했습니다. (id={selectedId}) 서버 Monster.json에 등록됐는지 확인하세요.");
+                Debug.Log($"{(isBoss ? "보스" : isElite ? "중간보스" : "몬스터")} 스탯을 가져오지 못했습니다. (id={selectedId}) 서버 Monster.json에 등록됐는지 확인하세요.");
             }
         }
 
