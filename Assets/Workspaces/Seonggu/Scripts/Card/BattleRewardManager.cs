@@ -1,26 +1,51 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleRewardManager : MonoBehaviour
 {
-    // ½Ì±ÛÅæ ÀÎ½ºÅÏ½º (´Ù¸¥ ½ºÅ©¸³Æ®¿¡¼­ BattleRewardManager.Instance ·Î ½±°Ô Á¢±Ù °¡´É)
+    // ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤ (ë‹¤ë¥¸ ìŠ¤í¬ë¦½íŠ¸ì—ì„œ BattleRewardManager.Instance ë¡œ ì ‘ê·¼ ê°€ëŠ¥)
     public static BattleRewardManager Instance { get; private set; }
 
-    // ³ëµå ½Ãµå ±â¹İ Ä«µå º¸»ó ³­¼ö »ı¼º±â
-    System.Random rewardRng;
-
-    [Header("UI References")]
+    [Header("ì¹´ë“œ ë³´ìƒ UI")]
     [SerializeField] private GameObject rewardCardPrefab;
     [SerializeField] private Transform rewardCardParent;
     [SerializeField] private GameObject rewardUIPanel;
 
-    private List<ICard> displayedRewards = new List<ICard>(); // ÇöÀç È­¸é¿¡ ¶á º¸»ó Ä«µå 3Àå
+    [Header("ìœ ë¬¼ ë³´ìƒ UI")]
+    [SerializeField] private GameObject relicRewardPanel;
+    [SerializeField] private Image relicIcon;
+    [SerializeField] private TextMeshProUGUI relicNameText;
+    [SerializeField] private TextMeshProUGUI relicDescriptionText;
+    [SerializeField] private Button acquireRelicButton;
+
+    [Header("ìœ ë¬¼ ì•„ì´ì½˜ ì—°ê²°")]
+    [SerializeField]
+    private List<RelicIconEntry> relicIcons =
+        new List<RelicIconEntry>();
+
+    [Serializable]
+    public class RelicIconEntry
+    {
+        public string relicKey;
+        public Sprite icon;
+    }
+
+    // ë³´ìƒ ì‹œë“œ ê¸°ë°˜ ë¬´ì‘ìœ„ ë‚œìˆ˜ ìƒì„±ê¸°
+    private System.Random rewardRng;
+
+    private List<ICard> displayedRewards = new List<ICard>(); // í˜„ì¬ í™”ë©´ì— í‘œì‹œëœ ë³´ìƒ ì¹´ë“œ 3ì¥
+    private RelicData selectedRelic;
+
+    private bool isProcessingReward;
+    private bool isRelicReward;
 
     private void Awake()
     {
-        // ½Ì±ÛÅæ ÃÊ±âÈ­
+        // ì‹±ê¸€í†¤ ì´ˆê¸°í™”
         if (Instance == null)
         {
             Instance = this;
@@ -31,10 +56,21 @@ public class BattleRewardManager : MonoBehaviour
             return;
         }
 
-        // °ÔÀÓ ½ÃÀÛ ½Ã º¸»ó ÆĞ³ÎÀº È®½ÇÇÏ°Ô ²¨µÎ±â
+        // ì´ˆê¸°í™” ì‹œ UI íŒ¨ë„ë“¤ì„ ë¹„í™œì„±í™”
         if (rewardUIPanel != null)
         {
             rewardUIPanel.SetActive(false);
+        }
+
+        if (relicRewardPanel != null)
+        {
+            relicRewardPanel.SetActive(false);
+        }
+
+        // ìœ ë¬¼ íšë“ ë²„íŠ¼ ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ ë“±ë¡
+        if (acquireRelicButton != null)
+        {
+            acquireRelicButton.onClick.AddListener(AcquireSelectedRelic);
         }
     }
 
@@ -42,11 +78,11 @@ public class BattleRewardManager : MonoBehaviour
     {
         int nodeSeed = GameFlowData.currentNodeSeed;
 
-        // ¸ó½ºÅÍ³ª ¼ÅÇÃ ½Ãµå¿Í °ãÄ¡Áö ¾Êµµ·Ï º¸»ó Àü¿ë ¿ÀÇÁ¼Â ºÎ¿©
+        // ë…¸ë“œë§ˆë‹¤ ê³ ìœ  ì‹œë“œë¥¼ ë¶€ì—¬í•´ ë™ì¼ ë…¸ë“œì—ì„œëŠ” ê°™ì€ ë¬´ì‘ìœ„ ìˆœì„œ ì‚¬ìš©
         rewardRng = new System.Random(nodeSeed + 2);
     }
 
-    // [ÀĞ±â Àü¿ë ÇÁ·ÎÆÛÆ¼] ³»ºÎ¿¡¼­´Â ÀÚÀ¯·Ó°Ô ¾²°í, ¿ÜºÎ¿¡¼­´Â ÇÔºÎ·Î ¼öÁ¤ ¸ø ÇÏ°Ô ¸·À½
+    // [ì½ê¸° ì „ìš© í”„ë¡œí¼í‹°] ë§ˆìŠ¤í„° ì¹´ë“œ ë¡¤ ì°¸ì¡° (ì•ˆì „í•˜ê²Œ ì ‘ê·¼)
     private List<ICard> MasterPool
     {
         get
@@ -55,67 +91,296 @@ public class BattleRewardManager : MonoBehaviour
         }
     }
 
-    /// 1. ÀüÅõ ½Â¸® ½Ã È£Ãâ: µÎ Ç®À» ÇÕÃÄ¼­ ¹«ÀÛÀ§·Î 3Àå ÃßÃâ
+    /// ì „íˆ¬ ìŠ¹ë¦¬ ì‹œ í˜¸ì¶œ: ë§ˆìŠ¤í„° ì¹´ë“œ ë¡¤ì—ì„œ ë¬´ì‘ìœ„ ë³´ìƒ ì¹´ë“œ 3ì¥ ìƒì„±
     public void GenerateRewardChoices()
     {
-        // 1. ¸¶½ºÅÍ Ç® °¡Á®¿À±â (ÇÊ¿äÇÒ ¶§ ¾ÈÀüÇÏ°Ô ÂüÁ¶)
         var masterPool = MasterPool;
 
         if (masterPool == null || masterPool.Count == 0)
         {
-            Debug.LogError("[BattleRewardManager] ¸¶½ºÅÍ Ä«µå Ç®ÀÌ ºñ¾îÀÖ½À´Ï´Ù!");
+            Debug.LogError(
+                "[BattleRewardManager] ë³´ìƒìš© ì¹´ë“œ í’€ì´ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤."
+            );
             return;
         }
 
-        // 2. [¼º´É °³¼± Æ÷ÀÎÆ®] ÀüÃ¼ Á¤·Ä(OrderBy) ´ë½Å, 
-        // ¹«ÀÛÀ§·Î 3ÀåÀ» ¾ÈÀüÇÏ°Ô »Ì¾Æ³»´Â È¿À²ÀûÀÎ ¹æ½Ä Àû¿ë
+        if (rewardRng == null)
+        {
+            rewardRng = new System.Random(
+                GameFlowData.currentNodeSeed + 2
+            );
+        }
+
+        // 3ê°œì˜ ë³´ìƒ ì¹´ë“œ ë¬´ì‘ìœ„ ì„ ë³„
         displayedRewards = GetRandomRewards(masterPool, 3);
+        isProcessingReward = false;
 
-        // UI ÆĞ³Î ÄÑ±â
-        if (rewardUIPanel != null) rewardUIPanel.SetActive(true);
+        if (relicRewardPanel != null)
+        {
+            relicRewardPanel.SetActive(false);
+        }
 
-        // ±âÁ¸ Ä«µå Á¤¸® ÈÄ »ı¼º
+        if (rewardUIPanel != null)
+        {
+            rewardUIPanel.SetActive(true);
+        }
+
+        if (rewardCardParent == null || rewardCardPrefab == null)
+        {
+            Debug.LogError(
+                "[BattleRewardManager] ì¹´ë“œ ë³´ìƒ UIê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤."
+            );
+            return;
+        }
+
+        // ê¸°ì¡´ ìƒì„±ëœ ë³´ìƒ ì¹´ë“œ í”„ë¦¬íŒ¹ ì œê±°
         foreach (Transform child in rewardCardParent)
         {
             Destroy(child.gameObject);
         }
 
-        // 3ÀåÀ» È­¸é¿¡ »ı¼ºÇÏ°í ºä ¿¬°á
+        // ì„ ë³„ëœ 3ê°œì˜ ì¹´ë“œë¥¼ UI í™”ë©´ì— ìƒì„± ë° ì´ë²¤íŠ¸ ì—°ê²°
         for (int i = 0; i < displayedRewards.Count; i++)
         {
-            int index = i; // Å¬·ÎÀú ÀÌ½´ ¹æÁö
-            GameObject cardObj = Instantiate(rewardCardPrefab, rewardCardParent);
-            RewardCardView cardView = cardObj.GetComponent<RewardCardView>();
+            int index = i; // í´ë¡œì € ì´ìŠˆ ë°©ì§€
+
+            GameObject cardObj = Instantiate(
+                rewardCardPrefab,
+                rewardCardParent
+            );
+
+            RewardCardView cardView =
+                cardObj.GetComponent<RewardCardView>();
 
             if (cardView != null)
             {
-                cardView.Setup(displayedRewards[index], (clickedCard) =>
+                cardView.Setup(displayedRewards[index], clickedCard =>
                 {
                     SelectRewardCard(index);
                 });
             }
+            else
+            {
+                Debug.LogError(
+                    "[BattleRewardManager] ë³´ìƒ ì¹´ë“œì— " +
+                    "RewardCardViewê°€ ì—†ìŠµë‹ˆë‹¤."
+                );
+            }
         }
-
     }
 
-    /// 2. ÇÃ·¹ÀÌ¾î°¡ º¸»ó Ä«µå 3Àå Áß ÇÏ³ª¸¦ Å¬¸¯ÇßÀ» ¶§ È£Ãâ (¹öÆ° ÀÌº¥Æ® ¿¬°á¿ë)
-    /// <param name="selectedIndex">¼±ÅÃÇÑ Ä«µå ÀÎµ¦½º (0, 1, 2)</param>
+    /// í”Œë ˆì´ì–´ê°€ ë³´ìƒ ì¹´ë“œ 3ì¥ ì¤‘ í•˜ë‚˜ë¥¼ ì„ íƒí–ˆì„ ë•Œ í˜¸ì¶œ (ë±ì— ì¶”ê°€)
     public void SelectRewardCard(int selectedIndex)
     {
-        if (selectedIndex < 0 || selectedIndex >= displayedRewards.Count) return;
+        if (isProcessingReward)
+        {
+            return;
+        }
+
+        if (selectedIndex < 0 ||
+            selectedIndex >= displayedRewards.Count)
+        {
+            return;
+        }
+
+        if (DeckManager.Instance == null)
+        {
+            Debug.LogError(
+                "[BattleRewardManager] DeckManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+            );
+            return;
+        }
 
         ICard chosenCard = displayedRewards[selectedIndex];
 
-        // µ¦ ¸Å´ÏÀú ÀÎ½ºÅÏ½º¸¦ ÅëÇØ ¹Ù·Î Ä«µå Ãß°¡ (¸Ş¼­µå ÀÌ¸§Àº ±âÁ¸ µ¦¸Å´ÏÀú¿¡ ¸Â°Ô ¼öÁ¤)
+        isProcessingReward = true;
+
+        // ë± ë§¤ë‹ˆì €ë¥¼ í†µí•´ ì„ íƒí•œ ì¹´ë“œ ì¶”ê°€
         DeckManager.Instance.AddCardToDeck(chosenCard);
 
-        CloseRewardUI();
+        Debug.Log(
+            $"[BattleRewardManager] ì¹´ë“œ ë³´ìƒ íšë“: {chosenCard.Name}"
+        );
+
+        displayedRewards.Clear();
+
+        if (rewardUIPanel != null)
+        {
+            rewardUIPanel.SetActive(false);
+        }
+
+        // ì—˜ë¦¬íŠ¸ì™€ ë³´ìŠ¤ ë…¸ë“œì¼ ê²½ìš° ì¶”ê°€ë¡œ ìœ ë¬¼ ë³´ìƒ íŒì—…ì„ í‘œì‹œ
+        if (GameFlowData.currentNodeType == MapNode.NodeType.Elite ||
+            GameFlowData.currentNodeType == MapNode.NodeType.Boss)
+        {
+            isRelicReward = true;
+            StartCoroutine(ShowRelicRewardWhenReady());
+        }
+        else
+        {
+            GoToMap();
+        }
     }
 
-    /// ¸¶½ºÅÍ Ç®¿¡¼­ ¼º´É ºÎ´ãÀ» ÁÙÀÌ¸ç ¹«ÀÛÀ§·Î NÀåÀ» »Ì´Â ÇïÆÛ ¸Ş¼­µå
-    private List<ICard> GetRandomRewards(List<ICard> sourcePool, int count)
+    // ì„œë²„ì˜ ìœ ë¬¼ ëª©ë¡ ë°ì´í„° ë¡œë“œê°€ ì™„ë£Œë  ë•Œê¹Œì§€ ëŒ€ê¸° í›„ íŒì—… ì—°ì¶œ
+    private IEnumerator ShowRelicRewardWhenReady()
     {
-        // ¿øº» Ç®À» ÈÑ¼ÕÇÏÁö ¾Ê±â À§ÇØ º¹»çº» »ı¼º
+        float elapsed = 0f;
+        const float timeoutSeconds = 10f;
+
+        while (RelicManager.Instance != null &&
+               (RelicManager.Instance.AllRelics == null ||
+                RelicManager.Instance.AllRelics.Count == 0) &&
+               elapsed < timeoutSeconds)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (RelicManager.Instance == null ||
+            RelicManager.Instance.AllRelics == null ||
+            RelicManager.Instance.AllRelics.Count == 0)
+        {
+            Debug.LogWarning(
+                "[BattleRewardManager] ìœ ë¬¼ ë°ì´í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. " +
+                "ë§µìœ¼ë¡œ ì´ë™í•©ë‹ˆë‹¤."
+            );
+
+            GoToMap();
+            yield break;
+        }
+
+        ShowRelicReward();
+    }
+
+    // íšë“ ê°€ëŠ¥í•œ ë¬´ì‘ìœ„ ìœ ë¬¼ 1ê°œë¥¼ íŒì—…ì°½ì— ì¶œë ¥
+    private void ShowRelicReward()
+    {
+        if (RelicManager.Instance == null)
+        {
+            Debug.LogError(
+                "[BattleRewardManager] RelicManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+            );
+
+            GoToMap();
+            return;
+        }
+
+        if (rewardRng == null)
+        {
+            rewardRng = new System.Random(
+                GameFlowData.currentNodeSeed + 2
+            );
+        }
+
+        // ë¯¸ë³´ìœ  ìœ ë¬¼ ì¤‘ í•˜ë‚˜ ì¶”ì¶œ
+        selectedRelic =
+            RelicManager.Instance.GetRandomAvailableRelic(rewardRng);
+
+        if (selectedRelic == null)
+        {
+            Debug.LogWarning(
+                "[BattleRewardManager] íšë“ ê°€ëŠ¥í•œ ìœ ë¬¼ì´ ì—†ìŠµë‹ˆë‹¤."
+            );
+
+            GoToMap();
+            return;
+        }
+
+        if (relicRewardPanel == null ||
+            relicNameText == null ||
+            relicDescriptionText == null ||
+            acquireRelicButton == null)
+        {
+            Debug.LogError(
+                "[BattleRewardManager] ìœ ë¬¼ ë³´ìƒ UIê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤."
+            );
+
+            GoToMap();
+            return;
+        }
+
+        relicNameText.text = selectedRelic.name;
+        relicDescriptionText.text = selectedRelic.description;
+
+        // ìœ ë¬¼ í‚¤ì— í•´ë‹¹í•˜ëŠ” ì•„ì´ì½˜ ìŠ¤í”„ë¼ì´íŠ¸ ê²€ìƒ‰ ë° ì ìš©
+        Sprite iconSprite = null;
+
+        foreach (RelicIconEntry entry in relicIcons)
+        {
+            if (entry != null &&
+                entry.relicKey == selectedRelic.key)
+            {
+                iconSprite = entry.icon;
+                break;
+            }
+        }
+
+        if (relicIcon != null)
+        {
+            relicIcon.sprite = iconSprite;
+            relicIcon.enabled = iconSprite != null;
+        }
+
+        acquireRelicButton.interactable = true;
+        relicRewardPanel.SetActive(true);
+
+        Debug.Log(
+            $"[BattleRewardManager] ìœ ë¬¼ ë³´ìƒ í‘œì‹œ: {selectedRelic.name}"
+        );
+    }
+
+    // ìœ ë¬¼ ë³´ìƒ ì°½ì—ì„œ íšë“ ë²„íŠ¼ í´ë¦­ ì‹œ ì‹¤í–‰
+    private void AcquireSelectedRelic()
+    {
+        if (!isRelicReward || selectedRelic == null)
+        {
+            return;
+        }
+
+        if (RelicManager.Instance == null)
+        {
+            Debug.LogError(
+                "[BattleRewardManager] RelicManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+            );
+            return;
+        }
+
+        acquireRelicButton.interactable = false;
+
+        // ìœ ë¬¼ ë§¤ë‹ˆì €ë¥¼ í†µí•´ ìœ ë¬¼ ì‹¤ì œ íšë“ ë° íš¨ê³¼ ì ìš©
+        bool acquired = RelicManager.Instance.AcquireRelic(
+            selectedRelic.key
+        );
+
+        if (!acquired)
+        {
+            Debug.LogWarning(
+                "[BattleRewardManager] ìœ ë¬¼ íšë“ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤."
+            );
+
+            acquireRelicButton.interactable = true;
+            return;
+        }
+
+        Debug.Log(
+            $"[BattleRewardManager] ìœ ë¬¼ ë³´ìƒ íšë“: {selectedRelic.name}"
+        );
+
+        if (RelicIconUI.Instance != null)
+        {
+            RelicIconUI.Instance.RefreshRelicIcons();
+        }
+
+        selectedRelic = null;
+        GoToMap();
+    }
+
+    // ì¹´ë“œ í’€ì—ì„œ ì›ë³¸ í›¼ì† ì—†ì´ ì¤‘ë³µ ì—†ëŠ” Nê°œì˜ ë³´ìƒ ì¹´ë“œ ë¬´ì‘ìœ„ ì¶”ì¶œ
+    private List<ICard> GetRandomRewards(
+        List<ICard> sourcePool,
+        int count)
+    {
         List<ICard> poolCopy = new List<ICard>(sourcePool);
         List<ICard> selected = new List<ICard>();
 
@@ -124,17 +389,58 @@ public class BattleRewardManager : MonoBehaviour
         for (int i = 0; i < targetCount; i++)
         {
             int randomIndex = rewardRng.Next(0, poolCopy.Count);
+
             selected.Add(poolCopy[randomIndex]);
-            poolCopy.RemoveAt(randomIndex); // Áßº¹ »Ì±â ¹æÁö
+            poolCopy.RemoveAt(randomIndex); // ì¤‘ë³µ ì„ íƒ ë°©ì§€
         }
 
         return selected;
     }
 
-    private void CloseRewardUI()
+    // ëª¨ë“  ë³´ìƒ ì²˜ë¦¬ê°€ ëë‚œ ë’¤ UI ë‹«ê¸° ë° ë§µ ì”¬ìœ¼ë¡œ ì „í™˜
+    private void GoToMap()
     {
-        displayedRewards.Clear();
-        if (rewardUIPanel != null) rewardUIPanel.SetActive(false);
-        UIManager.Instance.GoToMapAfterVictory();
+        isRelicReward = false;
+        isProcessingReward = false;
+        selectedRelic = null;
+
+        if (rewardUIPanel != null)
+        {
+            rewardUIPanel.SetActive(false);
+        }
+
+        if (relicRewardPanel != null)
+        {
+            relicRewardPanel.SetActive(false);
+        }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.GoToMapAfterVictory();
+        }
+        else
+        {
+            Debug.LogError(
+                "[BattleRewardManager] UIManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+            );
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance != this)
+        {
+            return;
+        }
+
+        // ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ í•´ì œ
+        if (acquireRelicButton != null)
+        {
+            acquireRelicButton.onClick.RemoveListener(
+                AcquireSelectedRelic
+            );
+        }
+
+        Instance = null;
     }
 }

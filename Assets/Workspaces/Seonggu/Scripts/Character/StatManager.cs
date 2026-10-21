@@ -4,18 +4,18 @@ public class StatManager : MonoBehaviour
 {
     public static StatManager Instance { get; private set; }
 
-    [Header("¿øº» ½ºÅÈ µ¥ÀÌÅÍ (ScriptableObject)")]
+    [Header("ì›ë³¸ ìŠ¤íƒ¯ ë°ì´í„° (ScriptableObject)")]
     [SerializeField] private UnitStatData originalPlayerStat;
     [SerializeField] private UnitStatData originalEnemyStat;
 
-    [Header("·±Å¸ÀÓ Àü¿ë ½ºÅÈ (ÀüÅõ Áß º¯µ¿µÇ´Â µ¥ÀÌÅÍ)")]
+    [Header("ëŸ°íƒ€ì„ ìŠ¤íƒ¯ ë°ì´í„° (ê²Œì„ ì¤‘ ë³€ê²½ë˜ëŠ” ë°ì´í„°)")]
     public UnitStatData runtimePlayerStat { get; private set; }
     public UnitStatData runtimeEnemyStat { get; private set; }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeBeforeSceneLoad()
     {
-        // ÇÁ·ÎÁ§Æ® Æú´õÀÇ Resources Æú´õ ¾È¿¡ "StatManager" ÇÁ¸®ÆÕÀÌ ÀÖ´Ù°í °¡Á¤
+        // í”„ë¦¬íŒ¹ì´ Resources í´ë” ì•ˆì— "StatManager" ì´ë¦„ìœ¼ë¡œ ìˆë‹¤ê³  ê°€ì •
         GameObject prefab = Resources.Load<GameObject>("StatManager");
         if (prefab != null)
         {
@@ -24,7 +24,7 @@ public class StatManager : MonoBehaviour
         }
         else
         {
-            // ÇÁ¸®ÆÕÀÌ ¾ø´Ù¸é ºó ¿ÀºêÁ§Æ®¸¦ µ¿ÀûÀ¸·Î »ı¼ºÇØ¼­ ºÎÂø
+            // í”„ë¦¬íŒ¹ì´ ì—†ë‹¤ë©´ ìƒˆ ì˜¤ë¸Œì íŠ¸ë¥¼ ìƒì„±í•´ì„œ ì‚¬ìš©
             GameObject obj = new GameObject("StatManager");
             obj.AddComponent<StatManager>();
             DontDestroyOnLoad(obj);
@@ -44,7 +44,7 @@ public class StatManager : MonoBehaviour
             return;
         }
 
-        // °ÔÀÓ ½ÃÀÛ ½ÃÁ¡ ¶Ç´Â ¸Å´ÏÀú ÃÊ±âÈ­ ½ÃÁ¡¿¡ ·±Å¸ÀÓ¿ë º¹»çº» »ı¼º
+        // ê²Œì„ ì‹œì‘ ì‹œ ë§¤ë‹ˆì € ì´ˆê¸°í™” ë‹¨ê³„ì— ëŸ°íƒ€ì„ ë³µì‚¬ë³¸ ìƒì„±
         InitializeRuntimeStats();
     }
 
@@ -52,16 +52,16 @@ public class StatManager : MonoBehaviour
     {
         if (originalPlayerStat != null)
         {
-            // ¿øº» SO¸¦ Á÷Á¢ °Çµå¸®Áö ¾Êµµ·Ï ÀÎ½ºÅÏ½º º¹Á¦(Instantiate) »ç¿ë
+            // ì›ë³¸ SOë¥¼ ì§ì ‘ ê±´ë“œë¦¬ì§€ ì•Šë„ë¡ ì¸ìŠ¤í„´ìŠ¤ ìƒì„±(Instantiate) ì‚¬ìš©
             runtimePlayerStat = Instantiate(originalPlayerStat);
             runtimePlayerStat.ResetStat();
         }
     }
 
-    // BattleFactory°¡ È£ÃâÇÒ ½ºÅÈ Á¦°ø ¸Ş¼­µå
+    // BattleFactoryì—ì„œ í˜¸ì¶œí•  ìœ ì € ìŠ¤íƒ¯ ë°˜í™˜
     public UnitStatData GetPlayerStat()
     {
-        // È¤½Ã ÃÊ±âÈ­°¡ ¾È µÇ¾ú°Å³ª ÀüÅõ Àç½ÃÀÛ ½Ã Ã¼·ÂÀÌ 0ÀÏ °æ¿ì ´ëºñÇØ ¸®¼Â ·ÎÁ÷ Ãß°¡ °¡´É
+        // í˜¹ì‹œ ì´ˆê¸°í™”ê°€ ì•ˆ ë˜ì—ˆê±°ë‚˜ ì´ì „ ì„¸ì…˜ì˜ ì²´ë ¥ì´ 0ì¸ ê²½ìš° ì˜ˆì™¸ ì²˜ë¦¬ ì¶”ê°€ ê°€ëŠ¥
         return runtimePlayerStat;
     }
 
@@ -74,7 +74,7 @@ public class StatManager : MonoBehaviour
     {
         if (runtimeEnemyStat == null)
         {
-            // ScriptableObject´Â ¹İµå½Ã CreateInstance·Î »ı¼ºÇØ¾ß ÇÕ´Ï´Ù
+            // ScriptableObjectëŠ” ë°˜ë“œì‹œ CreateInstanceë¡œ ìƒì„±í•´ì•¼ í•©ë‹ˆë‹¤
             runtimeEnemyStat = ScriptableObject.CreateInstance<UnitStatData>();
         }
 
@@ -84,38 +84,66 @@ public class StatManager : MonoBehaviour
         runtimeEnemyStat.currentShield = 0;
     }
 
-    // ÀüÅõ Á¾·á ÈÄ ÇÃ·¹ÀÌ¾î »óÅÂ¸¦ ÀúÀåÇÏ°Å³ª °»½ÅÇÒ ¶§ »ç¿ë
+    // ì „íˆ¬ ì¢…ë£Œ ì‹œ í”Œë ˆì´ì–´ ìƒíƒœë¥¼ ì €ì¥í•˜ê±°ë‚˜ ê°±ì‹ í•  ë•Œ
     public void SavePlayerState(PlayerUnit player)
     {
         if (runtimePlayerStat != null && player != null)
         {
             runtimePlayerStat.currentHp = player.statData.currentHp;
-            // ÇÊ¿ä½Ã Ãß°¡ µ¥ÀÌÅÍ µ¿±âÈ­
+            // í•„ìš”í•œ ì¶”ê°€ ë°ì´í„° ë™ê¸°í™”
         }
     }
 
-    // °íÁ¤ ¼öÄ¡ Ã¼·Â È¸º¹
+    // ì§€ì • ìˆ˜ì¹˜ ì²´ë ¥ íšŒë³µ
     public void HealPlayer(int amount)
     {
         if (runtimePlayerStat == null) return;
 
         runtimePlayerStat.currentHp += amount;
 
-        // ÃÖ´ë Ã¼·ÂÀ» ÃÊ°úÇÏÁö ¾Êµµ·Ï Á¦ÇÑ
+        // ìµœëŒ€ ì²´ë ¥ì„ ì´ˆê³¼í•˜ì§€ ì•Šë„ë¡ ì œí•œ
         if (runtimePlayerStat.currentHp > runtimePlayerStat.maxHp)
         {
             runtimePlayerStat.currentHp = runtimePlayerStat.maxHp;
         }
 
-        Debug.Log($"[StatManager] ÇÃ·¹ÀÌ¾î Ã¼·Â È¸º¹ (+{amount}) -> ÇöÀç Ã¼·Â: {runtimePlayerStat.currentHp}/{runtimePlayerStat.maxHp}");
+        Debug.Log($"[StatManager] í”Œë ˆì´ì–´ ì²´ë ¥ íšŒë³µ (+{amount}) -> í˜„ì¬ ì²´ë ¥: {runtimePlayerStat.currentHp}/{runtimePlayerStat.maxHp}");
     }
 
-    // ÃÖ´ë Ã¼·Â ´ëºñ ºñÀ² È¸º¹
+    // ìµœëŒ€ ì²´ë ¥ ë¹„ìœ¨ í¼ì„¼íŠ¸ íšŒë³µ
     public void HealPlayerPercent(float ratio)
     {
         if (runtimePlayerStat == null) return;
 
         int healAmount = Mathf.RoundToInt(runtimePlayerStat.maxHp * ratio);
         HealPlayer(healAmount);
+    }
+
+    // ìœ ë¬¼ íš¨ê³¼: í”Œë ˆì´ì–´ ìµœëŒ€ HP ì¦ê°€
+    public void IncreasePlayerMaxHp(int amount)
+    {
+        if (runtimePlayerStat == null)
+        {
+            Debug.LogError(
+                "[StatManager] í”Œë ˆì´ì–´ ìŠ¤íƒ¯ì´ ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤."
+            );
+            return;
+        }
+
+        if (amount <= 0)
+        {
+            Debug.LogWarning(
+                "[StatManager] ì¦ê°€í•  ìµœëŒ€ HPê°€ 0 ì´í•˜ì…ë‹ˆë‹¤."
+            );
+            return;
+        }
+
+        runtimePlayerStat.maxHp += amount;
+
+        Debug.Log(
+            $"[StatManager] ìµœëŒ€ HP ì¦ê°€ (+{amount}) -> " +
+            $"{runtimePlayerStat.currentHp}/" +
+            $"{runtimePlayerStat.maxHp}"
+        );
     }
 }
