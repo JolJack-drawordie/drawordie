@@ -961,6 +961,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  minBodySortingOrder: 10
 --- !u!212 &1182973897
 SpriteRenderer:
   serializedVersion: 2
@@ -1398,6 +1399,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  minBodySortingOrder: 10
 --- !u!212 &1834601217
 SpriteRenderer:
   serializedVersion: 2
@@ -1706,6 +1708,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7596209424739729014, guid: e6c315cbff7bc384ea332619a477320d, type: 3}
+      propertyPath: alignFeetToPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8329027452938991532, guid: e6c315cbff7bc384ea332619a477320d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1872,6 +1878,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZombieWarrior
       objectReference: {fileID: 0}
+    - target: {fileID: 5544843714291186431, guid: 6e5e5e5fa82af6d4a8fb4b57606ba31c, type: 3}
+      propertyPath: alignFeetToPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8152858630206212438, guid: 6e5e5e5fa82af6d4a8fb4b57606ba31c, type: 3}
       propertyPath: m_Camera
       value: 
@@ -1937,6 +1947,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1625298322895402597, guid: 11b5d6ef3067da84487f80bd474f0f8b, type: 3}
+      propertyPath: alignFeetToPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3046907520114748887, guid: 11b5d6ef3067da84487f80bd474f0f8b, type: 3}
       propertyPath: m_Name
       value: DragonRed
@@ -1958,6 +1972,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2231202465000105125, guid: 4b6f0b26bb1e58a488e922f887d5f97e, type: 3}
+      propertyPath: alignFeetToPlayer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3551517842536234982, guid: 4b6f0b26bb1e58a488e922f887d5f97e, type: 3}
       propertyPath: m_Name
       value: Butcher
@@ -2285,6 +2303,10 @@ PrefabInstance:
     - target: {fileID: 5231891378902260576, guid: a9ab53da5ba46844b82a5a857d8c8814, type: 3}
       propertyPath: m_Name
       value: Demon
+      objectReference: {fileID: 0}
+    - target: {fileID: 7966491319262007759, guid: a9ab53da5ba46844b82a5a857d8c8814, type: 3}
+      propertyPath: alignFeetToPlayer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

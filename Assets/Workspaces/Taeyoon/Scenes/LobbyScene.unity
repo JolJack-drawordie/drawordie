@@ -2741,6 +2741,7 @@ MonoBehaviour:
   messageDuration: 2
   debugStartAct: 0
   debugStartAtBoss: 0
+  debugBigDamage: 0
 --- !u!4 &911053748
 Transform:
   m_ObjectHideFlags: 0
