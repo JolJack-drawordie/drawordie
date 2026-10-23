@@ -3,12 +3,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // 상단 바 왼쪽의 진행 정보 표시 (예: "Act 1 · 3층", 보스방은 "Act 1 · 보스", 중간보스방은 "Act 1 · 중간보스",
-// 휴식 씬은 "Act 1 · 3층 휴식공간", 맵 씬은 "Act 1", 월드맵 씬은 "월드 맵")
+// 휴식 씬은 "Act 1 · 3층 휴식공간", 맵 씬은 "Act 1 - 잊혀진 숲의 유적", 월드맵 씬은 "월드 맵")
 [RequireComponent(typeof(TMP_Text))]
 public class ProgressInfoText : MonoBehaviour
 {
     private const string MapSceneName = "MapScene";
     private const string WorldMapSceneName = "WorldMapScene";
+
+    // 월드맵(WorldMapScene의 WorldMapManager.acts[].title)과 같은 Act 제목
+    private static readonly string[] ActTitles = { "잊혀진 숲의 유적", "불타는 화산섬", "마계의 성채" };
 
     private TMP_Text label;
 
@@ -35,10 +38,13 @@ public class ProgressInfoText : MonoBehaviour
             return;
         }
 
-        // 맵 씬에서는 다음에 갈 층과 헷갈리지 않도록 Act만 표시
+        // 맵 씬에서는 다음에 갈 층과 헷갈리지 않도록 Act와 제목만 표시
         if (sceneName == MapSceneName)
         {
-            label.text = act;
+            int index = GameFlowData.currentAct - 1;
+            label.text = index >= 0 && index < ActTitles.Length
+                ? $"{act} - {ActTitles[index]}"
+                : act;
             return;
         }
 

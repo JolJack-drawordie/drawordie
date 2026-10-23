@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasGroup))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -16,6 +17,14 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     // 드래그 중에만 붙이는 정렬용 Canvas (슬롯 패널보다 위에 그리기 위함)
     private Canvas dragCanvas;
+
+    // 드래그 중 대상 위에 올렸을 때 카드 반응 (올바른 대상: 선명하게 / 잘못된 대상: 붉게)
+    private enum HoverState { None, Valid, Invalid }
+    private HoverState hoverState;
+    private bool canUseOnTarget;
+    private Image[] tintImages;
+    private Color[] tintBaseColors;
+    private static readonly Color invalidTint = new Color(1f, 0.45f, 0.45f, 1f);
 
     // 🚀 Awake에서 Start로 변경하여 모든 준비가 끝난 후 세팅!
     private void Start()
@@ -55,19 +64,75 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             ComboManager.Instance.ShowSlots();
         else if (cardUI.cardType == CardType.Gerund && ComboManager.Instance.adjSlot.isOccupied)
             ComboManager.Instance.ShowSlots();
+
+        // 바로 사용할 수 있는 카드면 놓을 수 있는 대상(적/플레이어) 머리 위에 화살표
+        canUseOnTarget = CanUseOnTarget();
+        hoverState = HoverState.None;
+        if (canUseOnTarget)
+            EnemyTarget.HighlightFor(cardUI);
+    }
+
+    // 형용사 슬롯이 비어 있을 때의 동명사/시너지 카드만 적·플레이어에게 사용 가능
+    private bool CanUseOnTarget()
+    {
+        return (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy)
+            && !ComboManager.Instance.adjSlot.isOccupied;
+    }
+
+    private void OnDisable()
+    {
+        // 드래그 도중 비활성화되면 화살표/붉은 색이 남지 않도록
+        if (isDragging) EnemyTarget.ClearHighlights();
+        SetHoverState(HoverState.None);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+
+        if (canUseOnTarget)
+        {
+            EnemyTarget target = EnemyTarget.FindAt(transform.position);
+            if (target == null) SetHoverState(HoverState.None);
+            else SetHoverState(target.Accepts(cardUI) ? HoverState.Valid : HoverState.Invalid);
+        }
+    }
+
+    private void SetHoverState(HoverState state)
+    {
+        if (state == hoverState) return;
+        hoverState = state;
+
+        // 올바른 대상 위에서는 반투명이 풀려 "놓으면 사용된다"는 느낌을 줌
+        if (canvasGroup != null && isDragging)
+            canvasGroup.alpha = state == HoverState.Valid ? 1f : 0.6f;
+
+        if (state == HoverState.Invalid)
+        {
+            tintImages = GetComponentsInChildren<Image>();
+            tintBaseColors = new Color[tintImages.Length];
+            for (int i = 0; i < tintImages.Length; i++)
+            {
+                tintBaseColors[i] = tintImages[i].color;
+                tintImages[i].color = tintBaseColors[i] * invalidTint;
+            }
+        }
+        else if (tintImages != null)
+        {
+            for (int i = 0; i < tintImages.Length; i++)
+                if (tintImages[i] != null) tintImages[i].color = tintBaseColors[i];
+            tintImages = null;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        SetHoverState(HoverState.None);
         isDragging = false;
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
         RestoreSorting();
+        EnemyTarget.ClearHighlights();
 
         // 슬롯 판정: RectTransformUtility로 화면 좌표 포함 여부 직접 확인
         // → Physics2D 좌표계 혼란 없이 Canvas 스케일을 자동 처리함
@@ -89,15 +154,15 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        // 적 판정: 원래 동작하던 Physics2D 방식 복원
+        // 적/플레이어 판정: 원래 동작하던 Physics2D 방식 복원
         Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
         foreach (Collider2D hit in hits)
         {
-            EnemyTarget enemy = hit.GetComponent<EnemyTarget>();
-            if (enemy != null && (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy))
+            EnemyTarget target = hit.GetComponent<EnemyTarget>();
+            if (target != null && (cardUI.cardType == CardType.Gerund || cardUI.cardType == CardType.Synergy))
             {
-                // 형용사 슬롯에 카드가 있으면 공격 불가 → 패로 반환
-                if (ComboManager.Instance.adjSlot.isOccupied)
+                // 형용사 슬롯에 카드가 있거나 대상이 맞지 않으면 (피해 카드→플레이어, 방어·회복 카드→적) 사용 불가 → 패로 반환
+                if (ComboManager.Instance.adjSlot.isOccupied || !target.Accepts(cardUI))
                 {
                     // 사용 불가로 튕겨나가는 소리
                     if (SoundManager.Instance != null) {
@@ -108,7 +173,7 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     DataManager.Instance.RearrangeHand();
                     return;
                 }
-                enemy.ReceiveCard(cardUI);
+                target.ReceiveCard(cardUI);
                 if (cardUI.cardData != null)
                     DeckManager.Instance.DiscardCard(cardUI.cardData);
                 return;

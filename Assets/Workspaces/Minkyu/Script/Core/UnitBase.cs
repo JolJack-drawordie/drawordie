@@ -13,6 +13,10 @@ public class UnitBase : MonoBehaviour
     public event Action<int, int> OnHpChanged;
     public event Action<int, int> OnShieldChanged;
 
+    // 전투 숫자 팝업용 (DamagePopupManager가 구독)
+    public enum NumberKind { Damage, Blocked, Heal, Shield, HpLoss }
+    public static event Action<UnitBase, NumberKind, int> OnCombatNumber;
+
     public virtual void Initialize(UnitStatData data)
     {
         if (data == null)
@@ -55,6 +59,10 @@ public class UnitBase : MonoBehaviour
             int blocked = Mathf.Min(incoming, shieldBefore);
             string blockedText = blocked > 0 ? $" (방어도로 {blocked} 막음)" : "";
             BattleLog.Add($"{LogName}에게 {damage} 피해{blockedText}", BattleLog.Kind.Damage);
+
+            // 전부 막혔으면 피해 숫자 없이 "막음"만 표시
+            if (damage > 0) OnCombatNumber?.Invoke(this, NumberKind.Damage, damage);
+            if (blocked > 0) OnCombatNumber?.Invoke(this, NumberKind.Blocked, blocked);
         }
 
         UpdateBarUI();
@@ -71,6 +79,7 @@ public class UnitBase : MonoBehaviour
         if (statData.currentShield > statData.maxShield) statData.currentShield = statData.maxShield;
 
         BattleLog.Add($"{LogName} 방어도 +{statData.currentShield - shieldBefore}", BattleLog.Kind.Shield);
+        if (statData.currentShield > shieldBefore) OnCombatNumber?.Invoke(this, NumberKind.Shield, statData.currentShield - shieldBefore);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 방어도 {amount} 증가! 현재 쉴드: {statData.currentShield}");
@@ -92,6 +101,7 @@ public class UnitBase : MonoBehaviour
         if(statData.currentHp > statData.maxHp) statData.currentHp = statData.maxHp;
 
         BattleLog.Add($"{LogName} 체력 +{statData.currentHp - hpBefore}", BattleLog.Kind.Heal);
+        if (statData.currentHp > hpBefore) OnCombatNumber?.Invoke(this, NumberKind.Heal, statData.currentHp - hpBefore);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 체력 {amount} 회복!");
@@ -108,6 +118,7 @@ public class UnitBase : MonoBehaviour
         }
 
         BattleLog.Add($"{LogName} 체력 -{amount} (카드 효과)", BattleLog.Kind.HpLoss);
+        if (amount > 0) OnCombatNumber?.Invoke(this, NumberKind.HpLoss, amount);
 
         UpdateBarUI();
         Debug.Log($"{statData.unitName} 체력 {amount} 소모! 현재 HP: {statData.currentHp}");
