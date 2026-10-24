@@ -935,6 +935,7 @@ MonoBehaviour:
   messageDuration: 2
   messageFadeTime: 0.4
   mapSceneName: MapScene
+  introVideo: {fileID: 32900000, guid: 64fa28a045094fa4e8e3980c9ec8fec4, type: 3}
   mapRoot: {fileID: 901}
   fadeImage: {fileID: 953}
   enterZoom: 1.8

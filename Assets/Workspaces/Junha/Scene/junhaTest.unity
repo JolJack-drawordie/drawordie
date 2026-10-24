@@ -6009,6 +6009,7 @@ MonoBehaviour:
   rewardPanel: {fileID: 891256841}
   rewardText: {fileID: 2036186499}
   clearRankingButton: {fileID: 2039395594}
+  endingVideo: {fileID: 32900000, guid: 98c7a7eaf5c14f045963feb46a8b0935, type: 3}
 --- !u!4 &958444057
 Transform:
   m_ObjectHideFlags: 0

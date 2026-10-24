@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 // 월드맵(Act 진행도) 화면: 섬마다 클리어/현재/잠김 상태와 라벨(Act 제목)을 표시하고,
 // 현재 Act의 섬을 누르면 그 섬으로 확대되며 안개가 몰려와 덮는 진입 연출 후 MapScene으로 이동하고,
@@ -37,6 +38,7 @@ public class WorldMapManager : MonoBehaviour
 
     [Header("씬")]
     [SerializeField] private string mapSceneName = "MapScene";
+    [SerializeField] private VideoClip introVideo;
 
     [Header("진입 연출")]
     [Tooltip("Background와 Islands를 묶은 부모 (이걸 확대/이동)")]
@@ -324,13 +326,89 @@ public class WorldMapManager : MonoBehaviour
             yield return null;
         }
 
+        if (fog != null && introVideo != null)
+            yield return fog.FadeTitleBeforeVideo(fogHoldTime, fogClearTime * 0.35f);
+
+        yield return PlayCutscene(introVideo);
+
         Debug.Log($"[WorldMap] Act {act} 출발");
         if (fog != null)
-            fog.LoadSceneAndClear(mapSceneName, fogHoldTime, fogClearTime);
+            fog.LoadSceneAndClear(mapSceneName, introVideo != null ? 0f : fogHoldTime, fogClearTime);
         else
             SceneManager.LoadScene(mapSceneName);
     }
 
+    // 씬 전환 전에 전체 화면 컷씬을 재생한다.
+    public static IEnumerator PlayCutscene(VideoClip clip)
+    {
+        if (clip == null) yield break;
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.StopBGM();
+
+        GameObject overlay = new GameObject("CutsceneVideo", typeof(Canvas), typeof(UnityEngine.UI.GraphicRaycaster));
+        Canvas canvas = overlay.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 32000;
+
+        var background = new GameObject("Background", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+        background.transform.SetParent(overlay.transform, false);
+        var image = background.GetComponent<UnityEngine.UI.Image>();
+        image.color = Color.black;
+        image.rectTransform.anchorMin = Vector2.zero;
+        image.rectTransform.anchorMax = Vector2.one;
+        image.rectTransform.sizeDelta = Vector2.zero;
+
+        var screen = new GameObject("Video", typeof(RectTransform), typeof(UnityEngine.UI.RawImage), typeof(UnityEngine.UI.AspectRatioFitter));
+        screen.transform.SetParent(background.transform, false);
+        var view = screen.GetComponent<UnityEngine.UI.RawImage>();
+        view.raycastTarget = false;
+        view.color = Color.clear;
+        var fit = screen.GetComponent<UnityEngine.UI.AspectRatioFitter>();
+        fit.aspectMode = UnityEngine.UI.AspectRatioFitter.AspectMode.FitInParent;
+        fit.aspectRatio = (float)clip.width / Mathf.Max(1f, clip.height);
+
+        var audio = overlay.AddComponent<AudioSource>();
+        audio.playOnAwake = false;
+        audio.spatialBlend = 0f;
+        var player = overlay.AddComponent<VideoPlayer>();
+        player.playOnAwake = false;
+        player.isLooping = false;
+        player.clip = clip;
+        player.renderMode = VideoRenderMode.APIOnly;
+        player.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        if (clip.audioTrackCount > 0)
+            player.SetTargetAudioSource(0, audio);
+
+        bool finished = false;
+        bool failed = false;
+        player.loopPointReached += _ => finished = true;
+        player.errorReceived += (_, error) =>
+        {
+            Debug.LogWarning($"[Cutscene] Video failed: {error}");
+            failed = true;
+        };
+        player.Prepare();
+        float deadline = Time.realtimeSinceStartup + 15f;
+        while (!player.isPrepared && !failed && Time.realtimeSinceStartup < deadline)
+            yield return null;
+
+        if (player.isPrepared && !failed)
+        {
+            player.Play();
+            while (!finished && !failed)
+            {
+                view.texture = player.texture;
+                if (view.texture != null) view.color = Color.white;
+                yield return null;
+            }
+        }
+        else if (!failed)
+            Debug.LogWarning("[Cutscene] Video preparation timed out.");
+
+        player.Stop();
+        Destroy(overlay);
+    }
     // 잠긴 섬을 눌렀을 때 화면 아래에 잠깐 안내 문구를 띄운다
     public void ShowLockedMessage(int act)
     {
