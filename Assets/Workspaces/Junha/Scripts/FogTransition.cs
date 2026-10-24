@@ -160,29 +160,6 @@ public class FogTransition : MonoBehaviour
         SetCover(1f);
     }
 
-    // 컷씬 전에 제목을 끝까지 보여주고 숨긴다. 씬 로딩 시에도 다시 표시하지 않는다.
-    public IEnumerator FadeTitleBeforeVideo(float hold, float duration)
-    {
-        StopAllCoroutines();
-        SetCover(1f);
-        float time = 0f;
-        while (time < hold)
-        {
-            time += StepTime();
-            yield return null;
-        }
-        time = 0f;
-        while (time < duration)
-        {
-            time += StepTime();
-            float t = Mathf.Clamp01(time / duration);
-            titleGroup.alpha = 1f - t;
-            titleGroup.transform.localPosition = new Vector3(0f, 40f * t, 0f);
-            yield return null;
-        }
-        titleGroup.alpha = 0f;
-        titleGroup.gameObject.SetActive(false);
-    }
     // 화면이 덮인 상태에서 씬을 바꾸고, 새 씬에서 안개를 걷어낸 뒤 스스로 사라짐
     public void LoadSceneAndClear(string sceneName, float hold, float clear)
     {

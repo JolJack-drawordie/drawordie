@@ -38,7 +38,6 @@ public class WorldMapManager : MonoBehaviour
 
     [Header("씬")]
     [SerializeField] private string mapSceneName = "MapScene";
-    [SerializeField] private VideoClip introVideo;
 
     [Header("진입 연출")]
     [Tooltip("Background와 Islands를 묶은 부모 (이걸 확대/이동)")]
@@ -326,14 +325,9 @@ public class WorldMapManager : MonoBehaviour
             yield return null;
         }
 
-        if (fog != null && introVideo != null)
-            yield return fog.FadeTitleBeforeVideo(fogHoldTime, fogClearTime * 0.35f);
-
-        yield return PlayCutscene(introVideo);
-
         Debug.Log($"[WorldMap] Act {act} 출발");
         if (fog != null)
-            fog.LoadSceneAndClear(mapSceneName, introVideo != null ? 0f : fogHoldTime, fogClearTime);
+            fog.LoadSceneAndClear(mapSceneName, fogHoldTime, fogClearTime);
         else
             SceneManager.LoadScene(mapSceneName);
     }
@@ -406,8 +400,19 @@ public class WorldMapManager : MonoBehaviour
         else if (!failed)
             Debug.LogWarning("[Cutscene] Video preparation timed out.");
 
-        player.Stop();
-        Destroy(overlay);
+        // 영상이 끝난 직후 이전 씬이 잠깐 보이지 않도록 다음 씬이 로드될 때까지 컷씬 화면을 남김
+        DontDestroyOnLoad(overlay);
+        UnityEngine.Events.UnityAction<Scene, LoadSceneMode> onLoaded = null;
+        onLoaded = (scene, mode) =>
+        {
+            SceneManager.sceneLoaded -= onLoaded;
+            if (overlay != null)
+            {
+                player.Stop();
+                Destroy(overlay);
+            }
+        };
+        SceneManager.sceneLoaded += onLoaded;
     }
     // 잠긴 섬을 눌렀을 때 화면 아래에 잠깐 안내 문구를 띄운다
     public void ShowLockedMessage(int act)
