@@ -2735,6 +2735,7 @@ MonoBehaviour:
   lordGameButton: {fileID: 1286172243}
   settingsButton: {fileID: 269628400}
   rankingButton: {fileID: 547254380}
+  introVideo: {fileID: 32900000, guid: 64fa28a045094fa4e8e3980c9ec8fec4, type: 3}
   settingsPanel: {fileID: 0}
   fadeImage: {fileID: 0}
   messageText: {fileID: 0}

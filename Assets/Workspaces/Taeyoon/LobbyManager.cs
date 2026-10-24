@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 using System.Collections;
 
 public class LobbyManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Button settingsButton;
     // Tools > Ranking > 로비 랭킹 버튼 배치 로 씬에 배치. 비워두면 실행 시 LoadGame 버튼 아래에 자동 생성
     [SerializeField] private Button rankingButton;
+
+    [Header("Cutscene")]
+    // 새 게임을 누르면 월드맵으로 가기 전에 재생 (비워두면 바로 월드맵)
+    [SerializeField] private VideoClip introVideo;
 
     [Header("Panels")]
     [SerializeField] private GameObject settingsPanel;
@@ -86,8 +91,8 @@ public class LobbyManager : MonoBehaviour
 
         ApplyDebugStart();
 
-        // 새 게임은 월드맵(Act 진행도)에서 시작 → Act 1 섬을 눌러 맵으로 이동
-        StartCoroutine(FadeAndLoad("WorldMapScene"));
+        // 새 게임은 인트로 컷씬 후 월드맵(Act 진행도)에서 시작 → Act 1 섬을 눌러 맵으로 이동
+        StartCoroutine(FadeAndLoad("WorldMapScene", introVideo));
     }
 
     // 설정 창의 "로비로"나 클리어 후 로비로 돌아온 경우 이전 런의 진행도 / 체력 / 덱이 남아 있으므로 초기화
@@ -244,6 +249,9 @@ public class LobbyManager : MonoBehaviour
         obj.transform.SetParent(messageCanvas.transform, false);
 
         TextMeshProUGUI text = obj.AddComponent<TextMeshProUGUI>();
+        // TMP 기본 폰트에는 한글이 없어 글자가 깨지므로 한글 폰트 지정
+        TMP_FontAsset font = Resources.Load<TMP_FontAsset>("온글잎 콘콘체 SDF");
+        if (font != null) text.font = font;
         text.fontSize = 40f;
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
@@ -279,7 +287,7 @@ public class LobbyManager : MonoBehaviour
         if (messageCanvas != null) Destroy(messageCanvas);
     }
 
-    private IEnumerator FadeAndLoad(string sceneName)
+    private IEnumerator FadeAndLoad(string sceneName, VideoClip cutscene = null)
     {
         isTransitioning = true;
 
@@ -293,6 +301,8 @@ public class LobbyManager : MonoBehaviour
                 yield return null;
             }
         }
+
+        yield return WorldMapManager.PlayCutscene(cutscene);
 
         SceneManager.LoadScene(sceneName);
         // 배경 음악 정지
