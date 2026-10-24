@@ -91,9 +91,9 @@ public class BossController : EnemyController
     }
 
     // 단독 테스트용 실행 (딜레이 포함)
-    public override void ExecuteAction()
+    public override IEnumerator ExecuteAction()
     {
-        if (isActing) return;
+        if (isActing) yield break;
         StartCoroutine(PerformIntent(actionDelay));
     }
 

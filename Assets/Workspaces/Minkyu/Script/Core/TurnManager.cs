@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
 {
+
     [Header("참조")]
     public GameManager gameManager;
     public DiceManager diceManager;
@@ -205,8 +206,8 @@ public class TurnManager : MonoBehaviour
             enemy.ResetShield();
 
             if (enemyController != null)
-                yield return StartCoroutine(enemyController.PlayAttackAnimation());
-            enemy.Attack(player);
+                yield return StartCoroutine(enemyController.ExecuteAction());
+            //enemy.Attack(player);
             gameManager.CheckBattleResult();
 
             if (ShowBattleResultIfGameOver()) yield break;

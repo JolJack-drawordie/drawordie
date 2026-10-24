@@ -239,7 +239,6 @@ public class AnimatedEnemyController : EnemyController
     {
         if (isActing || hitIsDead) yield break;
         isActing = true;
-
         bool wasAttack = isNextAttack;
 
         try
@@ -301,7 +300,7 @@ public class AnimatedEnemyController : EnemyController
             // 방어 클립이 지정돼 있으면 그걸 재생
             yield return StartCoroutine(PlayAndWait(defendState, fallbackDuration));
 
-            hitUnit.AddShield(5);
+            //hitUnit.AddShield(5);
 
             if (!hitIsDead) ReturnToIdle();
             if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
@@ -314,7 +313,6 @@ public class AnimatedEnemyController : EnemyController
             // 없으면 코드로 만든 펄스 재생
             yield return StartCoroutine(PulseRoutine());
 
-            hitUnit.AddShield(5);
             if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
             {
                 SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);

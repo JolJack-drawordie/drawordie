@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerSpawnPoint;
     public GameObject enemySpawnPoint;
 
-    private PlayerUnit currentPlayer;
-    private EnemyUnit currentEnemy;
+    public PlayerUnit currentPlayer;
+    public EnemyUnit currentEnemy;
 
     public PlayerUnit Player => currentPlayer;
     public EnemyUnit Enemy => currentEnemy;
@@ -118,11 +118,11 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("패배...");
 
-
-
             // 사망 시 플레이 타임 측정 종료 및 랭킹 등록
             if (GameResultManager.Instance != null)
                 GameResultManager.Instance.EndRun(false);
+
+            UIManager.Instance.ShowResult(false);
         }
     }
 }

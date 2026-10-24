@@ -11,8 +11,8 @@ public class GhostController : EnemyController
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         // 게임 시작 시 무작위로 공격(true) 또는 방어(false) 의도 지정
-        isNextAttack = Random.value > 0.5f;
-        UpdateIntentUI();
+        //isNextAttack = Random.value > 0.5f;
+        //UpdateIntentUI();
 
         // 평소에 계속 투명해졌다 나타나는 숨쉬기/부유 연출 코루틴 시작
         StartCoroutine(IdleFadeRoutine());

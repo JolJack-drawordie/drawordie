@@ -1,18 +1,24 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class EnemyController : MonoBehaviour
 {
     [Header("체력 설정")]
-    public int maxHp = 30;
+    public int maxHp = 20;
     protected int currentHp;
+    public UnitBase unitData;
 
     [Header("의도(Intent) UI")]
     public Image intentIcon; 
     public Sprite attackSprite; 
     public Sprite defendSprite; 
     protected bool isNextAttack = true; // 다음 행동 의도 (true: 공격, false: 방어)
+    public int currentAttack;
+    public int currentDefend;
+    public TextMeshProUGUI actionText;
+    protected AttackData selectedAttack; //선택된 공격패턴
 
     [Header("공통 연출 설정")]
     public float baseScale = 2f;
@@ -44,10 +50,11 @@ public abstract class EnemyController : MonoBehaviour
     {
         currentHp = maxHp;
         originalPosition = transform.position;
-        
+        actionText = GetComponentInChildren<TextMeshProUGUI>();
+        unitData = GetComponentInChildren<UnitBase>();
+
         // 게임 시작 시 무작위로 첫 의도(공격 또는 방어)를 결정하고 아이콘 띄우기
-        isNextAttack = (Random.value > 0.5f);
-        UpdateIntentUI();
+        DecideNextAction();
 
         // ----- 피격 이펙트 공통 설정 -----
         hitRenderer = GetComponent<SpriteRenderer>();
@@ -193,15 +200,15 @@ public abstract class EnemyController : MonoBehaviour
     }
 
     // 외부(또는 턴 매니저)에서 호출할 공통 행동 실행 함수
-    public virtual void ExecuteAction()
+    public virtual IEnumerator ExecuteAction()
     {
         if (isNextAttack)
         {
-            StartCoroutine(AttackRoutineWrapper());
+            yield return StartCoroutine(AttackRoutineWrapper());
         }
         else
         {
-            StartCoroutine(DefendRoutineWrapper());
+            yield return StartCoroutine(DefendRoutineWrapper());
         }
     }
 
@@ -218,9 +225,10 @@ public abstract class EnemyController : MonoBehaviour
             yield return StartCoroutine(PlayerSpineController.Instance.HurtRoutine());
         }
 
-        isNextAttack = (Random.value > 0.5f); 
-        UpdateIntentUI();
-        
+        DecideNextAction();
+
+        GameManager.Instance.currentPlayer.TakeDamage(currentAttack);
+
         isActing = false;
     }
 
@@ -228,12 +236,59 @@ public abstract class EnemyController : MonoBehaviour
     IEnumerator DefendRoutineWrapper()
     {
         isActing = true;
-        yield return StartCoroutine(PlayCustomDefend()); 
-        
-        isNextAttack = (Random.value > 0.5f); 
-        UpdateIntentUI();
-        
+        yield return StartCoroutine(PlayCustomDefend());
+
+        DecideNextAction();
+
+        hitUnit.AddShield(currentDefend);
+
         isActing = false;
+    }
+
+    protected void DecideNextAction()
+    {
+        // 1. 다음 행동을 공격(true) 또는 방어(false)로 무작위 결정
+        isNextAttack = (Random.value > 0.5f);
+        Debug.Log($"[디버깅] Decide 진입! 다음 행동은 공격인가? {isNextAttack}"); 
+
+        // 2. unitData나 statData가 안전하게 있는지 체크
+        if (unitData != null && unitData.statData != null)
+        {
+            if (isNextAttack)
+            {
+                // 공격일 경우: 리스트에서 무작위 스킬 하나 뽑아서 데미지 세팅
+                if (unitData.statData.attacks != null && unitData.statData.attacks.Count > 0)
+                {
+                    int randomIndex = Random.Range(0, unitData.statData.attacks.Count);
+                    selectedAttack = unitData.statData.attacks[randomIndex];
+                    currentAttack = selectedAttack.damage;
+                    Debug.Log($"[디버깅] 공격 스킬 뽑음! 이름: {selectedAttack.name}, 데미지: {currentAttack}"); 
+                }
+                else
+                {
+                    Debug.LogWarning("[디버깅 경고] attacks 리스트가 비어있거나 null이야!"); 
+                }
+
+                if (actionText != null)
+                {
+                    actionText.text = currentAttack.ToString();
+                }
+            }
+            else
+            {
+                // 방어일 경우: 방어력 세팅
+                currentDefend = unitData.statData.defend;
+
+                if (actionText != null)
+                {
+                    actionText.text = currentDefend.ToString();
+                    Debug.Log($"[디버깅] 방어력 텍스트 갱신: {currentDefend}"); 
+                }
+            }
+        }
+
+        // 3. UI 아이콘 갱신
+        UpdateIntentUI();
     }
 
     // 의도 아이콘 업데이트

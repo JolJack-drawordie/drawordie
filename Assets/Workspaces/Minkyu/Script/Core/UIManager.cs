@@ -146,7 +146,7 @@ public class UIManager : MonoBehaviour
                 resultPanel.SetActive(true);
 
             if (resultText != null)
-                resultText.text = "Defeat";
+                resultText.text = "패배!";
 
             CreateDefeatLobbyButton();
         }
