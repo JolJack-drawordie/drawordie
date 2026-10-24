@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewUnitStat", menuName = "Battle/Unit Stat Data")]
 public class UnitStatData : ScriptableObject
@@ -9,6 +10,8 @@ public class UnitStatData : ScriptableObject
     public int currentHp;
     public int maxShield;
     public int currentShield;
+    public List<AttackData> attacks;
+    public int defend;
 
     //[Header("추가 스탯 (필요시 확장)")]
     //public int speed;

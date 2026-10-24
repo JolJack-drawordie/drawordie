@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // 액트2 보스 전용 컨트롤러. DungeonMonsters2D 같은 "이미 애니메이션이 들어있는" 에셋을 그대로 써서
@@ -402,9 +403,9 @@ public class BossController2 : EnemyController
     }
 
     // 테스트 키 / 외부 호출도 실제 전투와 같은 루틴을 타도록
-    public override void ExecuteAction()
+    public override IEnumerator ExecuteAction()
     {
-        if (isActing || hitIsDead) return;
+        if (isActing || hitIsDead) yield break;
         StartCoroutine(PlayAttackAnimation());
     }
 
@@ -441,6 +442,7 @@ public class BossController2 : EnemyController
         }
 
         isNextAttack = currentIntent == BossIntent.Attack || currentIntent == BossIntent.StrongAttack;
+
         UpdateIntentIcon();
     }
 
@@ -451,23 +453,29 @@ public class BossController2 : EnemyController
         Vector3 scale = iconBaseScale;
         Color color = iconBaseColor;
 
+        ApplyIntentEffect(currentIntent);
+
         switch (currentIntent)
         {
             case BossIntent.Attack:
                 intentIcon.sprite = attackSprite;
+                actionText.text = hitUnit.attackPower.ToString();
                 break;
             case BossIntent.Defend:
                 intentIcon.sprite = defendSprite;
+                actionText.text = defendShield.ToString();
                 break;
             case BossIntent.Charge:
                 // 방어 아이콘과 헷갈리지 않도록: 전용 아이콘이 없으면 공격 아이콘을 노란색으로
                 intentIcon.sprite = chargeSprite != null ? chargeSprite : attackSprite;
                 color = chargeIconColor;
+                actionText.text = "";
                 break;
             case BossIntent.StrongAttack:
                 intentIcon.sprite = strongAttackSprite != null ? strongAttackSprite : attackSprite;
                 color = strongAttackIconColor;
                 scale = iconBaseScale * 1.4f;
+                actionText.text = hitUnit.attackPower.ToString();
                 break;
         }
 
@@ -494,8 +502,6 @@ public class BossController2 : EnemyController
                 hitUnit.Heal(regenAmount);
             }
 
-            ApplyIntentEffect(acted);
-
             Debug.Log($"[{name}] 적 턴 의도: {acted} / 이번 턴 공격력: " +
                       $"{(hitUnit != null ? hitUnit.attackPower.ToString() : "EnemyUnit 없음")}", this);
 
@@ -505,6 +511,7 @@ public class BossController2 : EnemyController
                 case BossIntent.StrongAttack:
                     currentActionStrong = acted == BossIntent.StrongAttack;
                     yield return StartCoroutine(PlayCustomAttack());
+                    GameManager.Instance.currentPlayer.TakeDamage(hitUnit.attackPower);
                     currentActionStrong = false;
                     break;
                 case BossIntent.Defend:
@@ -572,7 +579,14 @@ public class BossController2 : EnemyController
             attackLean, attackStrikeScale,
             playMoveClip ? moveState : "", strikeClip));
 
-        if (!hitIsDead) ReturnToIdle();
+        // 플레이어 피격 처리 (OnHit 실행 및 피격 완료까지 대기)
+        if (PlayerSpineController.Instance != null)
+        {
+            // OnHit 코루틴을 yield return으로 받아서 피격 모션(0.5초 등)이 끝날 때까지 기다림
+            yield return StartCoroutine(PlayerSpineController.Instance.HurtRoutine());
+        }
+
+        if (!hitIsDead) ReturnToIdle();    
     }
 
     // 기 모으기 (공격은 하지 않음): 방어 펄스와 다르게 "웅크리며 점점 세게 떨림 + 노랗게 여러 번 번쩍임"
@@ -624,6 +638,12 @@ public class BossController2 : EnemyController
             yield return StartCoroutine(PulseRoutine());
         else
             yield return new WaitForSeconds(fallbackDuration);
+
+        if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
+        {
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
+        }
+        hitUnit.AddShield(defendShield);
 
         if (!hitIsDead) ReturnToIdle();
     }
@@ -860,7 +880,14 @@ public class BossController2 : EnemyController
 
         hitUnit.attackPower = GetAttackPower(intent);
 
-        if (intent == BossIntent.Defend) hitUnit.AddShield(defendShield);
+        //if (intent == BossIntent.Defend)
+        //{
+        //    if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
+        //    {
+        //        SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
+        //    }
+        //    hitUnit.AddShield(defendShield);
+        //}
     }
 
     // 의도 + 분노 상태를 반영한 이번 턴 공격력

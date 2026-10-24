@@ -39,6 +39,8 @@ public class EnemyUnit : UnitBase
             UIManager.Instance.LinkUnitToUI(this);
         }
 
+        
+
         Debug.Log($"[생성됨] 적 이름: {gameObject.name}, 인스턴스ID: {GetInstanceID()}");
     }
 

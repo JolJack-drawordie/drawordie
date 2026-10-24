@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class StatManager : MonoBehaviour
 {
@@ -70,7 +71,7 @@ public class StatManager : MonoBehaviour
         return runtimeEnemyStat;
     }
 
-    public void SetEnemyStat(int hp, int shield)
+    public void SetEnemyStat(int hp, int shield, List<AttackData> attacks, int defend)
     {
         if (runtimeEnemyStat == null)
         {
@@ -82,6 +83,8 @@ public class StatManager : MonoBehaviour
         runtimeEnemyStat.currentHp = hp;
         runtimeEnemyStat.maxShield = shield;
         runtimeEnemyStat.currentShield = 0;
+        runtimeEnemyStat.attacks = attacks;
+        runtimeEnemyStat.defend = defend;
     }
 
     // 전투 종료 시 플레이어 상태를 저장하거나 갱신할 때

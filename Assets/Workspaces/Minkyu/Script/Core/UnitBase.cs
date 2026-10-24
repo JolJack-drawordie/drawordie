@@ -46,10 +46,10 @@ public class UnitBase : MonoBehaviour
         }
         statData.currentHp -= damage;
 
-        if (TryGetComponent<PlayerSpineController>(out var playerSpine) && damage > 0)
-        {
-            playerSpine.StartCoroutine(playerSpine.HurtRoutine());
-        }
+        //if (TryGetComponent<PlayerSpineController>(out var playerSpine) && damage > 0)
+        //{
+        //    playerSpine.StartCoroutine(playerSpine.HurtRoutine());
+        //}
 
         if (statData.currentHp < 0) statData.currentHp = 0;
 
@@ -66,8 +66,11 @@ public class UnitBase : MonoBehaviour
         }
 
         UpdateBarUI();
+
         Debug.Log("공격받는 적 이름: " + this.name + " / 인스턴스ID: " + this.GetInstanceID());
         Debug.Log($"{statData.unitName} 이(가) {damage} 데미지를 받음. 현재 HP: {statData.currentHp}");
+
+        GameManager.Instance.CheckBattleResult();
     }
 
     // 방어 추가

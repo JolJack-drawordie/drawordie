@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SocialPlatforms;
 
 // [Act 대응] 몬스터 id 규칙: id / 100 = 등장하는 Act (1xx = Act 1, 2xx = Act 2, 3xx = Act 3)
 public enum MonsterType
@@ -176,7 +177,7 @@ public class MonsterDatabase : MonoBehaviour
         if (serverStatDict.TryGetValue(monsterId, out var serverData))
         {
             // 데이터베이스가 알아서 가져와서 타겟(스탯 매니저)에 꽂아줌
-            StatManager.Instance.SetEnemyStat(serverData.hp, serverData.shield);
+            StatManager.Instance.SetEnemyStat(serverData.hp, serverData.shield, serverData.attacks, serverData.defend);
             return true;
         }
 
@@ -256,7 +257,7 @@ public class MonsterDatabase : MonoBehaviour
             foreach (var serverData in wrapper.monsters)
             {
                 serverStatDict[serverData.id] = serverData;
-                Debug.Log($"[서버 스탯 캐싱 완료] ID: {serverData.id}, 이름: {serverData.name}, HP: {serverData.hp}, Shield: {serverData.shield}");
+                Debug.Log($"[서버 스탯 캐싱 완료] ID: {serverData.id}, 이름: {serverData.name}, HP: {serverData.hp}, Shield: {serverData.shield}, Attack: {serverData.attacks}, Defend: {serverData.defend}");
             }
 
             // [Act 대응] 서버에 없는 id는 로컬 기본값으로 보충
@@ -265,7 +266,7 @@ public class MonsterDatabase : MonoBehaviour
                 if (!serverStatDict.ContainsKey(local.id))
                 {
                     serverStatDict[local.id] = local;
-                    Debug.Log($"[로컬 스탯 보충] ID: {local.id}, 이름: {local.name}, HP: {local.hp}, Shield: {local.shield}");
+                    Debug.Log($"[로컬 스탯 보충] ID: {local.id}, 이름: {local.name}, HP: {local.hp}, Shield: {local.shield}, Attack: {local.attacks}, Defend: {local.defend}");
                 }
             }
 
