@@ -1,3 +1,5 @@
+using System.Collections;
+using UnityEngine.Video;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -37,6 +39,9 @@ public class UIManager : MonoBehaviour
 
     [Header("클리어 랭킹 UI")]
     public Button clearRankingButton;
+
+    [SerializeField] private VideoClip endingVideo;
+    private bool leavingAfterClear;
 
     private Button defeatLobbyButton;
 
@@ -260,7 +265,7 @@ public class UIManager : MonoBehaviour
                 if (SoundManager.Instance != null)
                     SoundManager.Instance.StopBGM();
 
-                SceneManager.LoadScene("LobbyScene");
+                if (!leavingAfterClear) StartCoroutine(PlayEndingAndReturnToLobby());
                 return;
             }
 
@@ -280,6 +285,18 @@ public class UIManager : MonoBehaviour
             SoundManager.Instance.StopBGM();
     }
 
+    private IEnumerator PlayEndingAndReturnToLobby()
+    {
+        leavingAfterClear = true;
+        // 보상 처리가 모두 끝나 패널을 닫은 다음 프레임부터 컷씬을 시작한다.
+        if (clearRankingButton != null)
+            clearRankingButton.gameObject.SetActive(false);
+        if (SoundManager.Instance != null && SoundManager.Instance.sfxSource != null)
+            SoundManager.Instance.sfxSource.Stop();
+        yield return null;
+        yield return WorldMapManager.PlayCutscene(endingVideo);
+        SceneManager.LoadScene("LobbyScene");
+    }
     // =========================
     // 유닛 UI 연결
     // =========================
