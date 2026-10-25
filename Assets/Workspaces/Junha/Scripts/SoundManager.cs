@@ -15,8 +15,15 @@ public class SoundManager : MonoBehaviour
     public AudioClip equipFailSound;
     public AudioClip diceRollSound;
     public AudioClip healSound;
-    public AudioClip hitSound;
+    public AudioClip hitSound;          // 플레이어가 피해를 입을 때
+    public AudioClip playerAttackSound; // 플레이어가 공격할 때 (비어 있으면 hitSound)
     public AudioClip shieldSound;
+    public AudioClip blockSound;        // 방어도로 피해를 막았을 때 (플레이어·적 공통)
+
+    [Header("적 효과음")]
+    public AudioClip enemyAttackSound; // 적이 공격을 내려치는 순간
+    public AudioClip enemyDefendSound; // 적이 방어할 때 (비어 있으면 shieldSound)
+    public AudioClip enemyHitSound;    // 적이 피해를 입을 때
 
     [Header("배경음악 파일들")]
     public AudioClip mainBackgroundSound;

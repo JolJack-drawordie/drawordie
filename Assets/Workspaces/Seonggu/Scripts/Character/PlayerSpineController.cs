@@ -115,9 +115,10 @@ public class PlayerSpineController : MonoBehaviour
         skeletonAnimation.AnimationState.SetAnimation(0, animName, false);
         skeletonAnimation.AnimationState.AddAnimation(0, idleAnim, true, 0f);
 
-        if (SoundManager.Instance != null && SoundManager.Instance.hitSound != null)
+        if (SoundManager.Instance != null)
         {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.hitSound);
+            AudioClip attackClip = SoundManager.Instance.playerAttackSound != null ? SoundManager.Instance.playerAttackSound : SoundManager.Instance.hitSound;
+            if (attackClip != null) SoundManager.Instance.PlaySFX(attackClip);
         }
 
         // 애니메이션 재생 시간 동안 대기

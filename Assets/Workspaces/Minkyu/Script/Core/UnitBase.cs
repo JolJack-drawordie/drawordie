@@ -63,6 +63,10 @@ public class UnitBase : MonoBehaviour
             // 전부 막혔으면 피해 숫자 없이 "막음"만 표시
             if (damage > 0) OnCombatNumber?.Invoke(this, NumberKind.Damage, damage);
             if (blocked > 0) OnCombatNumber?.Invoke(this, NumberKind.Blocked, blocked);
+
+            // 방어도로 막았을 때 효과음 (플레이어·적 공통)
+            if (blocked > 0 && SoundManager.Instance != null && SoundManager.Instance.blockSound != null)
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.blockSound);
         }
 
         UpdateBarUI();

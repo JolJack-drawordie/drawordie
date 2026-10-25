@@ -163,18 +163,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedEnemyController
   maxHp: 30
+  unitData: {fileID: 0}
   intentIcon: {fileID: 7416818188086773495}
   attackSprite: {fileID: 21300000, guid: 4ad16adfdf2d1a441879a598de742eb6, type: 3}
   defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
+  currentAttack: 0
+  currentDefend: 0
+  actionText: {fileID: 0}
   baseScale: 2
   intentCanvas: {fileID: 4309799420247823}
   hitFlashColor: {r: 1, g: 0.4, b: 0.4, a: 1}
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  attackSound: {fileID: 8300000, guid: 7fa7b53d86f1889439b5fa5009eaeda9, type: 3}
+  minBodySortingOrder: 10
   spawnOffset: {x: 0, y: 0, z: 0}
   intentCanvasOffset: {x: 0, y: 3, z: 0}
   autoIconAboveHead: 1
+  iconGapAboveHead: 0.4
+  headPartName: Head
+  iconIgnoreKeywords:
+  - Weapon
+  - Effect
+  - Fire
+  - Smoke
+  - Spell
+  - Projectile
+  - Stone
+  - Arrow
   intentCanvasSortingBoost: 10
   stateSuffix: 
   idleState: Idle
@@ -197,6 +214,9 @@ MonoBehaviour:
   attackStrikeShake: 0.1
   attackLean: 0
   attackStrikeScale: 1
+  waitAttackClipBeforeReturn: 1
+  attackClipEndRatio: 0.9
+  attackReturnDelay: 0.15
   pulseDuration: 0.6
   pulseCount: 1
   pulseScale: 1.1

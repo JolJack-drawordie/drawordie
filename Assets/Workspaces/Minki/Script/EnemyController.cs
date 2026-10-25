@@ -34,6 +34,14 @@ public abstract class EnemyController : MonoBehaviour
     public GameObject hitEffectPrefab;          // 선택 사항: 타격 파티클/스프라이트 프리팹 (비워두면 색 반짝임만 재생)
     public Vector3 hitEffectOffset = Vector3.zero;
 
+    [Header("효과음")]
+    [Tooltip("이 적만의 공격 효과음 (비워두면 SoundManager의 공통 enemyAttackSound)")]
+    public AudioClip attackSound;
+    [Tooltip("공격 효과음 재생 횟수 (예: 화살 2연사)")]
+    public int attackSoundRepeat = 1;
+    [Tooltip("반복 재생 사이 간격 (초)")]
+    public float attackSoundInterval = 0.15f;
+
     [Header("몸 표시 보정 (전투 배경에 가려지지 않도록)")]
     [Tooltip("몸 조각들의 정렬 순서를 최소 이 값 이상으로 올림 (전투 배경 BackgroundFloor가 2). 0 이하면 사용 안 함")]
     public int minBodySortingOrder = 10;
@@ -100,6 +108,7 @@ public abstract class EnemyController : MonoBehaviour
         if (tookDamage)
         {
             PlayHitEffect();
+            PlayEnemySound(SoundManager.Instance != null ? SoundManager.Instance.enemyHitSound : null);
         }
 
         if (current <= 0)
@@ -108,6 +117,37 @@ public abstract class EnemyController : MonoBehaviour
         }
 
         hitLastHp = current;
+    }
+
+    // 적 공격 / 방어 효과음 (자식 클래스의 공격·방어 연출에서 호출)
+    protected void PlayAttackSound()
+    {
+        AudioClip clip = attackSound != null ? attackSound : (SoundManager.Instance != null ? SoundManager.Instance.enemyAttackSound : null);
+        PlayEnemySound(clip);
+        if (attackSoundRepeat > 1 && clip != null)
+            StartCoroutine(RepeatAttackSound(clip));
+    }
+
+    private IEnumerator RepeatAttackSound(AudioClip clip)
+    {
+        for (int i = 1; i < attackSoundRepeat; i++)
+        {
+            yield return new WaitForSeconds(attackSoundInterval);
+            PlayEnemySound(clip);
+        }
+    }
+
+    protected void PlayDefendSound()
+    {
+        if (SoundManager.Instance == null) return;
+        AudioClip clip = SoundManager.Instance.enemyDefendSound;
+        PlayEnemySound(clip != null ? clip : SoundManager.Instance.shieldSound);
+    }
+
+    protected void PlayEnemySound(AudioClip clip)
+    {
+        if (SoundManager.Instance != null && clip != null)
+            SoundManager.Instance.PlaySFX(clip);
     }
 
     // 맞는 순간 재생되는 공통 시각 효과: 스프라이트 색 반짝임 + (있다면) 이펙트 프리팹 생성

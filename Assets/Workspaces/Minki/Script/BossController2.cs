@@ -100,6 +100,8 @@ public class BossController2 : EnemyController
 
     [Header("강공격 (차지 다음 턴) 동작")]
     public string specialAttackState = "SpecialAttack";       // 없으면 일반 Attack 클립 사용
+    [Tooltip("강공격 효과음 (비워두면 일반 공격 효과음)")]
+    public AudioClip strongAttackSound;
     public float strongAttackShakeMultiplier = 1.8f;
 
     [Header("몸 기준 조각 (위치 보정/아이콘 위치 계산용)")]
@@ -406,7 +408,7 @@ public class BossController2 : EnemyController
     public override IEnumerator ExecuteAction()
     {
         if (isActing || hitIsDead) yield break;
-        StartCoroutine(PlayAttackAnimation());
+        yield return StartCoroutine(PlayAttackAnimation());
     }
 
     // 다음 의도 결정: 기 모으기 다음엔 무조건 강공격 → 패턴 → 랜덤 순서
@@ -639,10 +641,7 @@ public class BossController2 : EnemyController
         else
             yield return new WaitForSeconds(fallbackDuration);
 
-        if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
-        {
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
-        }
+        PlayDefendSound();
         hitUnit.AddShield(defendShield);
 
         if (!hitIsDead) ReturnToIdle();
@@ -703,6 +702,11 @@ public class BossController2 : EnemyController
             yield return StartCoroutine(MoveOverTime(from, target, dashTime, arcHeight, tiltFrom, lean));
 
             if (HasState(strikeClip)) animator.CrossFadeInFixedTime(strikeClip, crossFadeTime);
+            if (!hitIsDead)
+            {
+                if (currentActionStrong && strongAttackSound != null) PlayEnemySound(strongAttackSound);
+                else PlayAttackSound();
+            }
 
             float t = 0f;
             while (t < strikeTime && !hitIsDead)

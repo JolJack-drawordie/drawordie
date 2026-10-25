@@ -241,6 +241,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  attackSound: {fileID: 8300000, guid: e8e7f6eaaddea864c9de564952441f6e, type: 3}
   minBodySortingOrder: 10
   spawnOffset: {x: 0, y: 0, z: 0}
   intentCanvasOffset: {x: 0, y: 3, z: 0}
