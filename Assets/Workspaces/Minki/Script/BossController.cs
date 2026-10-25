@@ -94,7 +94,7 @@ public class BossController : EnemyController
     public override IEnumerator ExecuteAction()
     {
         if (isActing) yield break;
-        StartCoroutine(PerformIntent(actionDelay));
+        yield return StartCoroutine(PerformIntent(actionDelay));
     }
 
     // 공통 행동 루틴: (딜레이) → 효과 적용 → 애니메이션 → 종료 대기 → 다음 의도 결정(아이콘 갱신)

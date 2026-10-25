@@ -285,6 +285,7 @@ public class AnimatedEnemyController : EnemyController
         }
         else
         {
+            PlayAttackSound();
             yield return StartCoroutine(PlayAndWait(attackState, fallbackDuration));
             if (!hitIsDead) ReturnToIdle();
         }
@@ -303,20 +304,14 @@ public class AnimatedEnemyController : EnemyController
             //hitUnit.AddShield(5);
 
             if (!hitIsDead) ReturnToIdle();
-            if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
-            {
-                SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
-            }
+            PlayDefendSound();
         }
         else if (pulseDuration > 0f)
         {
             // 없으면 코드로 만든 펄스 재생
             yield return StartCoroutine(PulseRoutine());
 
-            if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
-            {
-                SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
-            }
+            PlayDefendSound();
         }
         else
         {
@@ -384,6 +379,7 @@ public class AnimatedEnemyController : EnemyController
         yield return StartCoroutine(MoveOverTime(from, target, attackDashTime, attackArcHeight, tiltFrom, attackLean));
 
         // 3) 타격 (제자리에서 떨림 + 크기 펀치)
+        if (!hitIsDead) PlayAttackSound();
         float t = 0f;
         while (t < attackStrikeTime && !hitIsDead)
         {

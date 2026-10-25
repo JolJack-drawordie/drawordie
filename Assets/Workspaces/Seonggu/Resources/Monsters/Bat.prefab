@@ -61,15 +61,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimatedEnemyController
   maxHp: 30
+  unitData: {fileID: 0}
   intentIcon: {fileID: 6445565357603148136}
   attackSprite: {fileID: 21300000, guid: 4ad16adfdf2d1a441879a598de742eb6, type: 3}
   defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
+  currentAttack: 0
+  currentDefend: 0
+  actionText: {fileID: 0}
   baseScale: 2
   intentCanvas: {fileID: 8786625360776288772}
   hitFlashColor: {r: 1, g: 1, b: 1, a: 1}
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  attackSound: {fileID: 8300000, guid: 9a386b7806eaa144a906305bda153bf2, type: 3}
   minBodySortingOrder: 10
   spawnOffset: {x: 0, y: 0, z: 0}
   intentCanvasOffset: {x: 0, y: 3.5, z: 0}

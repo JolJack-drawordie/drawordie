@@ -137,6 +137,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   hitEffectPrefab: {fileID: 0}
   hitEffectOffset: {x: 0, y: 0, z: 0}
+  attackSound: {fileID: 8300000, guid: 0eff8b8bf8dfe1c49a88e664952859ca, type: 3}
   minBodySortingOrder: 10
   spawnOffset: {x: 0, y: -1.5, z: 0}
   autoCenterBody: 1
@@ -175,6 +176,7 @@ MonoBehaviour:
   attackClipEndRatio: 0.9
   attackReturnDelay: 0.15
   specialAttackState: SpecialAttack
+  strongAttackSound: {fileID: 8300000, guid: 3bbe598a1de310c41bf4e537c2291741, type: 3}
   strongAttackShakeMultiplier: 1.8
   bodyPartName: Body
   headPartName: Head
