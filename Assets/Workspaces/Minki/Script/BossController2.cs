@@ -83,6 +83,10 @@ public class BossController2 : EnemyController
     public bool playAttackClip = true;   // 타격 순간에 Attack 클립 재생
     public bool playMoveClip = true;     // 다가가는 동안(준비+돌진 구간) Move 클립 재생
     public float attackDistance = 4f;
+    [Tooltip("켜면 Attack Distance 대신 플레이어 바로 앞까지 거리를 자동 계산해서 돌진")]
+    public bool dashToPlayer = false;
+    public float attackStopGap = 0.3f;      // 플레이어 몸 앞에서 멈출 간격 (클수록 덜 붙음)
+    public float maxDashDistance = 15f;     // 자동 계산 거리의 최대값 (안전장치)
     public float attackWindupBack = 0.25f;
     public float attackWindupTime = 0.2f;
     public float attackDashTime = 0.2f;
@@ -279,6 +283,27 @@ public class BossController2 : EnemyController
             Debug.LogWarning($"[{name}] Attack/Defend Sprite 중 비어있는 게 있습니다.", this);
 
         DecideIntent();
+    }
+
+    // 보스 몸 앞(왼쪽 끝)이 플레이어 몸 앞(오른쪽 끝) + attackStopGap 위치까지 가는 거리
+    private bool TryGetDashDistanceToPlayer(out float distance)
+    {
+        distance = attackDistance;
+
+        PlayerUnit player = GameManager.Instance != null ? GameManager.Instance.Player : null;
+        if (player == null) return false;
+
+        MeshRenderer playerBody = player.GetComponentInChildren<MeshRenderer>();
+        float playerFront = playerBody != null ? playerBody.bounds.max.x : player.transform.position.x;
+
+        // 행동 시작 시점(제자리)의 보스 몸 범위. 무기/이펙트 조각은 GetBodyBounds에서 제외됨
+        float bossFront = GetBodyBounds().min.x;
+
+        float d = bossFront - playerFront - attackStopGap;
+        if (d <= 0f) return false;
+
+        distance = Mathf.Min(d, maxDashDistance);
+        return true;
     }
 
     // 플레이어(Spine)의 보이는 몸 범위에서 발밑 높이를 구함
@@ -575,8 +600,11 @@ public class BossController2 : EnemyController
         if (playAttackClip) strikeClip = (strong && HasState(specialAttackState)) ? specialAttackState : attackState;
         float shake = strong ? attackStrikeShake * strongAttackShakeMultiplier : attackStrikeShake;
 
+        float distance = attackDistance;
+        if (dashToPlayer && TryGetDashDistanceToPlayer(out float autoDistance)) distance = autoDistance;
+
         yield return StartCoroutine(DashMotionRoutine(
-            attackDistance, attackWindupBack, attackWindupTime, attackDashTime,
+            distance, attackWindupBack, attackWindupTime, attackDashTime,
             attackStrikeTime, attackReturnTime, attackArcHeight, shake,
             attackLean, attackStrikeScale,
             playMoveClip ? moveState : "", strikeClip));

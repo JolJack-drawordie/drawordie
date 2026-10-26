@@ -326,6 +326,7 @@ MonoBehaviour:
   playAttackClip: 1
   playMoveClip: 1
   attackDistance: 4
+  dashToPlayer: 1
   attackWindupBack: 0.25
   attackWindupTime: 0.2
   attackDashTime: 0.2
