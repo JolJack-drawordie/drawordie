@@ -425,7 +425,7 @@ public class BossController2 : EnemyController
 
         if (useTestKey && Input.GetKeyDown(testKey) && !isActing && !hitIsDead)
         {
-            ExecuteAction();
+            StartCoroutine(ExecuteAction());
         }
     }
 
@@ -538,7 +538,10 @@ public class BossController2 : EnemyController
                 case BossIntent.StrongAttack:
                     currentActionStrong = acted == BossIntent.StrongAttack;
                     yield return StartCoroutine(PlayCustomAttack());
-                    GameManager.Instance.currentPlayer.TakeDamage(hitUnit.attackPower);
+                    // 분노 등이 반영된 공격력으로 다시 확정한 뒤, EnemyUnit.Attack으로 피해 (흡혈 OnAttackHit이 여기서 발생)
+                    hitUnit.attackPower = GetAttackPower(acted);
+                    PlayerUnit target = GameManager.Instance != null ? GameManager.Instance.currentPlayer : null;
+                    if (target != null) hitUnit.Attack(target);
                     currentActionStrong = false;
                     break;
                 case BossIntent.Defend:
@@ -671,6 +674,7 @@ public class BossController2 : EnemyController
 
         PlayDefendSound();
         hitUnit.AddShield(defendShield);
+        WarnThornsActive();
 
         if (!hitIsDead) ReturnToIdle();
     }
@@ -950,7 +954,7 @@ public class BossController2 : EnemyController
 
             BattleLog.AddHeader($"{hitUnit.LogName}의 페이즈 2!");
             if (phase2Heal > 0) hitUnit.Heal(phase2Heal);
-            if (phase2Shield > 0) hitUnit.AddShield(phase2Shield);
+            if (phase2Shield > 0) { hitUnit.AddShield(phase2Shield); WarnThornsActive(); }
 
             ApplyPersistentColors();
         }
@@ -962,6 +966,7 @@ public class BossController2 : EnemyController
 
             BattleLog.Add($"{hitUnit.LogName}이(가) 분노했다! 공격력 x{enrageAttackMultiplier:0.#}");
             ApplyPersistentColors();
+            UpdateIntentIcon(); // 머리 위 공격 수치를 분노 반영 값으로 갱신
         }
     }
 
@@ -984,8 +989,16 @@ public class BossController2 : EnemyController
         PlayerUnit player = GameManager.Instance != null ? GameManager.Instance.Player : null;
         if (player == null || player.statData == null) return;
 
-        BattleLog.Add($"{hitUnit.LogName}의 가시 갑옷! 반사 피해", BattleLog.Kind.Damage);
+        BattleLog.Add($"{hitUnit.LogName}의 가시 갑옷! 플레이어에게 {thornsDamage} 반사", BattleLog.Kind.Damage);
         player.TakeDamage(thornsDamage);
+    }
+
+    // 가시 갑옷이 켜진 보스가 방어도를 얻었을 때, 오른쪽 전투 로그에 위험 알림
+    private void WarnThornsActive()
+    {
+        if (!useThorns || hitIsDead || hitUnit == null || hitUnit.statData == null || hitUnit.statData.currentShield <= 0) return;
+
+        BattleLog.AddWarning($"가시 갑옷 반사 피해 주의! (방어도가 있는 동안 공격하면 {thornsDamage} 반사)");
     }
 
     // 흡혈: 플레이어 체력에 실제로 들어간 피해의 일부만큼 회복
