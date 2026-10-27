@@ -14,6 +14,7 @@ public static class BattleLog
         Shield,
         Heal,
         HpLoss,
+        Warning, // 보스 기믹 위험 알림 (예: 가시 갑옷 반사 피해 주의)
     }
 
     public struct Entry
@@ -48,6 +49,12 @@ public static class BattleLog
         AddEntry(new Entry { Message = message, Kind = Kind.System, Center = true });
     }
 
+    // 위험 알림: 눈에 띄게 가운데 정렬 + 경고 색
+    public static void AddWarning(string message)
+    {
+        AddEntry(new Entry { Message = message, Kind = Kind.Warning, Center = true });
+    }
+
     public static void AddTurn(int turn)
     {
         AddEntry(new Entry { Message = $"{turn}턴", Kind = Kind.System, Center = true, Turn = turn });
@@ -70,6 +77,7 @@ public static class BattleLog
             case Kind.Shield: return "#6FA8FF";
             case Kind.Heal: return "#6BD66B";
             case Kind.HpLoss: return "#E0904F";
+            case Kind.Warning: return "#FF9F1C";
             default: return "#A0A0A0";
         }
     }

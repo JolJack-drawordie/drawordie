@@ -83,6 +83,10 @@ public class BossController2 : EnemyController
     public bool playAttackClip = true;   // 타격 순간에 Attack 클립 재생
     public bool playMoveClip = true;     // 다가가는 동안(준비+돌진 구간) Move 클립 재생
     public float attackDistance = 4f;
+    [Tooltip("켜면 Attack Distance 대신 플레이어 바로 앞까지 거리를 자동 계산해서 돌진")]
+    public bool dashToPlayer = false;
+    public float attackStopGap = 0.3f;      // 플레이어 몸 앞에서 멈출 간격 (클수록 덜 붙음)
+    public float maxDashDistance = 15f;     // 자동 계산 거리의 최대값 (안전장치)
     public float attackWindupBack = 0.25f;
     public float attackWindupTime = 0.2f;
     public float attackDashTime = 0.2f;
@@ -281,6 +285,27 @@ public class BossController2 : EnemyController
         DecideIntent();
     }
 
+    // 보스 몸 앞(왼쪽 끝)이 플레이어 몸 앞(오른쪽 끝) + attackStopGap 위치까지 가는 거리
+    private bool TryGetDashDistanceToPlayer(out float distance)
+    {
+        distance = attackDistance;
+
+        PlayerUnit player = GameManager.Instance != null ? GameManager.Instance.Player : null;
+        if (player == null) return false;
+
+        MeshRenderer playerBody = player.GetComponentInChildren<MeshRenderer>();
+        float playerFront = playerBody != null ? playerBody.bounds.max.x : player.transform.position.x;
+
+        // 행동 시작 시점(제자리)의 보스 몸 범위. 무기/이펙트 조각은 GetBodyBounds에서 제외됨
+        float bossFront = GetBodyBounds().min.x;
+
+        float d = bossFront - playerFront - attackStopGap;
+        if (d <= 0f) return false;
+
+        distance = Mathf.Min(d, maxDashDistance);
+        return true;
+    }
+
     // 플레이어(Spine)의 보이는 몸 범위에서 발밑 높이를 구함
     private bool TryGetPlayerFeetY(out float feetY)
     {
@@ -400,7 +425,7 @@ public class BossController2 : EnemyController
 
         if (useTestKey && Input.GetKeyDown(testKey) && !isActing && !hitIsDead)
         {
-            ExecuteAction();
+            StartCoroutine(ExecuteAction());
         }
     }
 
@@ -513,7 +538,10 @@ public class BossController2 : EnemyController
                 case BossIntent.StrongAttack:
                     currentActionStrong = acted == BossIntent.StrongAttack;
                     yield return StartCoroutine(PlayCustomAttack());
-                    GameManager.Instance.currentPlayer.TakeDamage(hitUnit.attackPower);
+                    // 분노 등이 반영된 공격력으로 다시 확정한 뒤, EnemyUnit.Attack으로 피해 (흡혈 OnAttackHit이 여기서 발생)
+                    hitUnit.attackPower = GetAttackPower(acted);
+                    PlayerUnit target = GameManager.Instance != null ? GameManager.Instance.currentPlayer : null;
+                    if (target != null) hitUnit.Attack(target);
                     currentActionStrong = false;
                     break;
                 case BossIntent.Defend:
@@ -575,8 +603,11 @@ public class BossController2 : EnemyController
         if (playAttackClip) strikeClip = (strong && HasState(specialAttackState)) ? specialAttackState : attackState;
         float shake = strong ? attackStrikeShake * strongAttackShakeMultiplier : attackStrikeShake;
 
+        float distance = attackDistance;
+        if (dashToPlayer && TryGetDashDistanceToPlayer(out float autoDistance)) distance = autoDistance;
+
         yield return StartCoroutine(DashMotionRoutine(
-            attackDistance, attackWindupBack, attackWindupTime, attackDashTime,
+            distance, attackWindupBack, attackWindupTime, attackDashTime,
             attackStrikeTime, attackReturnTime, attackArcHeight, shake,
             attackLean, attackStrikeScale,
             playMoveClip ? moveState : "", strikeClip));
@@ -643,6 +674,7 @@ public class BossController2 : EnemyController
 
         PlayDefendSound();
         hitUnit.AddShield(defendShield);
+        WarnThornsActive();
 
         if (!hitIsDead) ReturnToIdle();
     }
@@ -922,7 +954,7 @@ public class BossController2 : EnemyController
 
             BattleLog.AddHeader($"{hitUnit.LogName}의 페이즈 2!");
             if (phase2Heal > 0) hitUnit.Heal(phase2Heal);
-            if (phase2Shield > 0) hitUnit.AddShield(phase2Shield);
+            if (phase2Shield > 0) { hitUnit.AddShield(phase2Shield); WarnThornsActive(); }
 
             ApplyPersistentColors();
         }
@@ -934,6 +966,7 @@ public class BossController2 : EnemyController
 
             BattleLog.Add($"{hitUnit.LogName}이(가) 분노했다! 공격력 x{enrageAttackMultiplier:0.#}");
             ApplyPersistentColors();
+            UpdateIntentIcon(); // 머리 위 공격 수치를 분노 반영 값으로 갱신
         }
     }
 
@@ -956,8 +989,16 @@ public class BossController2 : EnemyController
         PlayerUnit player = GameManager.Instance != null ? GameManager.Instance.Player : null;
         if (player == null || player.statData == null) return;
 
-        BattleLog.Add($"{hitUnit.LogName}의 가시 갑옷! 반사 피해", BattleLog.Kind.Damage);
+        BattleLog.Add($"{hitUnit.LogName}의 가시 갑옷! 플레이어에게 {thornsDamage} 반사", BattleLog.Kind.Damage);
         player.TakeDamage(thornsDamage);
+    }
+
+    // 가시 갑옷이 켜진 보스가 방어도를 얻었을 때, 오른쪽 전투 로그에 위험 알림
+    private void WarnThornsActive()
+    {
+        if (!useThorns || hitIsDead || hitUnit == null || hitUnit.statData == null || hitUnit.statData.currentShield <= 0) return;
+
+        BattleLog.AddWarning($"가시 갑옷 반사 피해 주의! (방어도가 있는 동안 공격하면 {thornsDamage} 반사)");
     }
 
     // 흡혈: 플레이어 체력에 실제로 들어간 피해의 일부만큼 회복
