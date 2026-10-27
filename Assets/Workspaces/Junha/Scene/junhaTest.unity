@@ -5300,6 +5300,14 @@ MonoBehaviour:
     icon: {fileID: 6936352134769729288, guid: 7d6e64a73c4873646a67194cfdd18232, type: 3}
   - relicKey: lucky_dice
     icon: {fileID: -5965958687741589004, guid: 7d6e64a73c4873646a67194cfdd18232, type: 3}
+  - relicKey: guardian_emblem
+    icon: {fileID: -5506419801539191970, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: hourglass_of_time
+    icon: {fileID: 6821271429372917760, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: vial_of_life
+    icon: {fileID: -9180343462460676046, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: hunters_fang
+    icon: {fileID: 9009219679283814799, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
 --- !u!4 &896698262
 Transform:
   m_ObjectHideFlags: 0
@@ -8706,6 +8714,14 @@ MonoBehaviour:
     icon: {fileID: 6936352134769729288, guid: 7d6e64a73c4873646a67194cfdd18232, type: 3}
   - relicKey: lucky_dice
     icon: {fileID: -5965958687741589004, guid: 7d6e64a73c4873646a67194cfdd18232, type: 3}
+  - relicKey: guardian_emblem
+    icon: {fileID: -5506419801539191970, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: hourglass_of_time
+    icon: {fileID: 6821271429372917760, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: vial_of_life
+    icon: {fileID: -9180343462460676046, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
+  - relicKey: hunters_fang
+    icon: {fileID: 9009219679283814799, guid: aea8ae7fdc7ce984eb5eb8489fe59126, type: 3}
 --- !u!114 &1537831489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9634,6 +9650,8 @@ MonoBehaviour:
   isGameOver: 0
   playerSpawnPoint: {fileID: 786873938}
   enemySpawnPoint: {fileID: 1396051992}
+  currentPlayer: {fileID: 0}
+  currentEnemy: {fileID: 0}
 --- !u!4 &1673028327
 Transform:
   m_ObjectHideFlags: 0

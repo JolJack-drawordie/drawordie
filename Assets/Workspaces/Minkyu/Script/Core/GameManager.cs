@@ -32,6 +32,13 @@ public class GameManager : MonoBehaviour
         currentState = BattleState.BattleStart;
         Debug.Log("전투 시작!");
 
+        // 새 전투에서만 사냥꾼의 송곳니 효과 초기화
+        if (!PendingLoadData.isPending &&
+            RelicManager.Instance != null)
+        {
+            RelicManager.Instance.ResetHunterFangForBattle();
+        }
+
         // ⭐ [로드 기능] 추가 시작
         if (PendingLoadData.isPending)
         {
@@ -61,6 +68,14 @@ public class GameManager : MonoBehaviour
             if (PendingLoadData.isPending)
             {
                 RestoreLoadedUnitState();
+            }
+
+            // 새 전투에서만 전투 시작 유물 발동
+            // 저장된 전투를 불러오는 경우에는 중복 지급하지 않음
+            if (!PendingLoadData.isPending &&
+                RelicManager.Instance != null)
+            {
+                RelicManager.Instance.OnBattleStart(currentPlayer);
             }
         }
         else
@@ -93,7 +108,18 @@ public class GameManager : MonoBehaviour
             if (!isGameOver && GameFlowData.currentNodeType == MapNode.NodeType.Elite)
                 GameFlowData.eliteKills++;
 
-            if (!isGameOver) BattleLog.AddHeader($"{currentEnemy.LogName} 처치! 승리");
+            // 최초 승리 시에만 유물 효과 처리
+            bool isFirstVictory = !isGameOver;
+
+            if (isFirstVictory)
+            {
+                BattleLog.AddHeader($"{currentEnemy.LogName} 처치! 승리");
+
+                if (RelicManager.Instance != null)
+                {
+                    RelicManager.Instance.OnBattleWon(currentPlayer);
+                }
+            }
 
             currentState = BattleState.Victory;
             isGameOver = true;
