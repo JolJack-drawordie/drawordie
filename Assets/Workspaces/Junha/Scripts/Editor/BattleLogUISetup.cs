@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public static class BattleLogUISetup
 {
     private const string ScenePath = "Assets/Workspaces/Junha/Scene/junhaTest.unity";
-    private const string FontPath = "Assets/Workspaces/Junha/Fonts/NanumGothic SDF.asset";
+    private const string FontPath = "Assets/Workspaces/Junha/Resources/온글잎 콘콘체 SDF.asset";
     private const string PanelName = "BattleLogPanel";
 
     // 기준 해상도 1920x1080, 화면 중앙 기준 좌표.
