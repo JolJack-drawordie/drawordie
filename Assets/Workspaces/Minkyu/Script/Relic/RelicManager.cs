@@ -16,6 +16,9 @@ public class RelicManager : MonoBehaviour
     private static readonly List<string> ownedRelicKeys =
         new List<string>();
 
+    // 사냥꾼의 송곳니: 이번 전투에서 첫 공격 카드를 사용했는지
+    private bool hunterFangUsedThisBattle = false;
+
     // 세이브용: 보유 유물 key 목록 (획득 순서)
     public static List<string> GetOwnedRelicKeys()
     {
@@ -216,6 +219,21 @@ public class RelicManager : MonoBehaviour
                 // 획득 시에는 보유 목록에만 등록
                 break;
 
+            case "ADD_SHIELD":
+                // 수호자의 문장: 전투 시작 시 발동
+                // 획득 시에는 실드를 지급하지 않음
+                break;
+
+            case "HEAL":
+                // 생명의 시약: 전투 승리 시 발동 (획득 시 즉시 회복 안 함)
+                break;
+
+            case "ADD_DAMAGE":
+                // 사냥꾼의 송곳니:
+                // 획득할 때는 피해를 주지 않고,
+                // 카드 사용 시 ApplyHunterFangBonus()에서 처리
+                break;
+
             default:
                 Debug.LogWarning(
                     $"[RelicManager] 아직 구현되지 않은 효과입니다: " +
@@ -284,72 +302,161 @@ public class RelicManager : MonoBehaviour
         return selectedRelic;
     }
 
+
     // 주사위 결과에 따른 유물 효과 처리
     public void OnDiceRolled(int diceValue)
     {
-        bool hasLuckyDice = HasRelic("lucky_dice");
+        if (AllRelics == null || AllRelics.Count == 0)
+        {
+            Debug.LogWarning("[RelicManager] 유물 목록이 비어 있습니다.");
+            return;
+        }
 
-        Debug.Log(
-            $"[RelicManager] OnDiceRolled 호출: {diceValue}, " +
-            $"Lucky Dice 보유 여부: {hasLuckyDice}"
-        );
+        // 1. Lucky Dice: 주사위가 6이면 에너지 +2
+        if (HasRelic("lucky_dice"))
+        {
+            RelicData luckyDice = AllRelics.Find(
+                r => r != null && r.key == "lucky_dice"
+            );
 
-        if (!hasLuckyDice)
+            if (luckyDice != null &&
+                luckyDice.condition != null &&
+                luckyDice.effect != null &&
+                luckyDice.trigger == "ON_DICE_ROLLED" &&
+                luckyDice.condition.type == "DICE_EQUALS" &&
+                diceValue == luckyDice.condition.value &&
+                luckyDice.effect.type == "ADD_ENERGY")
+            {
+                if (DiceManager.Instance != null)
+                {
+                    DiceManager.Instance.AddEnergy(luckyDice.effect.value);
+                    Debug.Log(
+                        $"[RelicManager] Lucky Dice 발동! 에너지 +{luckyDice.effect.value}"
+                    );
+                }
+            }
+        }
+
+        // 2. Hourglass of Time: 주사위가 1 또는 2이면 에너지 +2
+        if (HasRelic("hourglass_of_time"))
+        {
+            RelicData hourglass = AllRelics.Find(
+                r => r != null && r.key == "hourglass_of_time"
+            );
+
+            if (hourglass != null &&
+                hourglass.condition != null &&
+                hourglass.effect != null &&
+                hourglass.trigger == "ON_DICE_ROLLED" &&
+                hourglass.condition.type == "DICE_EQUALS_OR_LESS" &&
+                diceValue >= 1 &&
+                diceValue <= hourglass.condition.value &&
+                hourglass.effect.type == "ADD_ENERGY")
+            {
+                if (DiceManager.Instance != null)
+                {
+                    DiceManager.Instance.AddEnergy(hourglass.effect.value);
+                    Debug.Log(
+                        $"[RelicManager] Hourglass of Time 발동! 에너지 +{hourglass.effect.value}"
+                    );
+                }
+            }
+        }
+    }
+
+    // 새 전투 시작 시 초기화
+    public void ResetHunterFangForBattle()
+    {
+        hunterFangUsedThisBattle = false;
+    }
+
+    // 첫 카드 사용 시 효과를 소모하고 피해량에 +3 적용
+    public int ApplyHunterFangBonus(int damage)
+    {
+        if (hunterFangUsedThisBattle)
+            return damage;
+
+        if (!HasRelic("hunters_fang"))
+            return damage;
+
+        // 피해가 없는 카드라도 첫 카드라면 효과 소모
+        hunterFangUsedThisBattle = true;
+
+        Debug.Log("[RelicManager] 사냥꾼의 송곳니 발동!");
+
+        if (damage > 0)
+            return damage + 3;
+
+        return damage;
+    }
+
+    // 전투 시작 시 발동하는 유물 효과
+    public void OnBattleStart(PlayerUnit player)
+    {
+        if (player == null)
         {
             Debug.LogWarning(
-                "[RelicManager] Lucky Dice를 보유하지 않아 발동하지 않습니다."
+                "[RelicManager] 플레이어를 찾을 수 없어 전투 시작 유물을 발동하지 못했습니다."
             );
             return;
         }
 
+        if (!HasRelic("guardian_emblem"))
+            return;
+
         RelicData relic = AllRelics.Find(
-            r => r != null && r.key == "lucky_dice"
+            r => r != null && r.key == "guardian_emblem"
+        );
+
+        if (relic == null || relic.effect == null)
+        {
+            Debug.LogWarning(
+                "[RelicManager] Guardian Emblem 데이터를 찾을 수 없습니다."
+            );
+            return;
+        }
+
+        if (relic.trigger != "ON_BATTLE_START" ||
+            relic.effect.type != "ADD_SHIELD")
+        {
+            Debug.LogWarning(
+                "[RelicManager] Guardian Emblem의 발동 조건 또는 효과 타입이 올바르지 않습니다."
+            );
+            return;
+        }
+
+        player.AddShield(relic.effect.value);
+
+        Debug.Log(
+            $"[RelicManager] Guardian Emblem 발동! 방어도 +{relic.effect.value}"
+        );
+    }
+
+    // 전투 승리 시 발동하는 유물 효과
+    public void OnBattleWon(PlayerUnit player)
+    {
+        if (player == null || !HasRelic("vial_of_life"))
+            return;
+
+        RelicData relic = AllRelics.Find(
+            r => r != null && r.key == "vial_of_life"
         );
 
         if (relic == null ||
-            relic.condition == null ||
-            relic.effect == null)
+            relic.trigger != "ON_BATTLE_WIN" ||
+            relic.effect == null ||
+            relic.effect.type != "HEAL")
         {
             Debug.LogWarning(
-                "[RelicManager] Lucky Dice 데이터 또는 조건이 없습니다."
+                "[RelicManager] Vial of Life 데이터가 올바르지 않습니다."
             );
             return;
         }
+
+        player.Heal(relic.effect.value);
 
         Debug.Log(
-            $"[RelicManager] Lucky Dice 조건: " +
-            $"{relic.condition.type} = {relic.condition.value}, " +
-            $"주사위 결과 = {diceValue}"
-        );
-
-        if (relic.condition.type != "DICE_EQUALS" ||
-            diceValue != relic.condition.value)
-        {
-            Debug.Log("[RelicManager] Lucky Dice 발동 조건 불충족");
-            return;
-        }
-
-        if (relic.effect.type != "ADD_ENERGY")
-        {
-            Debug.LogWarning(
-                $"[RelicManager] 잘못된 효과 타입: {relic.effect.type}"
-            );
-            return;
-        }
-
-        if (DiceManager.Instance == null)
-        {
-            Debug.LogError(
-                "[RelicManager] DiceManager를 찾을 수 없습니다."
-            );
-            return;
-        }
-
-        DiceManager.Instance.AddEnergy(relic.effect.value);
-
-        Debug.Log(
-            $"[RelicManager] Lucky Dice 발동 성공! " +
-            $"주사위 {diceValue}, 에너지 +{relic.effect.value}"
+            $"[RelicManager] Vial of Life 발동! 체력 +{relic.effect.value}"
         );
     }
 }

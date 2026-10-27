@@ -240,6 +240,12 @@ public class EnemyTarget : MonoBehaviour
         int heal = card.Heal;
         GameObject cardObj = card.gameObject;
 
+        // 사냥꾼의 송곳니: 이번 전투의 첫 카드 사용 시 효과 소모
+        if (RelicManager.Instance != null)
+        {
+            damage = RelicManager.Instance.ApplyHunterFangBonus(damage);
+        }
+
         BattleLog.Add($"[{CardName(card)}] 사용 (에너지 -{card.Cost})", BattleLog.Kind.Card);
 
         if (card.GerundId != 0 && SkillEffectManager.Instance != null)
