@@ -69,6 +69,8 @@ public abstract class EnemyController : MonoBehaviour
         if (hitRenderer == null) hitRenderer = GetComponentInChildren<SpriteRenderer>();
 
         hitUnit = GetComponent<EnemyUnit>();
+        hitUnit.attackPower = unitData.statData.attacks[0].damage;
+
         if (hitUnit != null)
         {
             hitLastHp = hitUnit.statData != null ? hitUnit.statData.currentHp : 0;

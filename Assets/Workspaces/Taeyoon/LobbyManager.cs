@@ -302,7 +302,7 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
-        yield return WorldMapManager.PlayCutscene(cutscene);
+        yield return WorldMapManager.PlayCutscene(cutscene, true);
 
         SceneManager.LoadScene(sceneName);
         // 배경 음악 정지
