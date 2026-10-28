@@ -86,6 +86,8 @@ public class WorldMapManager : MonoBehaviour
     // 이번에 클리어 도장 찍기 연출을 할 Act (0이면 없음)
     private int stampAct;
 
+    public static GameObject activeCutsceneOverlay;
+
     private void Start()
     {
         currentAct = usePreviewAct ? previewAct : GameFlowData.currentAct;
@@ -333,7 +335,8 @@ public class WorldMapManager : MonoBehaviour
     }
 
     // 씬 전환 전에 전체 화면 컷씬을 재생한다.
-    public static IEnumerator PlayCutscene(VideoClip clip)
+    // destroyOnSceneLoad가 false면 씬이 로드되어도 오버레이를 파괴하지 않고 유지함 (마지막 씬 + 랭킹용)
+    public static IEnumerator PlayCutscene(VideoClip clip, bool destroyOnSceneLoad)
     {
         if (clip == null) yield break;
 
@@ -341,6 +344,7 @@ public class WorldMapManager : MonoBehaviour
             SoundManager.Instance.StopBGM();
 
         GameObject overlay = new GameObject("CutsceneVideo", typeof(Canvas), typeof(UnityEngine.UI.GraphicRaycaster));
+        activeCutsceneOverlay = overlay; // 현재 컷씬 오브젝트 저장
         Canvas canvas = overlay.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 32000;
@@ -400,20 +404,46 @@ public class WorldMapManager : MonoBehaviour
         else if (!failed)
             Debug.LogWarning("[Cutscene] Video preparation timed out.");
 
-        // 영상이 끝난 직후 이전 씬이 잠깐 보이지 않도록 다음 씬이 로드될 때까지 컷씬 화면을 남김
-        DontDestroyOnLoad(overlay);
-        UnityEngine.Events.UnityAction<Scene, LoadSceneMode> onLoaded = null;
-        onLoaded = (scene, mode) =>
+        // 영상이 끝난 후 마지막 프레임 유지
+        player.Pause();
+
+        // [핵심] 씬이 로드될 때 파괴할지 여부를 분기 처리
+        if (destroyOnSceneLoad)
         {
-            SceneManager.sceneLoaded -= onLoaded;
-            if (overlay != null)
+            // 일반 컷씬(입장 씬 등): 기존처럼 새 씬이 로드되면 오버레이 자동 파괴
+            DontDestroyOnLoad(overlay);
+            UnityEngine.Events.UnityAction<Scene, LoadSceneMode> onLoaded = null;
+            onLoaded = (scene, mode) =>
             {
-                player.Stop();
-                Destroy(overlay);
-            }
-        };
-        SceneManager.sceneLoaded += onLoaded;
+                SceneManager.sceneLoaded -= onLoaded;
+                if (overlay != null)
+                {
+                    player.Stop();
+                    Destroy(overlay);
+                }
+            };
+            SceneManager.sceneLoaded += onLoaded;
+        }
+        else
+        {
+            // 마지막 씬(엔딩 컷씬): 랭킹창 배경으로 써야 하므로 씬이 로드되어도 파괴하지 않고 유지함
+            //DontDestroyOnLoad(overlay);
+
+            // (참고) 나중에 랭킹창을 닫고 완전히 로비로 돌아갈 때 이 컷씬 오버레이를 수동으로 파괴해주어야 합니다!
+            // 예: RankingPanel 등에서 닫기 버튼을 누를 때 이 overlay 오브젝트를 찾아 파괴하는 코드를 넣어주면 됩니다.
+        }
     }
+
+    // 컷씬 오버레이가 남아있다면 파괴하는 메서드
+    //public static void DestroyCutsceneOverlay()
+    //{
+    //    if (activeCutsceneOverlay != null)
+    //    {
+    //        Destroy(activeCutsceneOverlay);
+    //        activeCutsceneOverlay = null;
+    //    }
+    //}
+
     // 잠긴 섬을 눌렀을 때 화면 아래에 잠깐 안내 문구를 띄운다
     public void ShowLockedMessage(int act)
     {

@@ -15,6 +15,8 @@ public class RankingPanel : MonoBehaviour
 {
     public const string SceneName = "RankingScene";
 
+    public const string ResultScene = "ResultRankingScene";
+
     private const string RankingUrl = "http://localhost:8080/api/game/ranking";
     private const string MyRecordColor = "#FFD54A";
 
@@ -42,6 +44,24 @@ public class RankingPanel : MonoBehaviour
         if (op == null)
         {
             Debug.LogError("[RankingPanel] RankingScene 로드 실패 - Build Settings 확인 필요");
+            return;
+        }
+
+        isOpening = true;
+        op.completed += _ => isOpening = false;
+    }
+
+    // 기존 로비용 Open 외에, 결과 화면용으로 따로 분리한 메서드
+    public static void OpenResult()
+    {
+        // ResultScene이 이미 열려있는지 체크
+        if (isOpening || SceneManager.GetSceneByName(ResultScene).isLoaded) return;
+
+        // RankingScene 대신 ResultScene을 Additive로 로드
+        AsyncOperation op = SceneManager.LoadSceneAsync(ResultScene, LoadSceneMode.Additive);
+        if (op == null)
+        {
+            Debug.LogError("[RankingPanel] ResultRankingScene 로드 실패 - Build Settings 확인 필요");
             return;
         }
 
@@ -194,4 +214,16 @@ public class RankingPanel : MonoBehaviour
         nickname = nickname.Replace("</noparse>", "");
         return nickname.Length > 10 ? nickname.Substring(0, 10) + "…" : nickname;
     }
+
+    // 로비로 이동하는 버튼에 연결할 메서드
+    public void GoToLobby()
+    {
+        // 1. 먼저 현재 띄워져 있는 결과용 씬(또는 랭킹 씬)을 닫고
+        SceneManager.UnloadSceneAsync(gameObject.scene);
+
+        // 2. 로비 씬으로 이동 (lobbySceneName 변수나 실제 로비 씬 이름을 넣어주세요)
+        SceneManager.LoadScene(lobbySceneName);
+    }
+
+
 }

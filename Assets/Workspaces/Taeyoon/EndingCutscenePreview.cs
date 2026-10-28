@@ -10,7 +10,7 @@ using UnityEngine.Video;
 public class EndingCutscenePreview : MonoBehaviour
 {
     private const string PendingKey = "DrawOrDie.EndingPreview";
-    private const string VideoPath = "Assets/Workspaces/Taeyoon/gemini_generated_video_2883d136 (online-video-cutter.com).mp4";
+    private const string VideoPath = "Assets/Workspaces/Taeyoon/gemini_generated_video_2883d136 (online-video-cutter.com) 1 - Trim.mp4";
 
     [MenuItem("Tools/Cutscenes/엔딩 컷씬 테스트")]
     private static void Preview()
@@ -56,7 +56,7 @@ public class EndingCutscenePreview : MonoBehaviour
         }
         if (SoundManager.Instance != null && SoundManager.Instance.sfxSource != null)
             SoundManager.Instance.sfxSource.Stop();
-        yield return WorldMapManager.PlayCutscene(clip);
+        yield return WorldMapManager.PlayCutscene(clip, true);
         SceneManager.LoadScene("LobbyScene");
     }
 }

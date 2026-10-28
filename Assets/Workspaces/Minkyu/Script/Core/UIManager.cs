@@ -51,6 +51,8 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
 
+        resultPanel.SetActive(false);
+
         if (clearRankingButton != null)
         {
             clearRankingButton.onClick.AddListener(RankingPanel.Open);
@@ -121,21 +123,37 @@ public class UIManager : MonoBehaviour
     {
         if (isVictory)
         {
-            if (DeckManager.Instance != null)
+            if (GameFlowData.currentNodeType == MapNode.NodeType.Boss && GameFlowData.IsFinalAct()) // 게임 클리어 시
             {
-                DeckManager.Instance.DiscardHand();
-                DeckManager.Instance.RefillDeckFromDiscard(true);
-                DeckManager.Instance.RefillDeckFromDiscard(false);
+                if (rewardPanel != null)
+                    rewardPanel.SetActive(false);
+
+                if (resultPanel != null)
+                    resultPanel.SetActive(true);
+
+                if (resultText != null)
+                    resultText.text = "게임 승리";
+
+                GoToMapAfterVictory();
             }
+            else
+            {
+                if (DeckManager.Instance != null)
+                {
+                    DeckManager.Instance.DiscardHand();
+                    DeckManager.Instance.RefillDeckFromDiscard(true);
+                    DeckManager.Instance.RefillDeckFromDiscard(false);
+                }
 
-            if (rewardPanel != null)
-                rewardPanel.SetActive(true);
+                if (rewardPanel != null)
+                    rewardPanel.SetActive(true);
 
-            if (rewardText != null)
-                rewardText.text = "승리! 보상을 선택하세요.";
+                if (rewardText != null)
+                    rewardText.text = "승리! 보상을 선택하세요.";
 
-            if (BattleRewardManager.Instance != null)
-                BattleRewardManager.Instance.GenerateRewardChoices();
+                if (BattleRewardManager.Instance != null)
+                    BattleRewardManager.Instance.GenerateRewardChoices();
+            }
         }
         else
         {
@@ -146,10 +164,28 @@ public class UIManager : MonoBehaviour
                 resultPanel.SetActive(true);
 
             if (resultText != null)
-                resultText.text = "패배!";
+                resultText.text = "게임 패배";
 
-            CreateDefeatLobbyButton();
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.deathSound);
+
+            StartCoroutine(OpenResultWithDelay(3.0f));
+
+            //CreateDefeatLobbyButton();
         }
+    }
+
+    private IEnumerator OpenResultWithDelay(float delaySeconds)
+    {
+        // 지정한 시간(초)만큼 대기 (게임 속도나 유니티 타임스케일에 영향 안 받고 싶다면 WaitForSecondsRealtime 사용 가능)
+        yield return new WaitForSeconds(delaySeconds);
+
+        if (resultText != null)
+        {
+            resultText.text = "";
+        }
+
+        // 3초 뒤에 결과용 랭킹 씬 오픈
+        RankingPanel.OpenResult();
     }
 
     public void HideResult()
@@ -256,12 +292,6 @@ public class UIManager : MonoBehaviour
             {
                 Debug.Log("최종 보스 클리어! LobbyScene으로 이동합니다.");
 
-                if (rewardPanel != null)
-                    rewardPanel.SetActive(false);
-
-                if (resultPanel != null)
-                    resultPanel.SetActive(false);
-
                 if (SoundManager.Instance != null)
                     SoundManager.Instance.StopBGM();
 
@@ -287,6 +317,11 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator PlayEndingAndReturnToLobby()
     {
+        yield return new WaitForSeconds(3.0f);
+
+        if (resultPanel != null)
+            resultPanel.SetActive(false);
+
         leavingAfterClear = true;
         // 보상 처리가 모두 끝나 패널을 닫은 다음 프레임부터 컷씬을 시작한다.
         if (clearRankingButton != null)
@@ -294,8 +329,10 @@ public class UIManager : MonoBehaviour
         if (SoundManager.Instance != null && SoundManager.Instance.sfxSource != null)
             SoundManager.Instance.sfxSource.Stop();
         yield return null;
-        yield return WorldMapManager.PlayCutscene(endingVideo);
-        SceneManager.LoadScene("LobbyScene");
+        yield return WorldMapManager.PlayCutscene(endingVideo, false);
+
+        RankingPanel.OpenResult();
+        //SceneManager.LoadScene("LobbyScene");
     }
     // =========================
     // 유닛 UI 연결

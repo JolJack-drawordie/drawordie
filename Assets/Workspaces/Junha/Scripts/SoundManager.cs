@@ -19,6 +19,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip playerAttackSound; // 플레이어가 공격할 때 (비어 있으면 hitSound)
     public AudioClip shieldSound;
     public AudioClip blockSound;        // 방어도로 피해를 막았을 때 (플레이어·적 공통)
+    public AudioClip deathSound;        // 플레이어 사망 시
 
     [Header("적 효과음")]
     public AudioClip enemyAttackSound; // 적이 공격을 내려치는 순간
