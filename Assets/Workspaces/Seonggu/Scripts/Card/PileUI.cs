@@ -96,6 +96,9 @@ public class PileUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler,
     // 3. 기존 OnClickPile 대신 이걸 사용 (유니티가 클릭할 때 알아서 실행해줌)
     public void OnPointerClick(PointerEventData eventData)
     {
+        // 전투가 끝나 결과 화면이 떠 있으면 덱/버린 카드 더미를 열 수 없음
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+
         // 좌클릭일 때만 작동하게 하고 싶다면 아래 조건 추가 가능
         if (eventData.button == PointerEventData.InputButton.Left)
         {

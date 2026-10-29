@@ -70,6 +70,13 @@ public class GameManager : MonoBehaviour
                 RestoreLoadedUnitState();
             }
 
+            // 새 전투는 방어도 0에서 시작 (플레이어 턴에 적을 처치하면 방어도가 리셋되지 않은 채 다음 전투로 넘어옴)
+            // 전투 시작 유물이 주는 방어도는 유지되도록 유물 발동보다 먼저 초기화
+            if (!PendingLoadData.isPending && currentPlayer != null)
+            {
+                currentPlayer.RestoreState(currentPlayer.statData.currentHp, 0);
+            }
+
             // 새 전투에서만 전투 시작 유물 발동
             // 저장된 전투를 불러오는 경우에는 중복 지급하지 않음
             if (!PendingLoadData.isPending &&

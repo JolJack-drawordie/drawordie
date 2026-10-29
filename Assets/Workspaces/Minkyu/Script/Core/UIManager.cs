@@ -369,6 +369,12 @@ public class UIManager : MonoBehaviour
             sound.PlayBGM(endingClip);
         }
 
+        // 패배 때처럼 텍스트 없는 결과 패널로 아래 손패/덱 더미의 클릭·호버를 막음
+        if (resultText != null)
+            resultText.text = "";
+        if (resultPanel != null)
+            resultPanel.SetActive(true);
+
         RankingPanel.OpenResult();
         //SceneManager.LoadScene("LobbyScene");
     }
