@@ -44,6 +44,13 @@ public class CardDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        // 전투가 끝나 결과 화면이 떠 있으면 손패 카드를 집을 수 없음 (pointerDrag를 비워 OnDrag/OnEndDrag도 취소)
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver)
+        {
+            eventData.pointerDrag = null;
+            return;
+        }
+
         isDragging = true;
         cardUI.isInSlot = false;
 
