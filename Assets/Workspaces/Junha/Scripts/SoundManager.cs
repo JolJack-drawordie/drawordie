@@ -20,6 +20,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip shieldSound;
     public AudioClip blockSound;        // 방어도로 피해를 막았을 때 (플레이어·적 공통)
     public AudioClip deathSound;        // 플레이어 사망 시
+    public AudioClip defeatSound;       // 게임 패배 징글 (사망음 뒤, 결과 화면 전에 한 번)
+    public AudioClip victorySound;      // 최종 보스 처치(게임 클리어) 팡파레, 끝나면 엔딩 영상 시작
 
     [Header("적 효과음")]
     public AudioClip enemyAttackSound; // 적이 공격을 내려치는 순간
@@ -38,6 +40,9 @@ public class SoundManager : MonoBehaviour
 
     [Header("휴식 배경음악")]
     public AudioClip restBackgroundSound;
+
+    [Header("엔딩 배경음악 (엔딩 영상 후 클리어 랭킹 화면, 비어 있으면 메인 BGM)")]
+    public AudioClip endingRankingBackgroundSound;
 
     [Header("월드맵")]
     public AudioClip worldMapBackgroundSound;

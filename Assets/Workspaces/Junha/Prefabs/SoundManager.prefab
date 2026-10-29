@@ -58,6 +58,9 @@ MonoBehaviour:
   playerAttackSound: {fileID: 8300000, guid: 73e9a92ca33cf4244bd383e368df4d43, type: 3}
   shieldSound: {fileID: 8300000, guid: 7954d3bbe37bdd94f90cca53bb87af20, type: 3}
   blockSound: {fileID: 8300000, guid: fd4423e9ea4a3c5419d0652d17ad7fbf, type: 3}
+  deathSound: {fileID: 8300000, guid: 76fdf9a83006cbc49a3fc68b66c1df92, type: 3}
+  defeatSound: {fileID: 8300000, guid: 7cab59239efea9f41ade9e0691424d38, type: 3}
+  victorySound: {fileID: 8300000, guid: a603396812612a44e8672f61ec0cec40, type: 3}
   enemyAttackSound: {fileID: 8300000, guid: 73e9a92ca33cf4244bd383e368df4d43, type: 3}
   enemyDefendSound: {fileID: 8300000, guid: 7954d3bbe37bdd94f90cca53bb87af20, type: 3}
   enemyHitSound: {fileID: 8300000, guid: 71a8c75f4c14c874caf4a668abaa0b8f, type: 3}
@@ -77,6 +80,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5f454f11711d64f8b9416274a6b247fa, type: 3}
   - {fileID: 8300000, guid: c7b1d2a52517f4d27ba60f7afa66a248, type: 3}
   restBackgroundSound: {fileID: 8300000, guid: 7e371b800dc9b49b6a803715bc37b8e2, type: 3}
+  endingRankingBackgroundSound: {fileID: 8300000, guid: 73493c1f678bf4f18a7174b39872d0bc, type: 3}
   worldMapBackgroundSound: {fileID: 8300000, guid: 656fef9a6b778b34bb3c6401c032c85d, type: 3}
   worldMapHoverSound: {fileID: 8300000, guid: bf5182c3930111649ab6233ffd0e6c3f, type: 3}
   worldMapClickSound: {fileID: 8300000, guid: 954f8feb30d7b2942b8dfe519be19968, type: 3}

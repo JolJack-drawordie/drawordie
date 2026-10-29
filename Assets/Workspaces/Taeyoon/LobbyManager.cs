@@ -47,6 +47,10 @@ public class LobbyManager : MonoBehaviour
 
     void Start()
     {
+        // 로비 BGM은 타이틀의 메인 BGM. 엔딩/패배 후 BGM이 멈춘 채 들어와도 다시 재생 (이미 재생 중이면 그대로 이어짐)
+        if (SoundManager.Instance != null && SoundManager.Instance.mainBackgroundSound != null)
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.mainBackgroundSound);
+
         if (newGameButton == null)
             Debug.LogError("[LobbyManager] newGameButton 미연결!");
         else
