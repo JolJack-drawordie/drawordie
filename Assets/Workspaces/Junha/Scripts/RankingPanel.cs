@@ -218,10 +218,7 @@ public class RankingPanel : MonoBehaviour
     // 로비로 이동하는 버튼에 연결할 메서드
     public void GoToLobby()
     {
-        // 1. 먼저 현재 띄워져 있는 결과용 씬(또는 랭킹 씬)을 닫고
-        SceneManager.UnloadSceneAsync(gameObject.scene);
-
-        // 2. 로비 씬으로 이동 (lobbySceneName 변수나 실제 로비 씬 이름을 넣어주세요)
+        // Single 로드라 이 결과 씬(Additive)도 함께 내려감. 따로 Unload하면 closeButton의 Close와 중복 호출됨
         SceneManager.LoadScene(lobbySceneName);
     }
 

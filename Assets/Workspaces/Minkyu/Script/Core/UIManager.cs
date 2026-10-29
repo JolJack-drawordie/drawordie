@@ -51,7 +51,9 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
 
-        resultPanel.SetActive(false);
+        // 결과 랭킹 씬처럼 로비 이동 버튼용으로만 둔 UIManager에는 resultPanel이 없음
+        if (resultPanel != null)
+            resultPanel.SetActive(false);
 
         if (clearRankingButton != null)
         {
@@ -166,12 +168,26 @@ public class UIManager : MonoBehaviour
             if (resultText != null)
                 resultText.text = "게임 패배";
 
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.deathSound);
+            if (SoundManager.Instance != null)
+            {
+                // 전투 BGM은 서서히 끄고, 사망음 뒤에 패배 징글
+                SoundManager.Instance.FadeOutBGM(1.5f);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.deathSound);
+                StartCoroutine(PlayDefeatSoundWithDelay(1.0f));
+            }
 
             StartCoroutine(OpenResultWithDelay(3.0f));
 
             //CreateDefeatLobbyButton();
         }
+    }
+
+    private IEnumerator PlayDefeatSoundWithDelay(float delaySeconds)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.defeatSound);
     }
 
     private IEnumerator OpenResultWithDelay(float delaySeconds)
@@ -292,10 +308,18 @@ public class UIManager : MonoBehaviour
             {
                 Debug.Log("최종 보스 클리어! LobbyScene으로 이동합니다.");
 
-                if (SoundManager.Instance != null)
-                    SoundManager.Instance.StopBGM();
+                // ShowResult가 여러 번 불려도 팡파레와 엔딩은 한 번만
+                if (leavingAfterClear) return;
+                leavingAfterClear = true;
 
-                if (!leavingAfterClear) StartCoroutine(PlayEndingAndReturnToLobby());
+                // 전투 BGM은 서서히 끄고 클리어 팡파레
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.FadeOutBGM(1.5f);
+                    SoundManager.Instance.PlaySFX(SoundManager.Instance.victorySound);
+                }
+
+                StartCoroutine(PlayEndingAndReturnToLobby());
                 return;
             }
 
@@ -317,12 +341,16 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator PlayEndingAndReturnToLobby()
     {
-        yield return new WaitForSeconds(3.0f);
+        // 팡파레가 끝난 뒤 엔딩 영상 시작 (팡파레가 없거나 짧으면 기본 3초)
+        float waitSeconds = 3.0f;
+        if (SoundManager.Instance != null && SoundManager.Instance.victorySound != null)
+            waitSeconds = Mathf.Max(waitSeconds, SoundManager.Instance.victorySound.length);
+
+        yield return new WaitForSeconds(waitSeconds);
 
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
-        leavingAfterClear = true;
         // 보상 처리가 모두 끝나 패널을 닫은 다음 프레임부터 컷씬을 시작한다.
         if (clearRankingButton != null)
             clearRankingButton.gameObject.SetActive(false);
@@ -330,6 +358,16 @@ public class UIManager : MonoBehaviour
             SoundManager.Instance.sfxSource.Stop();
         yield return null;
         yield return WorldMapManager.PlayCutscene(endingVideo, false);
+
+        // 클리어 랭킹 화면 BGM (로비로 가면 LobbyManager가 메인 BGM으로 바꿈)
+        SoundManager sound = SoundManager.Instance;
+        if (sound != null)
+        {
+            AudioClip endingClip = sound.endingRankingBackgroundSound != null
+                ? sound.endingRankingBackgroundSound
+                : sound.mainBackgroundSound;
+            sound.PlayBGM(endingClip);
+        }
 
         RankingPanel.OpenResult();
         //SceneManager.LoadScene("LobbyScene");
