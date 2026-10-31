@@ -24,6 +24,10 @@ public class PlayerSpineController : MonoBehaviour
     private Vector3 originalPosition;
     private bool isActing = false;
 
+    // 공격 모션에서 칼이 적에 닿는 순간 (attack1 기준 slash 이펙트가 뜨는 0.2초). 화면 흔들림(HitShake) 타이밍에 사용
+    [SerializeField] private float attackImpactTime = 0.2f;
+    public static event System.Action OnAttackImpact;
+
     private void Awake()
     {
         if (Instance == null)
@@ -122,7 +126,11 @@ public class PlayerSpineController : MonoBehaviour
         }
 
         // 애니메이션 재생 시간 동안 대기
-        yield return new WaitForSeconds(1.0f);
+        // 타격 순간을 알린 뒤 나머지 시간 대기 (총 대기 시간은 기존과 같은 1초)
+        float impactTime = Mathf.Clamp(attackImpactTime, 0f, 1.0f);
+        yield return new WaitForSeconds(impactTime);
+        OnAttackImpact?.Invoke();
+        yield return new WaitForSeconds(1.0f - impactTime);
 
         // 3. 제자리로 돌아올 때 다시 run 모션 재생 (무한 반복)
         skeletonAnimation.AnimationState.SetAnimation(0, runAnim, true);

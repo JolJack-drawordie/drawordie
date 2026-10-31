@@ -286,6 +286,7 @@ public class AnimatedEnemyController : EnemyController
         else
         {
             PlayAttackSound();
+            NotifyAttackImpact(currentAttack);
             yield return StartCoroutine(PlayAndWait(attackState, fallbackDuration));
             if (!hitIsDead) ReturnToIdle();
         }
@@ -379,7 +380,11 @@ public class AnimatedEnemyController : EnemyController
         yield return StartCoroutine(MoveOverTime(from, target, attackDashTime, attackArcHeight, tiltFrom, attackLean));
 
         // 3) 타격 (제자리에서 떨림 + 크기 펀치)
-        if (!hitIsDead) PlayAttackSound();
+        if (!hitIsDead)
+        {
+            PlayAttackSound();
+            NotifyAttackImpact(currentAttack);
+        }
         float t = 0f;
         while (t < attackStrikeTime && !hitIsDead)
         {

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679be52016bf4975902b5468bf43edbf, type: 3}
+  m_Name: HitShakeSettings
+  m_EditorClassIdentifier: 
+  shakeOnEnemyHit: 1
+  minDamage: 5
+  maxDamage: 25
+  shakeOnPlayerHit: 1
+  playerMinDamage: 0
+  playerMaxDamage: 12
+  minAmplitude: 0.03
+  maxAmplitude: 0.35
+  minDuration: 0.12
+  maxDuration: 0.3
+  curvePower: 1

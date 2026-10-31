@@ -259,8 +259,13 @@ public class EnemyTarget : MonoBehaviour
         if(damage > 0)
         {
             if (PlayerSpineController.Instance != null)
+            {
+                // 화면 흔들림은 피해가 들어갈 때가 아니라 공격 모션의 타격 순간에 (HitShake)
+                HitShake.ArmAttack(GameManager.Instance.Enemy, damage);
                 yield return StartCoroutine(PlayerSpineController.Instance.AttackRoutine("attack1"));
-            GameManager.Instance.Enemy.TakeDamage(damage);
+            }
+            using (HitShake.AttackDamageScope())
+                GameManager.Instance.Enemy.TakeDamage(damage);
         }
 
         if(shield > 0)

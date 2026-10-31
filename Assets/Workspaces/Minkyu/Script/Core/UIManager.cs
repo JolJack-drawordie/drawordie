@@ -121,8 +121,17 @@ public class UIManager : MonoBehaviour
     // 전투 결과
     // =========================
 
+    private bool resultWaitingForBossDeath;
+
     public void ShowResult(bool isVictory)
     {
+        // 보스 처치 연출(BossDeathSequence)이 끝날 때까지 결과/보상 화면을 미룸
+        if (isVictory && BossDeathSequence.IsPlaying)
+        {
+            if (!resultWaitingForBossDeath) StartCoroutine(ShowResultAfterBossDeath());
+            return;
+        }
+
         if (isVictory)
         {
             if (GameFlowData.currentNodeType == MapNode.NodeType.Boss && GameFlowData.IsFinalAct()) // 게임 클리어 시
@@ -180,6 +189,14 @@ public class UIManager : MonoBehaviour
 
             //CreateDefeatLobbyButton();
         }
+    }
+
+    private IEnumerator ShowResultAfterBossDeath()
+    {
+        resultWaitingForBossDeath = true;
+        while (BossDeathSequence.IsPlaying) yield return null;
+        resultWaitingForBossDeath = false;
+        ShowResult(true);
     }
 
     private IEnumerator PlayDefeatSoundWithDelay(float delaySeconds)

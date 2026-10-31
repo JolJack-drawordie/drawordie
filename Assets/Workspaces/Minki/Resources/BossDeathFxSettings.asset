@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a326fecd98244daba2bc89c5bc07c2b0, type: 3}
+  m_Name: BossDeathFxSettings
+  m_EditorClassIdentifier: 
+  playOnBoss: 1
+  playOnElite: 1
+  hitStopTimeScale: 0.03
+  hitStopDuration: 0.18
+  deathCrySound: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
+  slowMoTimeScale: 0.4
+  chainExplosionPrefab: {fileID: 371044775753599775, guid: 1440a465bffbe4447a132e68097cb4aa, type: 3}
+  chainCount: 4
+  chainInterval: 0.22
+  chainExplosionSize: 0.45
+  chainExplosionSound: {fileID: 8300000, guid: 7c47b20bb9874304a809dc5580d403ba, type: 3}
+  chainTint: {r: 1, g: 0.45, b: 0.4, a: 1}
+  finalExplosionPrefab: {fileID: 7653581212683584709, guid: 70fed2793de7f6e4a9478d48f83c1933, type: 3}
+  finalExplosionSize: 1.4
+  finalSmokePrefab: {fileID: 870565393374572683, guid: 9f5f7b6a041a7c343a5f3be66c3ed235, type: 3}
+  finalSmokeSize: 1.1
+  finalExplosionSound: {fileID: 8300000, guid: a652877b012108e41871f867ada9f176, type: 3}
+  bodyFadeDuration: 0.45
+  screenFlashColor: {r: 1, g: 1, b: 1, a: 0.85}
+  screenFlashDuration: 0.3
+  hitShake: 0.25
+  chainShake: 0.12
+  finalShake: 0.4
+  shakeDuration: 0.35
+  endDelay: 0.6
+  blockInput: 1
