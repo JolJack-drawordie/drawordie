@@ -263,7 +263,7 @@ MonoBehaviour:
   maxHp: 30
   unitData: {fileID: 0}
   intentIcon: {fileID: 4382147752651150627}
-  attackSprite: {fileID: 21300000, guid: 4ad16adfdf2d1a441879a598de742eb6, type: 3}
+  attackSprite: {fileID: 21300000, guid: d31aa8412a4d374458c912d11686642a, type: 3}
   defendSprite: {fileID: 21300000, guid: 40f2d97515d2434418f9dcdd11d438a2, type: 3}
   currentAttack: 0
   currentDefend: 0
