@@ -121,6 +121,12 @@ public abstract class EnemyController : MonoBehaviour
         hitLastHp = current;
     }
 
+    // 공격 모션에서 플레이어를 때리는 순간에 호출 → 화면 흔들림 (HitShake). incomingDamage = 이번 공격력
+    protected void NotifyAttackImpact(int incomingDamage)
+    {
+        HitShake.OnEnemyAttackImpact(incomingDamage);
+    }
+
     // 적 공격 / 방어 효과음 (자식 클래스의 공격·방어 연출에서 호출)
     protected void PlayAttackSound()
     {
@@ -269,7 +275,9 @@ public abstract class EnemyController : MonoBehaviour
 
         DecideNextAction();
 
-        GameManager.Instance.currentPlayer.TakeDamage(currentAttack);
+        // 공격 모션의 타격 순간에 이미 흔들었으면 여기서는 다시 흔들지 않음 (HitShake)
+        using (HitShake.PlayerDamageScope())
+            GameManager.Instance.currentPlayer.TakeDamage(currentAttack);
 
         isActing = false;
     }

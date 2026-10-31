@@ -541,7 +541,12 @@ public class BossController2 : EnemyController
                     // 분노 등이 반영된 공격력으로 다시 확정한 뒤, EnemyUnit.Attack으로 피해 (흡혈 OnAttackHit이 여기서 발생)
                     hitUnit.attackPower = GetAttackPower(acted);
                     PlayerUnit target = GameManager.Instance != null ? GameManager.Instance.currentPlayer : null;
-                    if (target != null) hitUnit.Attack(target);
+                    if (target != null)
+                    {
+                        // 돌진 모션의 타격 순간에 이미 흔들었으면 여기서는 다시 흔들지 않음 (HitShake)
+                        using (HitShake.PlayerDamageScope())
+                            hitUnit.Attack(target);
+                    }
                     currentActionStrong = false;
                     break;
                 case BossIntent.Defend:
@@ -738,6 +743,7 @@ public class BossController2 : EnemyController
             {
                 if (currentActionStrong && strongAttackSound != null) PlayEnemySound(strongAttackSound);
                 else PlayAttackSound();
+                NotifyAttackImpact(GetAttackPower(currentActionStrong ? BossIntent.StrongAttack : BossIntent.Attack));
             }
 
             float t = 0f;
@@ -885,6 +891,13 @@ public class BossController2 : EnemyController
         isActing = true;
 
         if (intentIcon != null) intentIcon.gameObject.SetActive(false);
+
+        // 보스 처치 연출 (히트스톱 → 슬로모 연쇄 폭발 → 대폭발 + 소멸). 설정: Resources/BossDeathFxSettings
+        BossDeathFxSettings deathFx = BossDeathFxSettings.Load();
+        if (deathFx.ShouldPlayFor(GameFlowData.currentNodeType))
+        {
+            BossDeathSequence.Play(gameObject, allRenderers, GetBodyBounds(), deathFx);
+        }
 
         if (HasState(deathState))
         {
