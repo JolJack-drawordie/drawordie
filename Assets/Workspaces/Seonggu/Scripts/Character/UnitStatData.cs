@@ -6,12 +6,16 @@ public class UnitStatData : ScriptableObject
 {
     [Header("기본 정보")]
     public string unitName;
+    public int monsterId = -1; // server Monster.json id
     public int maxHp;
     public int currentHp;
     public int maxShield;
     public int currentShield;
     public List<AttackData> attacks;
     public int defend;
+
+    // boss gimmick data (see BossGimmickData.cs). not sent for normal monsters
+    public BossGimmickData boss;
 
     //[Header("추가 스탯 (필요시 확장)")]
     //public int speed;

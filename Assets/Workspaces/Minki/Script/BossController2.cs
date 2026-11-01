@@ -114,7 +114,7 @@ public class BossController2 : EnemyController
     public string[] boundsIgnoreKeywords = { "Weapon", "Effect", "Fire", "Smoke", "Spell", "Projectile", "Stone" };
 
     [Header("의도 효과")]
-    public int defendShield = 15;  // 방어(Cast) 턴에 보스가 얻는 쉴드
+    public int defendShield = 15;  // 방어(Cast) 턴에 보스가 얻는 쉴드 (서버 Monster.json의 defend가 있으면 그 값으로 덮어씀)
 
     [Header("기믹 - 패턴 순환 (끄면 공격/방어 랜덤)")]
     public bool usePattern = false;
@@ -264,6 +264,14 @@ public class BossController2 : EnemyController
         if (hitUnit != null)
         {
             baseAttackPower = hitUnit.attackPower;
+
+            // 방어량도 서버 Monster.json의 defend 값을 우선 사용 (스탯이 없을 때만 인스펙터 defendShield 사용)
+            if (hitUnit.statData != null && hitUnit.statData.defend > 0)
+                defendShield = hitUnit.statData.defend;
+
+            // 기믹 수치도 서버 Monster.json의 boss 블록을 우선 사용
+            if (hitUnit.statData != null) ApplyServerGimmicks(hitUnit.statData.boss);
+
             hitUnit.OnDamaged += HandleDamagedForThorns;
             hitUnit.OnAttackHit += HandleAttackHitForLifesteal;
         }
@@ -436,6 +444,68 @@ public class BossController2 : EnemyController
         yield return StartCoroutine(PlayAttackAnimation());
     }
 
+    // 서버 Monster.json "boss" 블록 적용
+    // - 블록이 없으면 프리팹 Inspector 값 유지
+    // - 블록이 있으면 서버 기준: 블록에 없는 기믹은 꺼짐, 숫자가 -1(안 적음)인 항목만 Inspector 값 유지
+    private void ApplyServerGimmicks(BossGimmickData g)
+    {
+        if (g == null || !g.defined) return;
+
+        BossIntent[] serverPattern = ParsePattern(g.pattern);
+        usePattern = serverPattern.Length > 0;
+        if (usePattern) pattern = serverPattern;
+
+        useCharge = g.charge != null && g.charge.defined;
+        if (useCharge)
+        {
+            if (g.charge.chance >= 0f) chargeChance = Mathf.Clamp01(g.charge.chance);
+            if (g.charge.multiplier >= 0f) chargeMultiplier = g.charge.multiplier;
+        }
+
+        useRegen = g.regen != null && g.regen.defined;
+        if (useRegen && g.regen.amount >= 0) regenAmount = g.regen.amount;
+
+        useEnrage = g.enrage != null && g.enrage.defined;
+        if (useEnrage)
+        {
+            if (g.enrage.hpRatio >= 0f) enrageHpRatio = Mathf.Clamp01(g.enrage.hpRatio);
+            if (g.enrage.attackMultiplier >= 0f) enrageAttackMultiplier = g.enrage.attackMultiplier;
+        }
+
+        useLifesteal = g.lifesteal != null && g.lifesteal.defined;
+        if (useLifesteal && g.lifesteal.ratio >= 0f) lifestealRatio = Mathf.Clamp01(g.lifesteal.ratio);
+
+        useThorns = g.thorns != null && g.thorns.defined;
+        if (useThorns && g.thorns.damage >= 0) thornsDamage = g.thorns.damage;
+
+        usePhase2 = g.phase2 != null && g.phase2.defined;
+        if (usePhase2)
+        {
+            if (g.phase2.hpRatio >= 0f) phase2HpRatio = Mathf.Clamp01(g.phase2.hpRatio);
+            if (g.phase2.shield >= 0) phase2Shield = g.phase2.shield;
+            if (g.phase2.heal >= 0) phase2Heal = g.phase2.heal;
+            BossIntent[] p2 = ParsePattern(g.phase2.pattern);
+            if (p2.Length > 0) phase2Pattern = p2;
+        }
+
+        Debug.Log($"[{name}] 서버 기믹 적용 - 패턴:{usePattern} 차지:{useCharge} 재생:{useRegen} 분노:{useEnrage} " +
+                  $"흡혈:{useLifesteal} 가시:{useThorns} 2페이즈:{usePhase2}", this);
+    }
+
+    // ["Attack","Defend",...] → BossIntent[] (대소문자 무시, 모르는 이름은 경고 후 건너뜀)
+    private BossIntent[] ParsePattern(System.Collections.Generic.List<string> names)
+    {
+        var result = new System.Collections.Generic.List<BossIntent>();
+        if (names == null) return result.ToArray();
+
+        foreach (string s in names)
+        {
+            if (System.Enum.TryParse(s, true, out BossIntent intent)) result.Add(intent);
+            else Debug.LogWarning($"[{name}] 서버 패턴에 알 수 없는 행동 '{s}' (Attack/Defend/Charge/StrongAttack 중 하나)", this);
+        }
+        return result.ToArray();
+    }
+
     // 다음 의도 결정: 기 모으기 다음엔 무조건 강공격 → 패턴 → 랜덤 순서
     private void DecideIntent()
     {
@@ -485,21 +555,22 @@ public class BossController2 : EnemyController
         switch (currentIntent)
         {
             case BossIntent.Attack:
-                intentIcon.sprite = attackSprite;
+                intentIcon.sprite = GetIntentSprite(true, hitUnit.attackPower);   // 수치 구간별 아이콘
                 actionText.text = hitUnit.attackPower.ToString();
                 break;
             case BossIntent.Defend:
-                intentIcon.sprite = defendSprite;
+                intentIcon.sprite = GetIntentSprite(false, defendShield);         // 수치 구간별 아이콘
                 actionText.text = defendShield.ToString();
                 break;
             case BossIntent.Charge:
                 // 방어 아이콘과 헷갈리지 않도록: 전용 아이콘이 없으면 공격 아이콘을 노란색으로
-                intentIcon.sprite = chargeSprite != null ? chargeSprite : attackSprite;
+                intentIcon.sprite = IntentIconSet.ResolveCharge(MonsterId, chargeSprite != null ? chargeSprite : GetIntentSprite(true, baseAttackPower));
                 color = chargeIconColor;
                 actionText.text = "";
                 break;
             case BossIntent.StrongAttack:
-                intentIcon.sprite = strongAttackSprite != null ? strongAttackSprite : attackSprite;
+                // 강공격 전용 아이콘이 우선, 없으면 수치 구간별 공격 아이콘
+                intentIcon.sprite = IntentIconSet.ResolveStrongAttack(MonsterId, strongAttackSprite != null ? strongAttackSprite : GetIntentSprite(true, hitUnit.attackPower));
                 color = strongAttackIconColor;
                 scale = iconBaseScale * 1.4f;
                 actionText.text = hitUnit.attackPower.ToString();

@@ -85,6 +85,16 @@ public class StatManager : MonoBehaviour
         runtimeEnemyStat.currentShield = 0;
         runtimeEnemyStat.attacks = attacks;
         runtimeEnemyStat.defend = defend;
+        runtimeEnemyStat.monsterId = -1;
+        runtimeEnemyStat.boss = null;
+    }
+
+    // 서버 Monster.json 한 항목을 통째로 주입 (id: 아이콘 조회용, boss: 보스 기믹 수치)
+    public void SetEnemyStat(MonsterServerData data)
+    {
+        SetEnemyStat(data.hp, data.shield, data.attacks, data.defend);
+        runtimeEnemyStat.monsterId = data.id;
+        runtimeEnemyStat.boss = data.boss;
     }
 
     // 전투 종료 시 플레이어 상태를 저장하거나 갱신할 때
