@@ -177,7 +177,7 @@ public class MonsterDatabase : MonoBehaviour
         if (serverStatDict.TryGetValue(monsterId, out var serverData))
         {
             // 데이터베이스가 알아서 가져와서 타겟(스탯 매니저)에 꽂아줌
-            StatManager.Instance.SetEnemyStat(serverData.hp, serverData.shield, serverData.attacks, serverData.defend);
+            StatManager.Instance.SetEnemyStat(serverData); // id·보스 기믹까지 함께 주입
             return true;
         }
 

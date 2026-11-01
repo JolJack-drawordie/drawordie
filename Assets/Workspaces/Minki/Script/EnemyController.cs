@@ -13,7 +13,7 @@ public abstract class EnemyController : MonoBehaviour
     [Header("의도(Intent) UI")]
     public Image intentIcon; 
     public Sprite attackSprite; 
-    public Sprite defendSprite; 
+    public Sprite defendSprite;
     protected bool isNextAttack = true; // 다음 행동 의도 (true: 공격, false: 방어)
     public int currentAttack;
     public int currentDefend;
@@ -264,6 +264,8 @@ public abstract class EnemyController : MonoBehaviour
     IEnumerator AttackRoutineWrapper()
     {
         isActing = true;
+        // 아이콘에 표시됐던 이번 턴 데미지를 고정 (아래 DecideNextAction이 다음 턴 값으로 덮어쓰기 전에)
+        int attackThisTurn = currentAttack;
         yield return StartCoroutine(PlayCustomAttack());
 
         // 플레이어 피격 처리 (OnHit 실행 및 피격 완료까지 대기)
@@ -277,7 +279,7 @@ public abstract class EnemyController : MonoBehaviour
 
         // 공격 모션의 타격 순간에 이미 흔들었으면 여기서는 다시 흔들지 않음 (HitShake)
         using (HitShake.PlayerDamageScope())
-            GameManager.Instance.currentPlayer.TakeDamage(currentAttack);
+            GameManager.Instance.currentPlayer.TakeDamage(attackThisTurn);
 
         isActing = false;
     }
@@ -286,11 +288,13 @@ public abstract class EnemyController : MonoBehaviour
     IEnumerator DefendRoutineWrapper()
     {
         isActing = true;
+        // 아이콘에 표시됐던 이번 턴 방어도를 고정
+        int defendThisTurn = currentDefend;
         yield return StartCoroutine(PlayCustomDefend());
 
         DecideNextAction();
 
-        hitUnit.AddShield(currentDefend);
+        hitUnit.AddShield(defendThisTurn);
 
         isActing = false;
     }
@@ -346,13 +350,29 @@ public abstract class EnemyController : MonoBehaviour
     {
         if (intentIcon == null) return;
 
-        if (isNextAttack) 
+        // 아이콘은 Resources/IntentIconSet_Default에서 몬스터 id + 수치로 결정 (없으면 프리팹 Attack/Defend Sprite)
+        if (isNextAttack)
         {
-            intentIcon.sprite = attackSprite;
+            intentIcon.sprite = GetIntentSprite(true, currentAttack);
         }
-        else 
+        else
         {
-            intentIcon.sprite = defendSprite;
+            intentIcon.sprite = GetIntentSprite(false, currentDefend);
+        }
+    }
+
+    protected Sprite GetIntentSprite(bool isAttack, int value)
+    {
+        return IntentIconSet.Resolve(MonsterId, isAttack, value, isAttack ? attackSprite : defendSprite);
+    }
+
+    // 서버 Monster.json id (BattleFactory가 스탯 주입 시 기록, 없으면 -1)
+    protected int MonsterId
+    {
+        get
+        {
+            UnitBase u = hitUnit != null ? hitUnit : unitData;
+            return u != null && u.statData != null ? u.statData.monsterId : -1;
         }
     }
 

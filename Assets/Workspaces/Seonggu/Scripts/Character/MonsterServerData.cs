@@ -23,6 +23,9 @@ public class MonsterServerData
     public List<AttackData> attacks;
 
     public int defend;
+
+    // boss gimmick data (see BossGimmickData.cs). not sent for normal monsters
+    public BossGimmickData boss;
 }
 
 [System.Serializable]
