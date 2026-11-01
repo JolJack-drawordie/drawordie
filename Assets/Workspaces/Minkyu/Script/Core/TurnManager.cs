@@ -212,12 +212,21 @@ public class TurnManager : MonoBehaviour
 
             if (ShowBattleResultIfGameOver()) yield break;
 
+            // 적의 공격이 끝난 뒤 플레이어 방어도 초기화
+            player.ResetShield();
+
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.TurnEnd;
 
-            // 플레이어 방어도 리셋 (적 방어도는 다음 적 턴 시작 시 리셋)
-            player.ResetShield();
+            // 턴 종료 시 남은 에너지 확인
+            int remainingEnergy = diceManager.CurrentEnergy;
+
+            // 응축된 마력석 발동
+            if (RelicManager.Instance != null)
+            {
+                RelicManager.Instance.OnTurnEnd(remainingEnergy, player);
+            }
 
             Debug.Log($"===== Turn {turnCount} End =====");
 

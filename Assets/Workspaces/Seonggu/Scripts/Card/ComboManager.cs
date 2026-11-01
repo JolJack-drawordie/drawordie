@@ -85,8 +85,16 @@ public class ComboManager : MonoBehaviour
 
         if (result != null)
         {
-
+            // 조합 카드 생성 및 손패 추가
             DataManager.Instance.AddSynergyCardToHand(result);
+
+            // 학자의 돋보기 발동
+            if (RelicManager.Instance != null)
+            {
+                RelicManager.Instance.OnCardCombination();
+            }
+
+            // 조합에 사용한 카드 소모
             DeckManager.Instance.UseCardsForCombination();
 
             if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
