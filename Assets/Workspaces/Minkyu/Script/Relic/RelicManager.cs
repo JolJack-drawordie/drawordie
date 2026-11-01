@@ -302,6 +302,43 @@ public class RelicManager : MonoBehaviour
         return selectedRelic;
     }
 
+    // 획득 가능한 유물 중 중복 없이 랜덤 3개 선택
+    public List<RelicData> GetRandomAvailableRelics(
+        System.Random rng,
+        int count = 3
+    )
+    {
+        List<RelicData> candidates = AllRelics.FindAll(relic =>
+            relic != null &&
+            relic.effect != null &&
+            (relic.stackable || !ownedRelicKeys.Contains(relic.key))
+        );
+
+        if (rng == null)
+        {
+            Debug.LogError("[RelicManager] 랜덤 생성기가 없습니다.");
+            return new List<RelicData>();
+        }
+
+        // 후보 목록을 섞어서 중복 없이 선택
+        for (int i = candidates.Count - 1; i > 0; i--)
+        {
+            int j = rng.Next(0, i + 1);
+
+            RelicData temp = candidates[i];
+            candidates[i] = candidates[j];
+            candidates[j] = temp;
+        }
+
+        int resultCount = Mathf.Min(count, candidates.Count);
+
+        List<RelicData> results = candidates.GetRange(0, resultCount);
+
+        Debug.Log($"[RelicManager] 유물 보상 후보 {results.Count}개 생성");
+
+        return results;
+    }
+
 
     // 주사위 결과에 따른 유물 효과 처리
     public void OnDiceRolled(int diceValue)
@@ -457,6 +494,90 @@ public class RelicManager : MonoBehaviour
 
         Debug.Log(
             $"[RelicManager] Vial of Life 발동! 체력 +{relic.effect.value}"
+        );
+    }
+
+    // 카드 조합 성공 시 발동하는 유물 효과
+    public void OnCardCombination()
+    {
+        if (!HasRelic("scholars_magnifying_glass"))
+            return;
+
+        RelicData relic = AllRelics.Find(
+            r => r != null && r.key == "scholars_magnifying_glass"
+        );
+
+        if (relic == null || relic.effect == null)
+        {
+            Debug.LogWarning(
+                "[RelicManager] Scholar's Magnifying Glass 데이터를 찾을 수 없습니다."
+            );
+            return;
+        }
+
+        if (relic.trigger != "ON_CARD_COMBINATION" ||
+            relic.effect.type != "ADD_SHIELD")
+        {
+            Debug.LogWarning(
+                "[RelicManager] Scholar's Magnifying Glass의 발동 조건 또는 효과 타입이 올바르지 않습니다."
+            );
+            return;
+        }
+
+        PlayerUnit player = FindObjectOfType<PlayerUnit>();
+
+        if (player == null)
+        {
+            Debug.LogWarning(
+                "[RelicManager] 플레이어를 찾을 수 없어 조합 유물을 발동하지 못했습니다."
+            );
+            return;
+        }
+
+        player.AddShield(relic.effect.value);
+
+        Debug.Log(
+            $"[RelicManager] Scholar's Magnifying Glass 발동! 방어도 +{relic.effect.value}"
+        );
+    }
+
+    // 턴 종료 시 발동하는 유물 효과
+    public void OnTurnEnd(int remainingEnergy, PlayerUnit player)
+    {
+        if (!HasRelic("condensed_mana_gem"))
+            return;
+
+        if (remainingEnergy <= 0 || player == null)
+            return;
+
+        RelicData relic = AllRelics.Find(
+            r => r != null && r.key == "condensed_mana_gem"
+        );
+
+        if (relic == null || relic.effect == null)
+        {
+            Debug.LogWarning(
+                "[RelicManager] Condensed Mana Gem 데이터를 찾을 수 없습니다."
+            );
+            return;
+        }
+
+        if (relic.trigger != "ON_TURN_END" ||
+            relic.effect.type != "ADD_SHIELD")
+        {
+            Debug.LogWarning(
+                "[RelicManager] Condensed Mana Gem의 발동 조건 또는 효과 타입이 올바르지 않습니다."
+            );
+            return;
+        }
+
+        int shieldAmount = remainingEnergy * relic.effect.value;
+
+        player.AddShield(shieldAmount);
+
+        Debug.Log(
+            $"[RelicManager] Condensed Mana Gem 발동! " +
+            $"남은 에너지 {remainingEnergy} → 방어도 +{shieldAmount}"
         );
     }
 }

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class BattleRewardManager : MonoBehaviour
 {
-    // 싱글톤 인스턴스 (다른 스크립트에서 BattleRewardManager.Instance 로 접근 가능)
     public static BattleRewardManager Instance { get; private set; }
 
     [Header("카드 보상 UI")]
@@ -17,10 +17,14 @@ public class BattleRewardManager : MonoBehaviour
 
     [Header("유물 보상 UI")]
     [SerializeField] private GameObject relicRewardPanel;
-    [SerializeField] private Image relicIcon;
-    [SerializeField] private TextMeshProUGUI relicNameText;
-    [SerializeField] private TextMeshProUGUI relicDescriptionText;
-    [SerializeField] private Button acquireRelicButton;
+
+    [SerializeField] private Image[] relicSlotIcons = new Image[3];
+    [SerializeField] private TextMeshProUGUI[] relicNameTexts = new TextMeshProUGUI[3];
+    [SerializeField] private TextMeshProUGUI[] relicDescriptionTexts = new TextMeshProUGUI[3];
+    [SerializeField] private Button[] relicSelectButtons = new Button[3];
+
+    [Header("유물 보상 넘어가기")]
+    [SerializeField] private Button nextButton;
 
     [Header("유물 아이콘 연결")]
     [SerializeField]
@@ -34,18 +38,24 @@ public class BattleRewardManager : MonoBehaviour
         public Sprite icon;
     }
 
-    // 보상 시드 기반 무작위 난수 생성기
+    // 보상 시드 기반 난수 생성기
     private System.Random rewardRng;
 
-    private List<ICard> displayedRewards = new List<ICard>(); // 현재 화면에 표시된 보상 카드 3장
-    private RelicData selectedRelic;
+    // 카드 보상
+    private List<ICard> displayedRewards = new List<ICard>();
+
+    // 현재 표시 중인 유물 3개
+    private List<RelicData> selectedRelics = new List<RelicData>();
+
+    // 버튼 이벤트 저장: OnDestroy에서 정확하게 해제하기 위함
+    private UnityAction[] relicButtonActions;
 
     private bool isProcessingReward;
     private bool isRelicReward;
+    private bool isLeavingReward;
 
     private void Awake()
     {
-        // 싱글톤 초기화
         if (Instance == null)
         {
             Instance = this;
@@ -56,33 +66,51 @@ public class BattleRewardManager : MonoBehaviour
             return;
         }
 
-        // 초기화 시 UI 패널들을 비활성화
         if (rewardUIPanel != null)
-        {
             rewardUIPanel.SetActive(false);
-        }
 
         if (relicRewardPanel != null)
-        {
             relicRewardPanel.SetActive(false);
+
+        // 유물 선택 버튼 이벤트 등록
+        relicButtonActions =
+            new UnityAction[relicSelectButtons.Length];
+
+        for (int i = 0; i < relicSelectButtons.Length; i++)
+        {
+            int index = i;
+
+            if (relicSelectButtons[i] != null)
+            {
+                relicButtonActions[i] =
+                    () => AcquireSelectedRelic(index);
+
+                relicSelectButtons[i].onClick.AddListener(
+                    relicButtonActions[i]
+                );
+            }
         }
 
-        // 유물 획득 버튼 이벤트 리스너 등록
-        if (acquireRelicButton != null)
+        // 넘어가기 버튼 이벤트 등록
+        if (nextButton != null)
         {
-            acquireRelicButton.onClick.AddListener(AcquireSelectedRelic);
+            nextButton.onClick.AddListener(GoToMap);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[BattleRewardManager] NextButton이 Inspector에 연결되지 않았습니다."
+            );
         }
     }
 
     private void Start()
     {
-        int nodeSeed = GameFlowData.currentNodeSeed;
-
-        // 노드마다 고유 시드를 부여해 동일 노드에서는 같은 무작위 순서 사용
-        rewardRng = new System.Random(nodeSeed + 2);
+        rewardRng = new System.Random(
+            GameFlowData.currentNodeSeed + 2
+        );
     }
 
-    // [읽기 전용 프로퍼티] 마스터 카드 롤 참조 (안전하게 접근)
     private List<ICard> MasterPool
     {
         get
@@ -91,7 +119,10 @@ public class BattleRewardManager : MonoBehaviour
         }
     }
 
-    /// 전투 승리 시 호출: 마스터 카드 롤에서 무작위 보상 카드 3장 생성
+    // =====================================
+    // 카드 보상 생성
+    // =====================================
+
     public void GenerateRewardChoices()
     {
         var masterPool = MasterPool;
@@ -111,19 +142,17 @@ public class BattleRewardManager : MonoBehaviour
             );
         }
 
-        // 3개의 보상 카드 무작위 선별
         displayedRewards = GetRandomRewards(masterPool, 3);
+
         isProcessingReward = false;
+        isRelicReward = false;
+        isLeavingReward = false;
 
         if (relicRewardPanel != null)
-        {
             relicRewardPanel.SetActive(false);
-        }
 
         if (rewardUIPanel != null)
-        {
             rewardUIPanel.SetActive(true);
-        }
 
         if (rewardCardParent == null || rewardCardPrefab == null)
         {
@@ -133,16 +162,14 @@ public class BattleRewardManager : MonoBehaviour
             return;
         }
 
-        // 기존 생성된 보상 카드 프리팹 제거
         foreach (Transform child in rewardCardParent)
         {
             Destroy(child.gameObject);
         }
 
-        // 선별된 3개의 카드를 UI 화면에 생성 및 이벤트 연결
         for (int i = 0; i < displayedRewards.Count; i++)
         {
-            int index = i; // 클로저 이슈 방지
+            int index = i;
 
             GameObject cardObj = Instantiate(
                 rewardCardPrefab,
@@ -162,26 +189,24 @@ public class BattleRewardManager : MonoBehaviour
             else
             {
                 Debug.LogError(
-                    "[BattleRewardManager] 보상 카드에 " +
-                    "RewardCardView가 없습니다."
+                    "[BattleRewardManager] RewardCardView가 없습니다."
                 );
             }
         }
     }
 
-    /// 플레이어가 보상 카드 3장 중 하나를 선택했을 때 호출 (덱에 추가)
+    // =====================================
+    // 카드 보상 선택
+    // =====================================
+
     public void SelectRewardCard(int selectedIndex)
     {
-        if (isProcessingReward)
-        {
+        if (isProcessingReward || isLeavingReward)
             return;
-        }
 
         if (selectedIndex < 0 ||
             selectedIndex >= displayedRewards.Count)
-        {
             return;
-        }
 
         if (DeckManager.Instance == null)
         {
@@ -195,7 +220,6 @@ public class BattleRewardManager : MonoBehaviour
 
         isProcessingReward = true;
 
-        // 덱 매니저를 통해 선택한 카드 추가
         DeckManager.Instance.AddCardToDeck(chosenCard);
 
         Debug.Log(
@@ -205,13 +229,10 @@ public class BattleRewardManager : MonoBehaviour
         displayedRewards.Clear();
 
         if (rewardUIPanel != null)
-        {
             rewardUIPanel.SetActive(false);
-        }
 
-        // 엘리트와 보스 노드일 경우 추가로 유물 보상 팝업을 표시
-        if (GameFlowData.currentNodeType == MapNode.NodeType.Elite ||
-            GameFlowData.currentNodeType == MapNode.NodeType.Boss)
+        // 중간보스 처치 시에만 유물 보상 제공
+        if (GameFlowData.currentNodeType == MapNode.NodeType.Elite)
         {
             isRelicReward = true;
             StartCoroutine(ShowRelicRewardWhenReady());
@@ -222,7 +243,10 @@ public class BattleRewardManager : MonoBehaviour
         }
     }
 
-    // 서버의 유물 목록 데이터 로드가 완료될 때까지 대기 후 팝업 연출
+    // =====================================
+    // 유물 데이터 로드 대기
+    // =====================================
+
     private IEnumerator ShowRelicRewardWhenReady()
     {
         float elapsed = 0f;
@@ -242,8 +266,7 @@ public class BattleRewardManager : MonoBehaviour
             RelicManager.Instance.AllRelics.Count == 0)
         {
             Debug.LogWarning(
-                "[BattleRewardManager] 유물 데이터를 불러오지 못했습니다. " +
-                "맵으로 이동합니다."
+                "[BattleRewardManager] 유물 데이터를 불러오지 못했습니다."
             );
 
             GoToMap();
@@ -253,7 +276,10 @@ public class BattleRewardManager : MonoBehaviour
         ShowRelicReward();
     }
 
-    // 획득 가능한 무작위 유물 1개를 팝업창에 출력
+    // =====================================
+    // 유물 보상 3개 표시
+    // =====================================
+
     private void ShowRelicReward()
     {
         if (RelicManager.Instance == null)
@@ -273,11 +299,13 @@ public class BattleRewardManager : MonoBehaviour
             );
         }
 
-        // 미보유 유물 중 하나 추출
-        selectedRelic =
-            RelicManager.Instance.GetRandomAvailableRelic(rewardRng);
+        selectedRelics =
+            RelicManager.Instance.GetRandomAvailableRelics(
+                rewardRng,
+                3
+            );
 
-        if (selectedRelic == null)
+        if (selectedRelics == null || selectedRelics.Count == 0)
         {
             Debug.LogWarning(
                 "[BattleRewardManager] 획득 가능한 유물이 없습니다."
@@ -287,56 +315,160 @@ public class BattleRewardManager : MonoBehaviour
             return;
         }
 
-        if (relicRewardPanel == null ||
-            relicNameText == null ||
-            relicDescriptionText == null ||
-            acquireRelicButton == null)
+        if (relicRewardPanel == null)
         {
             Debug.LogError(
-                "[BattleRewardManager] 유물 보상 UI가 연결되지 않았습니다."
+                "[BattleRewardManager] RelicRewardPanel이 없습니다."
             );
 
             GoToMap();
             return;
         }
 
-        relicNameText.text = selectedRelic.name;
-        relicDescriptionText.text = selectedRelic.description;
-
-        // 유물 키에 해당하는 아이콘 스프라이트 검색 및 적용
-        Sprite iconSprite = null;
-
-        foreach (RelicIconEntry entry in relicIcons)
+        if (relicSlotIcons == null ||
+            relicNameTexts == null ||
+            relicDescriptionTexts == null ||
+            relicSelectButtons == null ||
+            relicSlotIcons.Length < 3 ||
+            relicNameTexts.Length < 3 ||
+            relicDescriptionTexts.Length < 3 ||
+            relicSelectButtons.Length < 3)
         {
-            if (entry != null &&
-                entry.relicKey == selectedRelic.key)
+            Debug.LogError(
+                "[BattleRewardManager] 유물 슬롯 배열 크기가 부족합니다."
+            );
+
+            GoToMap();
+            return;
+        }
+
+        // 슬롯별 유물 정보 표시
+        for (int i = 0; i < 3; i++)
+        {
+            bool hasRelic = i < selectedRelics.Count;
+
+            if (!hasRelic || selectedRelics[i] == null)
             {
-                iconSprite = entry.icon;
-                break;
+                SetRelicSlotEmpty(i);
+                continue;
             }
+
+            RelicData relic = selectedRelics[i];
+
+            if (relicNameTexts[i] == null ||
+                relicDescriptionTexts[i] == null ||
+                relicSlotIcons[i] == null ||
+                relicSelectButtons[i] == null)
+            {
+                Debug.LogError(
+                    $"[BattleRewardManager] 유물 슬롯 {i + 1}의 UI가 연결되지 않았습니다."
+                );
+
+                SetRelicSlotEmpty(i);
+                continue;
+            }
+
+            relicNameTexts[i].text = relic.name;
+            relicDescriptionTexts[i].text = relic.description;
+
+            Sprite iconSprite = GetRelicIcon(relic.key);
+
+            relicSlotIcons[i].sprite = iconSprite;
+            relicSlotIcons[i].enabled = iconSprite != null;
+
+            relicSelectButtons[i].interactable = true;
+
+            Debug.Log(
+                $"[BattleRewardManager] 유물 슬롯 {i + 1}: {relic.name}"
+            );
         }
 
-        if (relicIcon != null)
-        {
-            relicIcon.sprite = iconSprite;
-            relicIcon.enabled = iconSprite != null;
-        }
+        // 유물 보상 패널 표시
+        isProcessingReward = false;
+        isRelicReward = true;
+        isLeavingReward = false;
 
-        acquireRelicButton.interactable = true;
         relicRewardPanel.SetActive(true);
 
         Debug.Log(
-            $"[BattleRewardManager] 유물 보상 표시: {selectedRelic.name}"
+            $"[BattleRewardManager] 유물 보상 {selectedRelics.Count}개 표시"
         );
     }
 
-    // 유물 보상 창에서 획득 버튼 클릭 시 실행
-    private void AcquireSelectedRelic()
+    // =====================================
+    // 유물 아이콘 검색
+    // =====================================
+
+    private Sprite GetRelicIcon(string relicKey)
     {
-        if (!isRelicReward || selectedRelic == null)
+        foreach (RelicIconEntry entry in relicIcons)
         {
-            return;
+            if (entry != null &&
+                entry.relicKey == relicKey)
+            {
+                return entry.icon;
+            }
         }
+
+        Debug.LogWarning(
+            $"[BattleRewardManager] 유물 아이콘을 찾을 수 없습니다: {relicKey}"
+        );
+
+        return null;
+    }
+
+    // =====================================
+    // 빈 슬롯 처리
+    // =====================================
+
+    private void SetRelicSlotEmpty(int index)
+    {
+        if (relicNameTexts != null &&
+            index < relicNameTexts.Length &&
+            relicNameTexts[index] != null)
+        {
+            relicNameTexts[index].text = "";
+        }
+
+        if (relicDescriptionTexts != null &&
+            index < relicDescriptionTexts.Length &&
+            relicDescriptionTexts[index] != null)
+        {
+            relicDescriptionTexts[index].text = "";
+        }
+
+        if (relicSlotIcons != null &&
+            index < relicSlotIcons.Length &&
+            relicSlotIcons[index] != null)
+        {
+            relicSlotIcons[index].sprite = null;
+            relicSlotIcons[index].enabled = false;
+        }
+
+        if (relicSelectButtons != null &&
+            index < relicSelectButtons.Length &&
+            relicSelectButtons[index] != null)
+        {
+            relicSelectButtons[index].interactable = false;
+        }
+    }
+
+    // =====================================
+    // 유물 선택 및 획득
+    // =====================================
+
+    private void AcquireSelectedRelic(int selectedIndex)
+    {
+        Debug.Log(
+            $"[BattleRewardManager] 유물 획득 버튼 클릭: {selectedIndex}"
+        );
+
+        if (!isRelicReward || isProcessingReward || isLeavingReward)
+            return;
+
+        if (selectedIndex < 0 ||
+            selectedIndex >= selectedRelics.Count)
+            return;
 
         if (RelicManager.Instance == null)
         {
@@ -346,11 +478,18 @@ public class BattleRewardManager : MonoBehaviour
             return;
         }
 
-        acquireRelicButton.interactable = false;
+        RelicData chosenRelic = selectedRelics[selectedIndex];
 
-        // 유물 매니저를 통해 유물 실제 획득 및 효과 적용
+        if (chosenRelic == null)
+            return;
+
+        isProcessingReward = true;
+
+        // 중복 획득 방지: 모든 버튼 비활성화
+        SetAllRelicButtonsInteractable(false);
+
         bool acquired = RelicManager.Instance.AcquireRelic(
-            selectedRelic.key
+            chosenRelic.key
         );
 
         if (!acquired)
@@ -359,12 +498,13 @@ public class BattleRewardManager : MonoBehaviour
                 "[BattleRewardManager] 유물 획득에 실패했습니다."
             );
 
-            acquireRelicButton.interactable = true;
+            isProcessingReward = false;
+            SetAllRelicButtonsInteractable(true);
             return;
         }
 
         Debug.Log(
-            $"[BattleRewardManager] 유물 보상 획득: {selectedRelic.name}"
+            $"[BattleRewardManager] 유물 보상 획득: {chosenRelic.name}"
         );
 
         if (RelicIconUI.Instance != null)
@@ -372,11 +512,31 @@ public class BattleRewardManager : MonoBehaviour
             RelicIconUI.Instance.RefreshRelicIcons();
         }
 
-        selectedRelic = null;
+        selectedRelics.Clear();
+
         GoToMap();
     }
 
-    // 카드 풀에서 원본 훼손 없이 중복 없는 N개의 보상 카드 무작위 추출
+    // =====================================
+    // 유물 버튼 활성화 / 비활성화
+    // =====================================
+
+    private void SetAllRelicButtonsInteractable(bool interactable)
+    {
+        if (relicSelectButtons == null)
+            return;
+
+        foreach (Button button in relicSelectButtons)
+        {
+            if (button != null)
+                button.interactable = interactable;
+        }
+    }
+
+    // =====================================
+    // 카드 보상 무작위 추출
+    // =====================================
+
     private List<ICard> GetRandomRewards(
         List<ICard> sourcePool,
         int count)
@@ -391,28 +551,37 @@ public class BattleRewardManager : MonoBehaviour
             int randomIndex = rewardRng.Next(0, poolCopy.Count);
 
             selected.Add(poolCopy[randomIndex]);
-            poolCopy.RemoveAt(randomIndex); // 중복 선택 방지
+            poolCopy.RemoveAt(randomIndex);
         }
 
         return selected;
     }
 
-    // 모든 보상 처리가 끝난 뒤 UI 닫기 및 맵 씬으로 전환
+    // =====================================
+    // 보상 종료 및 맵 이동
+    // =====================================
+
     private void GoToMap()
     {
+        if (isLeavingReward)
+            return;
+
+        isLeavingReward = true;
+
         isRelicReward = false;
         isProcessingReward = false;
-        selectedRelic = null;
+
+        selectedRelics.Clear();
 
         if (rewardUIPanel != null)
-        {
             rewardUIPanel.SetActive(false);
-        }
 
         if (relicRewardPanel != null)
-        {
             relicRewardPanel.SetActive(false);
-        }
+
+        Debug.Log(
+            "[BattleRewardManager] 보상 종료. 맵으로 이동합니다."
+        );
 
         if (UIManager.Instance != null)
         {
@@ -423,22 +592,38 @@ public class BattleRewardManager : MonoBehaviour
             Debug.LogError(
                 "[BattleRewardManager] UIManager를 찾을 수 없습니다."
             );
+
+            isLeavingReward = false;
         }
     }
+
+    // =====================================
+    // 이벤트 해제
+    // =====================================
 
     private void OnDestroy()
     {
         if (Instance != this)
-        {
             return;
+
+        // 유물 버튼 이벤트 해제
+        for (int i = 0; i < relicSelectButtons.Length; i++)
+        {
+            if (relicSelectButtons[i] != null &&
+                relicButtonActions != null &&
+                i < relicButtonActions.Length &&
+                relicButtonActions[i] != null)
+            {
+                relicSelectButtons[i].onClick.RemoveListener(
+                    relicButtonActions[i]
+                );
+            }
         }
 
-        // 버튼 클릭 이벤트 해제
-        if (acquireRelicButton != null)
+        // 넘어가기 버튼 이벤트 해제
+        if (nextButton != null)
         {
-            acquireRelicButton.onClick.RemoveListener(
-                AcquireSelectedRelic
-            );
+            nextButton.onClick.RemoveListener(GoToMap);
         }
 
         Instance = null;

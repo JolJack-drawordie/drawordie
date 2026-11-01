@@ -174,31 +174,85 @@ public class MapGenerator : MonoBehaviour
                     else
                     {
                         // =========================
-                        // 일반 층의 Rest / Elite 랜덤 생성
+                        // 일반 층의 Rest / Elite 생성
                         // =========================
 
                         if (floor >= 2)
                         {
-                            double randomValue =
-                                mapRandom.NextDouble();
+                            // 중간보스는 이번 액트에서 이미 생성되었는지 확인
+                            bool eliteAlreadyCreated = false;
 
-                            // Rest
-                            if (randomValue < restChance)
+                            foreach (GameObject previousNode in previousFloor)
                             {
-                                prefab = restPrefab;
+                                if (previousNode == null) continue;
 
-                                nodeType =
-                                    MapNode.NodeType.Rest;
+                                MapNode previousMapNode =
+                                    previousNode.GetComponent<MapNode>();
+
+                                if (previousMapNode != null &&
+                                    previousMapNode.nodeType == MapNode.NodeType.Elite)
+                                {
+                                    eliteAlreadyCreated = true;
+                                    break;
+                                }
                             }
-                            // Elite
-                            else if (
-                                randomValue <
-                                restChance + 0.25f)
-                            {
-                                prefab = elitePrefab;
 
-                                nodeType =
-                                    MapNode.NodeType.Elite;
+                            // 현재 층에서 중간보스가 생성되었는지도 확인
+                            foreach (GameObject currentNode in currentFloor)
+                            {
+                                if (currentNode == null) continue;
+
+                                MapNode currentMapNode =
+                                    currentNode.GetComponent<MapNode>();
+
+                                if (currentMapNode != null &&
+                                    currentMapNode.nodeType == MapNode.NodeType.Elite)
+                                {
+                                    eliteAlreadyCreated = true;
+                                    break;
+                                }
+                            }
+
+                            // 아직 중간보스가 없으면 생성 확률 부여
+                            if (!eliteAlreadyCreated)
+                            {
+                                // 마지막 일반 층에서는 반드시 중간보스 생성
+                                bool isLastNormalFloor =
+                                    floor == floorCount - 3;
+
+                                // 마지막 일반 층의 마지막 노드라면 확정 생성
+                                bool isLastNode =
+                                    i == nodeCount - 1;
+
+                                if (isLastNormalFloor && isLastNode)
+                                {
+                                    prefab = elitePrefab;
+                                    nodeType = MapNode.NodeType.Elite;
+                                }
+                                else
+                                {
+                                    double randomValue = mapRandom.NextDouble();
+
+                                    if (randomValue < restChance)
+                                    {
+                                        prefab = restPrefab;
+                                        nodeType = MapNode.NodeType.Rest;
+                                    }
+                                    else if (randomValue < restChance + 0.25f)
+                                    {
+                                        prefab = elitePrefab;
+                                        nodeType = MapNode.NodeType.Elite;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // 중간보스가 이미 생성되었다면 Rest만 랜덤 생성
+                                if (mapRandom.NextDouble() < restChance)
+                                {
+                                    prefab = restPrefab;
+                                    nodeType = MapNode.NodeType.Rest;
+                                }
                             }
                         }
                     }
