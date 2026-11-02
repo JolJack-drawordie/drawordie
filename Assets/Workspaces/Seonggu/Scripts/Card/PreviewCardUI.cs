@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
+// ì¡°í•© ìŠ¬ë¡¯ì— ì¬ë£Œ ë‘ ì¥ì´ ë“¤ì–´ì˜¤ë©´ ë³´ì—¬ ì£¼ëŠ” ê²°ê³¼ ì¹´ë“œ ë¯¸ë¦¬ë³´ê¸°
 public class PreviewCardUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text nameText;
@@ -10,12 +10,12 @@ public class PreviewCardUI : MonoBehaviour
 
     public void Setup(Combination combo)
     {
-        // UI ÅØ½ºÆ® °»½Å (³× Ä«µå µ¥ÀÌÅÍ ±¸Á¶¿¡ ¸ÂÃç¼­ ¼öÁ¤ °¡´É)  
+        // ê²°ê³¼ ì¹´ë“œì˜ ì´ë¦„ / ë¹„ìš© / ì„¤ëª…(ìˆ˜ì¹˜ í¬í•¨) í‘œì‹œ
         if (nameText != null) nameText.text = combo.skillName;
         if (costText != null) costText.text = combo.finalCost.ToString();
         if (descriptionText != null) descriptionText.text = CardText.Describe(combo);
 
-        // Ä«µå ÇÁ·¹ÀÓ/¾ÆÀÌÄÜ Àû¿ë
+        // ì¹´ë“œ í”„ë ˆì„ / ì•„ì´ì½˜
         CardVisual cardVisual = GetComponent<CardVisual>();
         if (cardVisual != null) cardVisual.Apply(combo);
     }

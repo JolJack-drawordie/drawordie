@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+// 전투 시작 시 플레이어와 적을 스폰 위치에 만들고 스탯을 넣어 준다.
+// 적은 노드 종류로 정한다: 보스 노드 → Act별 보스, 중간보스 노드 → Act별 중간보스, 일반 노드 → 노드 시드로 고른 몬스터.
 public class BattleFactory : MonoBehaviour
 {
     public static BattleFactory Instance;
@@ -8,13 +10,13 @@ public class BattleFactory : MonoBehaviour
     [Header("프리팹들")]
     public GameObject playerPrefab;
 
-    // [Act 대응] Act마다 다른 보스를 쓸 수 있도록 act 번호로 묶어서 관리
+    // Act별 보스 / 중간보스 (프리팹 + 서버 Monster.json id)
     [System.Serializable]
     public class BossInfo
     {
-        public int act;              // 이 보스가 등장할 Act (1, 2, 3 ...)
+        public int act; // 등장할 Act (1, 2, 3)
         public GameObject bossPrefab;
-        public int bossId;           // 서버 Monster.json에 등록된 보스 id (스탯을 여기서 가져옴)
+        public int bossId; // 서버 Monster.json의 id (스탯을 여기서 가져옴)
     }
 
     [Header("보스 (Boss 노드에서만 등장, Act마다 다른 보스를 리스트에 추가)")]
@@ -31,18 +33,19 @@ public class BattleFactory : MonoBehaviour
             Destroy(gameObject);
     }
 
-    // 현재 Act에 맞는 보스 정보를 찾아줌 (없으면 null)
+    // 이 Act의 보스 정보 (없으면 null)
     private BossInfo GetBossInfo(int act)
     {
         return bossList.Find(b => b.act == act);
     }
 
-    // 현재 Act에 맞는 중간보스 정보를 찾아줌 (없으면 null)
+    // 이 Act의 중간보스 정보 (없으면 null)
     private BossInfo GetEliteInfo(int act)
     {
         return eliteList.Find(b => b.act == act);
     }
 
+    // 플레이어 생성 + 씬 사이에서 유지되는 플레이어 스탯 연결
     public GameObject SpawnPlayer(GameObject spawnPoint)
     {
         if (playerPrefab == null)
@@ -55,16 +58,15 @@ public class BattleFactory : MonoBehaviour
         Quaternion rot = spawnPoint != null ? spawnPoint.transform.rotation : Quaternion.identity;
 
         GameObject playerObj = Instantiate(playerPrefab, pos, rot);
-        playerObj.SetActive(false); // 데이터가 주입될 때까지 숨김
+        playerObj.SetActive(false); // 스탯을 넣을 때까지 꺼 둠 (Awake / Start가 스탯 없이 돌지 않도록)
 
-        // 런타임 스탯 주입 (DI)
         UnitBase playerUnit = playerObj.GetComponent<UnitBase>();
         if (playerUnit != null && StatManager.Instance != null)
         {
             playerUnit.Initialize(StatManager.Instance.GetPlayerStat());
         }
 
-        // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
+        // 체력 / 방어도 바 연결
         if (UIManager.Instance != null)
         {
             UIManager.Instance.LinkUnitToUI(playerUnit);
@@ -76,9 +78,10 @@ public class BattleFactory : MonoBehaviour
         return playerObj;
     }
 
+    // 적 생성: 노드 종류에 맞는 프리팹을 고르고 서버 스탯을 넣은 뒤 켠다
     public GameObject SpawnEnemy(GameObject spawnPoint)
     {
-        // [보스 분기] 보스 노드면 현재 Act에 맞는 보스를 찾아서 스폰
+        // 보스 노드: 이 Act의 보스
         bool isBossNode = GameFlowData.currentNodeType == MapNode.NodeType.Boss;
         BossInfo bossInfo = isBossNode ? GetBossInfo(GameFlowData.currentAct) : null;
         bool isBoss = bossInfo != null && bossInfo.bossPrefab != null;
@@ -88,7 +91,7 @@ public class BattleFactory : MonoBehaviour
             Debug.LogWarning($"[BattleFactory] Act {GameFlowData.currentAct}에 등록된 보스가 없습니다. bossList에 추가해주세요.");
         }
 
-        // [중간보스 분기] Elite 노드면 현재 Act에 맞는 중간보스 (없으면 일반 몬스터로 대체)
+        // 중간보스 노드: 이 Act의 중간보스 (없으면 일반 몬스터로 대신함)
         bool isEliteNode = GameFlowData.currentNodeType == MapNode.NodeType.Elite;
         BossInfo eliteInfo = isEliteNode ? GetEliteInfo(GameFlowData.currentAct) : null;
         bool isElite = eliteInfo != null && eliteInfo.bossPrefab != null;
@@ -104,7 +107,7 @@ public class BattleFactory : MonoBehaviour
         if (isBoss)
         {
             enemyPrefab = bossInfo.bossPrefab;
-            selectedId = bossInfo.bossId; // 보스도 몬스터와 동일하게 서버 id로 스탯 조회
+            selectedId = bossInfo.bossId; // 보스도 일반 몬스터처럼 서버 id로 스탯을 가져옴
             Debug.Log($"보스 노드 → Act {bossInfo.act} 보스 스폰 ({bossInfo.bossPrefab.name}, id={selectedId})");
         }
         else if (isElite)
@@ -115,10 +118,10 @@ public class BattleFactory : MonoBehaviour
         }
         else
         {
-            // GameManager.Start에서 SpawnAll이 먼저 호출될 수 있어 Start에서 미리 계산하면 시드가 0으로 고정됨 → 스폰 시점에 계산
+            // 일반 몬스터: 노드 시드로 고름 (같은 노드면 불러와도 같은 몬스터). 스폰 시점에 계산해야 시드가 맞음
             int nodeSeed = GameFlowData.currentNodeSeed;
             System.Random seedGenerator = new System.Random(nodeSeed + 1);
-            int seed = seedGenerator.Next(); // 몬스터 시드값
+            int seed = seedGenerator.Next(); // 몬스터 선택용 시드
             Debug.Log("몬스터 시드 : " + seed);
             selectedId = MonsterDatabase.Instance.GetRandomMonsterId(seed);
             enemyPrefab = MonsterDatabase.Instance.GetPrefab((MonsterType)selectedId);
@@ -134,9 +137,9 @@ public class BattleFactory : MonoBehaviour
         Quaternion rot = spawnPoint != null ? spawnPoint.transform.rotation : Quaternion.identity;
 
         GameObject enemyObj = Instantiate(enemyPrefab, pos, rot);
-        enemyObj.SetActive(false); // 데이터가 주입될 때까지 숨김
+        enemyObj.SetActive(false); // 스탯을 넣을 때까지 꺼 둠
 
-        // 런타임 스탯 주입 (DI) - 보스도 몬스터와 동일하게 서버 Monster.json에서 id로 조회
+        // 서버 Monster.json 스탯을 id로 찾아 넣는다
         UnitBase enemyUnit = enemyObj.GetComponent<UnitBase>();
         if (enemyUnit != null && StatManager.Instance != null)
         {
@@ -150,18 +153,19 @@ public class BattleFactory : MonoBehaviour
             }
         }
 
-        // 팩토리가 직접 UI 매니저에 링크 (유닛이 스스로 하던 걸 여기서 안전하게 처리)
+        // 체력 / 방어도 바 연결
         if (UIManager.Instance != null)
         {
             UIManager.Instance.LinkUnitToUI(enemyUnit);
         }
 
-        enemyObj.SetActive(true); // 데이터 주입 완료 후 활성화 (Awake/Start 정상 작동)
+        enemyObj.SetActive(true); // 스탯을 넣은 뒤 켜서 Awake / Start가 정상적으로 동작하게
 
         Debug.Log("팩토리가 적 유닛을 생성했습니다.");
         return enemyObj;
     }
 
+    // 플레이어와 적을 만들고, 플레이어의 공격 대상으로 적을 연결
     public (GameObject player, GameObject enemy) SpawnAll(GameObject playerSpawnPoint, GameObject enemySpawnPoint)
     {
         GameObject playerObj = SpawnPlayer(playerSpawnPoint);

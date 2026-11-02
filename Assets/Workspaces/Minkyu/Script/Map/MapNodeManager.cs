@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// 맵 씬에서 지금 갈 수 있는 노드만 누를 수 있게 하고, 노드를 고르면 전투 / 휴식 씬으로 이동한다.
 public class MapNodeManager : MonoBehaviour
 {
     [Header("Battle Scene")]
-    public string battleSceneName = "JunhaTest";
+    public string battleSceneName = "BattleScene";
 
     [Header("Rest Scene")]
     public string restSceneName = "RestScene";
@@ -13,14 +14,14 @@ public class MapNodeManager : MonoBehaviour
 
     private void Start()
     {
-        // 현재 맵의 모든 노드 찾기
+        // 지금 맵의 모든 노드
         allNodes = FindObjectsByType<MapNode>(
             FindObjectsSortMode.None
         );
 
         InitializeNodes();
 
-        // 배경음악
+        // 맵 배경음
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayBGM(
@@ -29,21 +30,19 @@ public class MapNodeManager : MonoBehaviour
         }
     }
 
-    /// <summary>   
-    /// 맵 진입 시 활성화할 노드 결정
-    /// </summary>
+    // 맵에 들어왔을 때 누를 수 있는 노드 결정: 처음이면 0층, 아니면 지난번 노드에서 이어지는 노드만
     void InitializeNodes()
     {
-        // 우선 모든 노드 비활성화
+        // 일단 모든 노드를 막고
         foreach (MapNode node in allNodes)
         {
             node.SetInteractable(false);
         }
 
-        // 첫 시작이면 0층만 활성화
+        // 처음 들어온 맵이면 0층만
         if (GameFlowData.currentFloor == -1)
         {
-            // 테스트용: 보스 노드 바로 활성화
+            // 테스트용: 보스 노드를 바로 고를 수 있게
             if (GameFlowData.debugUnlockBoss)
             {
                 foreach (MapNode node in allNodes)
@@ -68,7 +67,7 @@ public class MapNodeManager : MonoBehaviour
             return;
         }
 
-        // 이전에 선택했던 노드 찾기
+        // 지난번에 고른 노드 찾기
         MapNode currentNode = null;
 
         foreach (MapNode node in allNodes)
@@ -86,16 +85,14 @@ public class MapNodeManager : MonoBehaviour
             return;
         }
 
-        // 현재 노드에서 연결된 다음 노드만 활성화
+        // 그 노드에서 이어지는 다음 노드만 누를 수 있게
         foreach (MapNode nextNode in currentNode.connectedNodes)
         {
             nextNode.SetInteractable(true);
         }
     }
 
-    /// <summary>
-    /// 노드 클릭 시 호출
-    /// </summary>
+    // 노드를 눌렀을 때: 위치 기록 후 휴식 노드는 휴식 씬, 나머지는 전투 씬으로
     public void NodeSelected(MapNode selectedNode)
     {
         if (selectedNode == null)
@@ -104,7 +101,6 @@ public class MapNodeManager : MonoBehaviour
             return;
         }
 
-        // 선택한 노드 정보 저장
         GameFlowData.SelectNode(selectedNode);
 
         Debug.Log(
@@ -113,7 +109,7 @@ public class MapNodeManager : MonoBehaviour
             $"Type {selectedNode.nodeType}"
         );
 
-        // Rest 노드라면 RestScene으로 이동
+        // 휴식 노드 → 휴식 씬
         if (selectedNode.nodeType == MapNode.NodeType.Rest)
         {
             Debug.Log("Rest 노드 선택 → RestScene 이동");
@@ -122,13 +118,13 @@ public class MapNodeManager : MonoBehaviour
         }
         else
         {
-            // Monster / Elite / Boss는 기존 전투씬으로 이동
+            // 일반 전투 / 중간보스 / 보스 → 전투 씬
             Debug.Log("전투 노드 선택 → Battle Scene 이동");
 
             SceneManager.LoadScene(battleSceneName);
         }
 
-        // 맵 배경음악 정지
+        // 맵 배경음 정지
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.StopBGM();

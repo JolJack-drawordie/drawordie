@@ -4,35 +4,37 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+// ì„œë²„ì—ì„œ ì¹´ë“œ ë°ì´í„°(í˜•ìš©ì‚¬ / ë™ëª…ì‚¬ ëª©ë¡, ìƒˆ ê²Œì„ ê¸°ë³¸ ë±)ë¥¼ ë°›ì•„ ë³´ê´€í•œë‹¤. ì²« ì”¬ ë¡œë“œ ì „ì— ìë™ìœ¼ë¡œ ë§Œë“¤ì–´ì§€ê³  ì”¬ì´ ë°”ë€Œì–´ë„ ìœ ì§€ëœë‹¤.
 public class CardDataManager : MonoBehaviour
 {
     public static CardDataManager Instance { get; private set; }
-    public bool isDataLoaded { get; private set; } = false; // »óÅÂ º¯¼ö
-    public event Action OnDataLoaded; // ÀÌº¥Æ®  
+    public bool isDataLoaded { get; private set; } = false; // ì¹´ë“œ ë°ì´í„°ë¥¼ ë‹¤ ë°›ì•˜ëŠ”ì§€
+    public event Action OnDataLoaded; // ë‹¤ ë°›ì•˜ì„ ë•Œ ì•Œë¦¼ (TurnManagerê°€ ì „íˆ¬ ì‹œì‘ì— ì‚¬ìš©)
 
+    // ì„œë²„ idë¡œ ì°¾ëŠ” ì¹´ë“œ ë°ì´í„° í‘œ
     public Dictionary<int, Adjective> adjectiveTable = new Dictionary<int, Adjective>();
     public Dictionary<int, Gerund> gerundTable = new Dictionary<int, Gerund>();
 
+    // ìƒˆ ê²Œì„ ì‹œì‘ ë± (ì„œë²„ê°€ ì •í•¨)
     public List<int> defaultAdjectiveIds = new List<int>();
     public List<int> defaultGerundIds = new List<int>();
 
-    public List<ICard> masterCardPool = new List<ICard>(); // µ¿¸í»ç, Çü¿ë»ç ÅëÇÕ Ä«µå Ç®
+    public List<ICard> masterCardPool = new List<ICard>(); // í˜•ìš©ì‚¬ + ë™ëª…ì‚¬ ì „ì²´ ì¹´ë“œ (ë³´ìƒ í›„ë³´ ë“±ì— ì‚¬ìš©)
 
-    // ¾ÀÀ» ¹Ù·Î ½ÃÀÛÇØµµ ¸Å´ÏÀú°¡ ¾Ë¾Æ¼­ Æ¢¾î³ª¿À°Ô ÇÏ´Â ·±Å¸ÀÓ ÃÊ±âÈ­ ¸Ş¼­µå
+    // ì”¬ì— ë¯¸ë¦¬ ë‘ì§€ ì•Šì•„ë„ Resourcesì˜ CardDataManager í”„ë¦¬íŒ¹ì„ ê²Œì„ ì‹œì‘ ì‹œ ìë™ìœ¼ë¡œ ë§Œë“ ë‹¤
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeBeforeSceneLoad()
     {
-        // Resources Æú´õ¿¡ ÀÖ´Â DataManager ÇÁ¸®ÆÕÀ» ·ÎµåÇØ¼­ µ¿Àû »ı¼º
         GameObject prefab = Resources.Load<GameObject>("CardDataManager");
         if (prefab != null)
         {
             GameObject obj = Instantiate(prefab);
             DontDestroyOnLoad(obj);
-            Debug.Log("·±Å¸ÀÓ ½ÃÁ¡¿¡ DataManager°¡ ¼º°øÀûÀ¸·Î »ı¼ºµÇ¾ú½À´Ï´Ù.");
+            Debug.Log("ëŸ°íƒ€ì„ ì‹œì ì— DataManagerê°€ ì„±ê³µì ìœ¼ë¡œ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         else
         {
-            Debug.LogWarning("Resources Æú´õ¿¡ DataManager ÇÁ¸®ÆÕÀÌ ¾ø½À´Ï´Ù! ¿¡µğÅÍ Å×½ºÆ® ½Ã ¾À¿¡ Á÷Á¢ ¹èÄ¡ÇØ ÁÖ¼¼¿ä.");
+            Debug.LogWarning("Resources í´ë”ì— DataManager í”„ë¦¬íŒ¹ì´ ì—†ìŠµë‹ˆë‹¤! ì—ë””í„° í…ŒìŠ¤íŠ¸ ì‹œ ì”¬ì— ì§ì ‘ ë°°ì¹˜í•´ ì£¼ì„¸ìš”.");
         }
     }
 
@@ -56,14 +58,12 @@ public class CardDataManager : MonoBehaviour
         StartCoroutine(LoadDefaultDeck());
     }
 
+    // í˜•ìš©ì‚¬ / ë™ëª…ì‚¬ ëª©ë¡ì„ ì°¨ë¡€ë¡œ ë°›ì•„ í‘œë¥¼ ë§Œë“  ë’¤ ì™„ë£Œë¥¼ ì•Œë¦°ë‹¤
     public IEnumerator LoadCards()
     {
-        // 1. °¡Á®¿Í¾ß ÇÒ µ¥ÀÌÅÍµéÀÇ URL (¼­¹ö API ÁÖ¼Ò¿¡ ¸Â°Ô ¼öÁ¤ÇØ)
         string adjUrl = "http://localhost:8080/api/game/load-adjectives";
         string gerUrl = "http://localhost:8080/api/game/load-gerunds";
 
-        // 2. µ¿½Ã Ã³¸®¸¦ À§ÇØ ÄÚ·çÆ¾À» °¢°¢ ½ÇÇàÇÏ°Å³ª, 
-        // ¿©±â¼± °¢°¢ È£ÃâÇÏ´Â °ÍÀ¸·Î °¡Á¤ÇÒ°Ô.
         yield return StartCoroutine(FetchData<AdjectiveList>(adjUrl, (list) => {
             adjectiveTable.Clear();
             foreach (var adj in list.adjectives)
@@ -80,10 +80,10 @@ public class CardDataManager : MonoBehaviour
 
         isDataLoaded = true;
         OnDataLoaded?.Invoke();
-        Debug.Log("¸ğµç Ä«µå µ¥ÀÌÅÍ ·Îµù ¹× µñ¼Å³Ê¸® ±¸Ãà ¿Ï·á!");
+        Debug.Log("ëª¨ë“  ì¹´ë“œ ë°ì´í„° ë¡œë”© ë° ë”•ì…”ë„ˆë¦¬ êµ¬ì¶• ì™„ë£Œ!");
     }
 
-    // Áßº¹ ÄÚµå¸¦ ÁÙÀÌ±â À§ÇÑ Á¦³×¸¯ Fetch ÇÔ¼ö
+    // ì„œë²„ GET ìš”ì²­ â†’ JSONì„ Të¡œ ë³€í™˜í•´ì„œ onCompleteë¡œ ë„˜ê¹€ (ì‹¤íŒ¨í•˜ë©´ ë¡œê·¸ë§Œ)
     private IEnumerator FetchData<T>(string url, System.Action<T> onComplete)
     {
         using (UnityWebRequest www = UnityWebRequest.Get(url))
@@ -96,14 +96,15 @@ public class CardDataManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"{url} µ¥ÀÌÅÍ ·Îµù ½ÇÆĞ: {www.error}");
+                Debug.LogError($"{url} ë°ì´í„° ë¡œë”© ì‹¤íŒ¨: {www.error}");
             }
         }
     }
 
+    // ìƒˆ ê²Œì„ ê¸°ë³¸ ë± ë°›ê¸°
     public IEnumerator LoadDefaultDeck()
     {
-        string defaultDeckUrl = "http://localhost:8080/api/game/load-default-deck"; // ¿¹½Ã API
+        string defaultDeckUrl = "http://localhost:8080/api/game/load-default-deck";
 
         yield return StartCoroutine(FetchData<DefaultDeckData>(defaultDeckUrl, (deckData) => {
             defaultAdjectiveIds = deckData.adjectiveIds;
@@ -111,6 +112,7 @@ public class CardDataManager : MonoBehaviour
         }));
     }
 
+    // ì „ì²´ ì¹´ë“œ ëª©ë¡ì„ ë‹¤ì‹œ ë§Œë“ ë‹¤
     public void BuildMasterCardPool()
     {
         masterCardPool.Clear();

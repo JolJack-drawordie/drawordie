@@ -1,11 +1,11 @@
-
-using System;
 using UnityEngine;
 
+// 지금 Act의 맵 시드를 정한다 (이미 있으면 그대로, 없으면 마스터 시드 + Act로 새로 만듦).
+// 같은 마스터 시드면 Act마다 항상 같은 맵이 나오고, 이 시드로 Unity 난수를 초기화해 MapGenerator가 쓴다.
 public class MapSeedGenerator : MonoBehaviour
 {
     [Header("Seed")]
-    public int seed;
+    public int seed; // 이번 Act의 맵 시드 (확인용)
 
     private MasterSeedManager masterSeedManager;
 
@@ -18,7 +18,6 @@ public class MapSeedGenerator : MonoBehaviour
 
     void GenerateMapSeed()
     {
-        // MasterSeedManager 확인
         if (masterSeedManager == null)
         {
             Debug.LogError("MasterSeedManager가 없습니다.");
@@ -28,7 +27,7 @@ public class MapSeedGenerator : MonoBehaviour
         int masterSeed = masterSeedManager.masterSeed;
         int currentAct = GameFlowData.currentAct;
 
-        // 현재 Act의 Map Seed가 이미 존재한다면 기존 Seed 사용
+        // 이 Act의 맵 시드가 이미 있으면(같은 Act에서 맵으로 돌아온 경우, 세이브 로드) 그대로 사용
         if (GameFlowData.hasMapSeed)
         {
             seed = GameFlowData.mapSeed;
@@ -40,8 +39,7 @@ public class MapSeedGenerator : MonoBehaviour
         }
         else
         {
-            // Master Seed와 현재 Act를 함께 사용
-            // Act마다 서로 다른 Map Seed 생성
+            // 마스터 시드와 Act를 섞어 Act마다 다른 맵 시드
             int actSeed =
                 masterSeed + (currentAct * 1000003);
 
@@ -50,7 +48,6 @@ public class MapSeedGenerator : MonoBehaviour
 
             seed = random.Next(100000, 999999);
 
-            // GameFlowData에 저장
             GameFlowData.SetMapSeed(seed);
 
             Debug.Log(
@@ -66,7 +63,7 @@ public class MapSeedGenerator : MonoBehaviour
             );
         }
 
-        // MapGenerator에서 사용할 랜덤 상태 초기화
+        // MapGenerator가 쓸 난수 상태를 이 시드로 초기화
         UnityEngine.Random.InitState(seed);
     }
 }

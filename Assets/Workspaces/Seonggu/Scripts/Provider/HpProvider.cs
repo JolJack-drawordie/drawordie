@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// ì²´ë ¥ ë°”ì— ì²´ë ¥ ê°’ì„ ì£¼ëŠ” Provider. ì—°ê²°ëœ ìœ ë‹›ì´ ì—†ìœ¼ë©´(íœ´ì‹ ì”¬ ë“±) StatManagerì˜ í”Œë ˆì´ì–´ ì²´ë ¥ì„ ì“´ë‹¤.
 public class HpProvider : MonoBehaviour, IValueProvider
 {
     private UnitBase targetUnit;
@@ -10,15 +11,15 @@ public class HpProvider : MonoBehaviour, IValueProvider
         targetUnit = unit;
     }
 
+    // íœ´ì‹ ì”¬ ë“±ì—ì„œëŠ” nullì¼ ìˆ˜ ìˆìŒ
     public UnitBase GetTarget()
     {
-        // ÈŞ½Ä ¾À µî¿¡¼­´Â nullÀ» ±×´ë·Î ¹İÈ¯ÇØµµ ¹«¹æÇÕ´Ï´Ù.
         return targetUnit;
     }
 
     public float GetCurrentValue(UnitBase unit)
     {
-        // Àü´Ş¹ŞÀº À¯´ÖÀÌ³ª ³»ºÎ targetUnitÀÌ ¾ø´Ù¸é StatManager µ¥ÀÌÅÍ¸¦ Á÷Á¢ ¹İÈ¯
+        // ë°›ì€ ìœ ë‹›ì´ ì—†ìœ¼ë©´ ì—°ê²°ëœ ìœ ë‹›, ê·¸ê²ƒë„ ì—†ìœ¼ë©´ StatManagerì˜ í”Œë ˆì´ì–´ ìŠ¤íƒ¯
         UnitBase activeUnit = unit != null ? unit : targetUnit;
 
         if (activeUnit == null)
@@ -29,7 +30,7 @@ public class HpProvider : MonoBehaviour, IValueProvider
             }
             return 0f;
         }
-        if (activeUnit.statData == null) return 0f; // stat not injected yet (same as ShieldProvider)
+        if (activeUnit.statData == null) return 0f; // ì•„ì§ ìŠ¤íƒ¯ì´ ë“¤ì–´ì˜¤ê¸° ì „
         return activeUnit.statData.currentHp;
     }
 

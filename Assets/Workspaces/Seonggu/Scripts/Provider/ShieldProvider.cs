@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// ë°©ì–´ë„ ë°”ì— ë°©ì–´ë„ ê°’ì„ ì£¼ëŠ” Provider. ì—°ê²°ëœ ìœ ë‹›ì´ ì—†ìœ¼ë©´(íœ´ì‹ ì”¬ ë“±) StatManagerì˜ í”Œë ˆì´ì–´ ë°©ì–´ë„ë¥¼ ì“´ë‹¤.
 public class ShieldProvider : MonoBehaviour, IValueProvider
 {
     private UnitBase _targetUnit;
@@ -11,13 +12,12 @@ public class ShieldProvider : MonoBehaviour, IValueProvider
     }
     public float GetCurrentValue(UnitBase unit)
     {
-        // À¯´ÖÀÌ ¾ø°Å³ª, ½ºÅÈ µ¥ÀÌÅÍ°¡ ¾ÆÁ÷ ¾È µé¾î¿ÔÀ¸¸é ¿¡·¯ ³»Áö ¸»°í 0 ¸®ÅÏ!
-        // ÀüÅõ À¯´ÖÀÌ ¾ø´Â ¾À(ÈÞ½Ä µî)¿¡¼­´Â HpProviderÃ³·³ StatManager ÇÃ·¹ÀÌ¾î ½ºÅÈ »ç¿ë
+        // ë°›ì€ ìœ ë‹›ì´ ì—†ìœ¼ë©´ ì—°ê²°ëœ ìœ ë‹›, ê·¸ê²ƒë„ ì—†ìœ¼ë©´ StatManagerì˜ í”Œë ˆì´ì–´ ìŠ¤íƒ¯. ìŠ¤íƒ¯ì´ ë“¤ì–´ì˜¤ê¸° ì „ì´ë©´ 0
         if (unit == null) unit = _targetUnit;
         if (unit == null) return PlayerStat != null ? PlayerStat.currentShield : 0f;
         if (unit.statData == null) return 0f;
 
-        return unit.statData.currentShield; // ±âÁ¸ ÄÚµå
+        return unit.statData.currentShield;
     }
     public float GetMaxValue(UnitBase unit)
     {
@@ -25,9 +25,10 @@ public class ShieldProvider : MonoBehaviour, IValueProvider
         if (unit == null) return PlayerStat != null ? PlayerStat.maxShield : 0f;
         if (unit.statData == null) return 0f;
 
-        return unit.statData.maxShield; // ±âÁ¸ ÄÚµå
+        return unit.statData.maxShield;
     }
 
+    // ì”¬ ì‚¬ì´ì—ì„œ ìœ ì§€ë˜ëŠ” í”Œë ˆì´ì–´ ìŠ¤íƒ¯
     private static UnitStatData PlayerStat =>
         StatManager.Instance != null ? StatManager.Instance.runtimePlayerStat : null;
 }

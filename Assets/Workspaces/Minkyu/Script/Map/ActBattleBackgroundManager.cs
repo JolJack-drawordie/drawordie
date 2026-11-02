@@ -1,11 +1,13 @@
 using UnityEngine;
 
+// 전투 씬 배경(위쪽 / 바닥)을 지금 Act에 맞는 그림과 위치 / 크기로 바꾼다.
 public class ActBattleBackgroundManager : MonoBehaviour
 {
     [Header("Background Renderers")]
     public SpriteRenderer topRenderer;
     public SpriteRenderer floorRenderer;
 
+    // Act마다 그림 + 위치 / 크기 (인스펙터에서 맞춤)
     [Header("Act 1")]
     public Sprite act1Top;
     public Sprite act1Floor;
@@ -36,13 +38,12 @@ public class ActBattleBackgroundManager : MonoBehaviour
     public Vector3 act3FloorPosition;
     public Vector3 act3FloorScale;
 
-
     private void Start()
     {
         ApplyActBackground();
     }
 
-
+    // 지금 Act의 배경 적용
     public void ApplyActBackground()
     {
         int currentAct = GameFlowData.currentAct;
@@ -94,7 +95,7 @@ public class ActBattleBackgroundManager : MonoBehaviour
         );
     }
 
-
+    // 위쪽 / 바닥 렌더러에 그림과 위치 / 크기 적용
     private void ApplyAct(
         Sprite topSprite,
         Sprite floorSprite,
@@ -120,20 +121,10 @@ public class ActBattleBackgroundManager : MonoBehaviour
             return;
         }
 
-
-        // -------------------------
-        // Top
-        // -------------------------
-
         topRenderer.sprite = topSprite;
 
         topRenderer.transform.localPosition = topPosition;
         topRenderer.transform.localScale = topScale;
-
-
-        // -------------------------
-        // Floor
-        // -------------------------
 
         floorRenderer.sprite = floorSprite;
 

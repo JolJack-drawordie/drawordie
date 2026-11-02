@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// 유물 아이콘에 붙어서, 마우스를 올리면 RelicIconUI에 설명창을 띄워 달라고 알린다.
 public class RelicIconTooltip : MonoBehaviour,
     IPointerEnterHandler,
     IPointerExitHandler
@@ -8,7 +9,7 @@ public class RelicIconTooltip : MonoBehaviour,
     private RelicData relicData;
     private RelicIconUI relicIconUI;
 
-    // 아이콘 생성 시 유물 정보 연결
+    // 아이콘을 만들 때 유물 정보 연결
     public void Initialize(
         RelicData relic,
         RelicIconUI iconUI)

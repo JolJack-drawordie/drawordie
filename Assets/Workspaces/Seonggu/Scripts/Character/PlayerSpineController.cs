@@ -1,30 +1,31 @@
 using UnityEngine;
 using System.Collections;
-using Spine.Unity; // ½ºÆÄÀÎ »ç¿ëÀ» À§ÇØ ÇÊ¼ö
+using Spine.Unity;
 
+// ì „íˆ¬ í”Œë ˆì´ì–´(Death Knight, Spine) ëª¨ì…˜: ëŒ€ê¸°, ê³µê²©(ì¼ë°˜ 1íšŒ / ì¡°í•© ì¹´ë“œ 2íšŒ ì—°ì†), í”¼ê²©, ë°©ì–´, íšŒë³µ, íŒ¨ë°°.
+// ê³µê²© ëª¨ì…˜ì˜ íƒ€ê²© ìˆœê°„ë§ˆë‹¤ OnAttackImpactë¥¼ ì•Œë ¤ í™”ë©´ í”ë“¤ë¦¼(HitShake)ì„ ë§ì¶˜ë‹¤.
 public class PlayerSpineController : MonoBehaviour
 {
-    public static PlayerSpineController Instance; // Àü¿ª Á¢±Ù¿ë
+    public static PlayerSpineController Instance;
 
     [Header("Spine Components")]
     [SerializeField] private SkeletonAnimation skeletonAnimation;
 
     [Header("Animation Names")]
     [SerializeField] private string idleAnim = "idle";
-    [SerializeField] private string runAnim = "run";       // ´Ş¸®±â ¸ğ¼Ç
-    [SerializeField] private string hurtAnim = "hurt";      // ÇÇ°İ ¸ğ¼Ç
+    [SerializeField] private string runAnim = "run"; // ì ì—ê²Œ ë‹¬ë ¤ê°ˆ ë•Œ / ëŒì•„ì˜¬ ë•Œ
+    [SerializeField] private string hurtAnim = "hurt"; // í”¼ê²©
     [SerializeField] private string attackAnim1 = "attack1";
     [SerializeField] private string attackAnim2 = "attack2";
-    [SerializeField] private string attackAnim3 = "attack3"; //¹æ¾î ¸ğ¼Ç 
-    [SerializeField] private string defeatAnim = "defeat";  // Ãß°¡: ÆĞ¹è/»ç¸Á ¸ğ¼Ç
-    [SerializeField] private string chargeAnim = "charge";  // Ãß°¡: È¸º¹ ¸ğ¼Ç
+    [SerializeField] private string attackAnim3 = "attack3"; // ë°©ì–´ ëª¨ì…˜ìœ¼ë¡œ ì‚¬ìš©
+    [SerializeField] private string defeatAnim = "defeat"; // íŒ¨ë°° (ë§ˆì§€ë§‰ í”„ë ˆì„ì—ì„œ ë©ˆì¶¤)
+    [SerializeField] private string chargeAnim = "charge"; // íšŒë³µ ëª¨ì…˜ìœ¼ë¡œ ì‚¬ìš©
 
     [Header("Movement & Combat Settings")]
-    public Transform attackTarget; // Àû ¿ÀºêÁ§Æ® ¿¬°á (ºñ¿öµÎ¸é °íÁ¤ 5Ä­ ÀÌµ¿)
+    public Transform attackTarget; // ê³µê²©í•  ì  (BattleFactoryê°€ ì—°ê²°, ë¹„ì–´ ìˆìœ¼ë©´ ì•ìœ¼ë¡œ 5ì¹¸ ì´ë™)
     private Vector3 originalPosition;
-    private bool isActing = false;
 
-    // °ø°İ ¸ğ¼Ç¿¡¼­ Ä®ÀÌ Àû¿¡ ´ê´Â ¼ø°£ (attack1 ±âÁØ slash ÀÌÆåÆ®°¡ ¶ß´Â 0.2ÃÊ). È­¸é Èçµé¸²(HitShake) Å¸ÀÌ¹Ö¿¡ »ç¿ë
+    // ê³µê²© ëª¨ì…˜ì—ì„œ ì¹¼ì´ ì ì—ê²Œ ë‹¿ëŠ” ì‹œê° (attack1ì˜ slash ì´í™íŠ¸ê°€ ëœ¨ëŠ” 0.2ì´ˆ). í™”ë©´ í”ë“¤ë¦¼(HitShake) íƒ€ì´ë°ì— ì‚¬ìš©
     [SerializeField] private float attackImpactTime = 0.2f;
     public static event System.Action OnAttackImpact;
 
@@ -49,36 +50,7 @@ public class PlayerSpineController : MonoBehaviour
         PlayIdle();
     }
 
-    void Update()
-    {
-        // 1Å°: Ã¹ ¹øÂ° °ø°İ
-        if (Input.GetKeyDown(KeyCode.Alpha1) && !isActing)
-        {
-            StartCoroutine(AttackRoutine(attackAnim1));
-        }
-
-        // 2Å°: µÎ ¹øÂ° °ø°İ
-        if (Input.GetKeyDown(KeyCode.Alpha2) && !isActing)
-        {
-            StartCoroutine(AttackRoutine(attackAnim2));
-        }
-
-        // 3Å°: ¼¼ ¹øÂ° °ø°İ
-        if (Input.GetKeyDown(KeyCode.Alpha3) && !isActing)
-        {
-            StartCoroutine(AttackRoutine(attackAnim3));
-        }
-
-        // 4Å°: ÇÇ°İ Å×½ºÆ®
-        if (Input.GetKeyDown(KeyCode.Alpha4) && !isActing)
-        {
-            StartCoroutine(HurtRoutine());
-        }
-    }
-
-    /// <summary>
-    /// ±âº» ´ë±â »óÅÂ (¹«ÇÑ ¹İº¹)
-    /// </summary>
+    // ê¸°ë³¸ ëŒ€ê¸° ëª¨ì…˜ (ë°˜ë³µ)
     public void PlayIdle()
     {
         if (skeletonAnimation != null)
@@ -87,17 +59,25 @@ public class PlayerSpineController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// °øÅë °ø°İ ÄÚ·çÆ¾ (ÀÌµ¿ + ½ºÆÄÀÎ ¾Ö´Ï¸ŞÀÌ¼Ç Á¦¾î)
-    /// </summary>
+    // ì¼ë°˜ ê³µê²©: ì  ì•ìœ¼ë¡œ ë‹¬ë ¤ê°€ì„œ ê³µê²© ëª¨ì…˜ 1íšŒ í›„ ë³µê·€
     public IEnumerator AttackRoutine(string animName)
     {
-        isActing = true;
+        yield return AttackSequenceRoutine(new[] { animName });
+    }
 
-        // 1. °ø°İÇÏ·¯ ´Ş·Á°¥ ¶§ run ¸ğ¼Ç Àç»ı (¹«ÇÑ ¹İº¹)
+    // ì¡°í•© ì¹´ë“œ ê³µê²©: ì  ì•ìœ¼ë¡œ ë‹¬ë ¤ê°€ì„œ ê·¸ ìë¦¬ì—ì„œ ê³µê²© ëª¨ì…˜ 2ê°œ(attack1 â†’ attack2)ë¥¼ ì´ì–´ì„œ ë³´ì—¬ ì¤€ ë’¤ ë³µê·€
+    public IEnumerator ComboAttackRoutine()
+    {
+        yield return AttackSequenceRoutine(new[] { attackAnim1, attackAnim2 });
+    }
+
+    // ì´ë™ â†’ ê³µê²© ëª¨ì…˜ë“¤ì„ ì°¨ë¡€ë¡œ ì¬ìƒ(ê° ëª¨ì…˜ì˜ íƒ€ê²© ìˆœê°„ë§ˆë‹¤ OnAttackImpact) â†’ ë³µê·€
+    private IEnumerator AttackSequenceRoutine(string[] animNames)
+    {
+        // 1. ì ì—ê²Œ ë‹¬ë ¤ê°ˆ ë•Œ run ëª¨ì…˜ (ë°˜ë³µ)
         skeletonAnimation.AnimationState.SetAnimation(0, runAnim, true);
 
-        // attackTargetÀÌ ÀÖÀ¸¸é Àû À§Ä¡±îÁö, ¾øÀ¸¸é °íÁ¤ 5Ä­ ÀÌµ¿
+        // ì  ì• 4ì¹¸ê¹Œì§€ (ì ì´ ì—†ìœ¼ë©´ ì•ìœ¼ë¡œ 5ì¹¸)
         Vector3 targetPos = attackTarget != null
             ? new Vector3(attackTarget.position.x - 4f, originalPosition.y, originalPosition.z)
             : originalPosition + new Vector3(5f, 0, 0);
@@ -115,24 +95,26 @@ public class PlayerSpineController : MonoBehaviour
 
         transform.position = targetPos;
 
-        // 2. µµÂøÇÏ¸é Àü´Ş¹ŞÀº ½ºÆÄÀÎ °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà (Loop = false)
-        skeletonAnimation.AnimationState.SetAnimation(0, animName, false);
-        skeletonAnimation.AnimationState.AddAnimation(0, idleAnim, true, 0f);
-
-        if (SoundManager.Instance != null)
+        // 2. ë„ì°©í•œ ìë¦¬ì—ì„œ ê³µê²© ëª¨ì…˜ì„ í•˜ë‚˜ì”© ì¬ìƒ (ë°˜ë³µ ì—†ìŒ). ë§ˆì§€ë§‰ ëª¨ì…˜ ë’¤ì—ë§Œ ëŒ€ê¸° ëª¨ì…˜ ì˜ˆì•½
+        float impactTime = Mathf.Clamp(attackImpactTime, 0f, 1.0f);
+        for (int i = 0; i < animNames.Length; i++)
         {
-            AudioClip attackClip = SoundManager.Instance.playerAttackSound != null ? SoundManager.Instance.playerAttackSound : SoundManager.Instance.hitSound;
-            if (attackClip != null) SoundManager.Instance.PlaySFX(attackClip);
+            bool isLast = i == animNames.Length - 1;
+
+            skeletonAnimation.AnimationState.SetAnimation(0, animNames[i], false);
+            if (isLast) skeletonAnimation.AnimationState.AddAnimation(0, idleAnim, true, 0f);
+
+            PlayAttackSound();
+
+            // íƒ€ê²© ìˆœê°„ì„ ì•Œë¦° ë’¤, ë‹¤ìŒ ëª¨ì…˜ì´ ìˆìœ¼ë©´ ì´ë²ˆ ëª¨ì…˜ì´ ëë‚  ë•Œê¹Œì§€ / ë§ˆì§€ë§‰ì´ë©´ 1ì´ˆë¥¼ ì±„ìš¸ ë•Œê¹Œì§€ ëŒ€ê¸°
+            yield return new WaitForSeconds(impactTime);
+            OnAttackImpact?.Invoke();
+
+            float rest = isLast ? 1.0f - impactTime : Mathf.Max(0f, GetAnimationDuration(animNames[i]) - impactTime);
+            yield return new WaitForSeconds(rest);
         }
 
-        // ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£ µ¿¾È ´ë±â
-        // Å¸°İ ¼ø°£À» ¾Ë¸° µÚ ³ª¸ÓÁö ½Ã°£ ´ë±â (ÃÑ ´ë±â ½Ã°£Àº ±âÁ¸°ú °°Àº 1ÃÊ)
-        float impactTime = Mathf.Clamp(attackImpactTime, 0f, 1.0f);
-        yield return new WaitForSeconds(impactTime);
-        OnAttackImpact?.Invoke();
-        yield return new WaitForSeconds(1.0f - impactTime);
-
-        // 3. Á¦ÀÚ¸®·Î µ¹¾Æ¿Ã ¶§ ´Ù½Ã run ¸ğ¼Ç Àç»ı (¹«ÇÑ ¹İº¹)
+        // 3. ì œìë¦¬ë¡œ ëŒì•„ì˜¬ ë•Œ ë‹¤ì‹œ run ëª¨ì…˜ (ë°˜ë³µ)
         skeletonAnimation.AnimationState.SetAnimation(0, runAnim, true);
 
         timer = 0;
@@ -148,11 +130,29 @@ public class PlayerSpineController : MonoBehaviour
 
         transform.position = originalPosition;
 
-        // Á¦ÀÚ¸® º¹±Í ÈÄ ´ë±â ¸ğ¼ÇÀ¸·Î ÀüÈ¯
+        // ì œìë¦¬ë¡œ ëŒì•„ì˜¤ë©´ ëŒ€ê¸° ëª¨ì…˜
         PlayIdle();
-        isActing = false;
     }
 
+    // ê³µê²© íš¨ê³¼ìŒ (ì „ìš© ì†Œë¦¬ê°€ ì—†ìœ¼ë©´ í”¼ê²©ìŒ)
+    private void PlayAttackSound()
+    {
+        if (SoundManager.Instance == null) return;
+
+        AudioClip attackClip = SoundManager.Instance.playerAttackSound != null ? SoundManager.Instance.playerAttackSound : SoundManager.Instance.hitSound;
+        if (attackClip != null) SoundManager.Instance.PlaySFX(attackClip);
+    }
+
+    // Spine ì• ë‹ˆë©”ì´ì…˜ ê¸¸ì´ (ëª» ì°¾ìœ¼ë©´ ê³µê²© ëª¨ì…˜ ê¸°ë³¸ ê¸¸ì´ 0.833ì´ˆ)
+    private float GetAnimationDuration(string animName)
+    {
+        var anim = skeletonAnimation != null && skeletonAnimation.Skeleton != null
+            ? skeletonAnimation.Skeleton.Data.FindAnimation(animName)
+            : null;
+        return anim != null ? anim.Duration : 0.833f;
+    }
+
+    // í”¼ê²© ëª¨ì…˜ (ì  ê³µê²© / ì²´ë ¥ ì†Œëª¨ ì¹´ë“œ). 0.5ì´ˆ ë™ì•ˆ ê¸°ë‹¤ë ¤ í”¼í•´ ì²˜ë¦¬ì™€ ë°•ìë¥¼ ë§ì¶˜ë‹¤
     public IEnumerator HurtRoutine()
     {
         if (skeletonAnimation == null) yield break;
@@ -162,7 +162,7 @@ public class PlayerSpineController : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.hitSound);
         }
 
-        // ±âÁ¸ Æ®·¢ 0¹ø¿¡ ¿¹¾àµÈ ¸í·É Á¦°Å ÈÄ ÇÇ°İ ¾Ö´Ï¸ŞÀÌ¼Ç Áï½Ã ½ÇÇà
+        // 0ë²ˆ íŠ¸ë™ì„ ë¹„ìš´ ë’¤ í”¼ê²© ëª¨ì…˜ ì¬ìƒ, ëë‚˜ë©´ ëŒ€ê¸° ëª¨ì…˜
         skeletonAnimation.AnimationState.ClearTrack(0);
         skeletonAnimation.AnimationState.SetAnimation(0, hurtAnim, false);
         skeletonAnimation.AnimationState.AddAnimation(0, idleAnim, true, 0f);
@@ -170,9 +170,7 @@ public class PlayerSpineController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    /// <summary>
-    /// ±â¸ğÀ¸±â / ¹öÇÁ »ç¿ë ½Ã È£ÃâÇÏ´Â ÇÔ¼ö
-    /// </summary>
+    // íšŒë³µ ì¹´ë“œ / íœ´ì‹ ë•Œ ëª¨ì…˜
     public IEnumerator HealRoutine(float duration = 1.0f, bool loop = false)
     {
         if (skeletonAnimation == null) yield break;
@@ -182,53 +180,45 @@ public class PlayerSpineController : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.healSound);
         }
 
-        isActing = true;
         skeletonAnimation.AnimationState.ClearTrack(0);
 
-        // heal ¸ğ¼Ç Àç»ı (loop ¿©ºÎ¿¡ µû¶ó ¹İº¹ ¼³Á¤ °¡´É)
+        // charge ëª¨ì…˜ ì¬ìƒ (loopì— ë”°ë¼ ë°˜ë³µ)
         skeletonAnimation.AnimationState.SetAnimation(0, chargeAnim, loop);
 
         yield return new WaitForSeconds(duration);
 
-        // ³¡³ª¸é idle·Î º¹±Í
+        // ëë‚˜ë©´ ëŒ€ê¸° ëª¨ì…˜
         PlayIdle();
-        isActing = false;
     }
 
-    /// <summary>
-    /// ÆĞ¹è(»ç¸Á) ½Ã È£ÃâÇÏ´Â ÇÔ¼ö (º¸Åë Ã¼·Â 0ÀÌ µÇ¾úÀ» ¶§ Àç»ı ÈÄ ¸ØÃã)
-    /// </summary>
+    // íŒ¨ë°° (ì²´ë ¥ì´ 0ì´ ëì„ ë•Œ). ì“°ëŸ¬ì§„ ìì„¸ë¡œ ë‚¨ì•„ì•¼ í•˜ë¯€ë¡œ ë°˜ë³µí•˜ì§€ ì•ŠëŠ”ë‹¤
     public void PlayDefeat()
     {
         if (skeletonAnimation == null) return;
 
-        isActing = true;
         skeletonAnimation.AnimationState.ClearTrack(0);
 
-        // ÆĞ¹è ¸ğ¼ÇÀº º¸Åë ¸¶Áö¸· ÇÁ·¹ÀÓ¿¡ ¸ØÃçÀÖ¾î¾ß ÇÏ¹Ç·Î loop = false ¼³Á¤
         skeletonAnimation.AnimationState.SetAnimation(0, defeatAnim, false);
     }
 
+    // ë°©ì–´ ì¹´ë“œ ëª¨ì…˜ (attack3ì„ ë°©íŒ¨ ëª¨ì…˜ìœ¼ë¡œ ì‚¬ìš©)
     public IEnumerator ShieldRoutine(float duration = 1.0f)
     {
         if (skeletonAnimation == null) yield break;
-
-        isActing = true;
 
         if (SoundManager.Instance != null && SoundManager.Instance.shieldSound != null)
         {
             SoundManager.Instance.PlaySFX(SoundManager.Instance.shieldSound);
         }
 
-        // ±âÁ¸ Æ®·¢ ºñ¿ì°í ¹æ¾î ¾Ö´Ï¸ŞÀÌ¼Ç Áï½Ã ½ÇÇà (loop = false, ³¡³ª¸é idle º¹±Í)
+        // ë°©ì–´ ëª¨ì…˜ ì¬ìƒ í›„ ëŒ€ê¸° ëª¨ì…˜ ì˜ˆì•½
         skeletonAnimation.AnimationState.ClearTrack(0);
         skeletonAnimation.AnimationState.SetAnimation(0, attackAnim3, false);
         skeletonAnimation.AnimationState.AddAnimation(0, idleAnim, true, 0f);
 
-        // ¹æ¾î ¸ğ¼Ç À¯Áö ½Ã°£ µ¿¾È ´ë±â
+        // ë°©ì–´ ëª¨ì…˜ì´ ëë‚  ë•Œê¹Œì§€ ëŒ€ê¸°
         yield return new WaitForSeconds(duration);
 
         PlayIdle();
-        isActing = false;
     }
 }

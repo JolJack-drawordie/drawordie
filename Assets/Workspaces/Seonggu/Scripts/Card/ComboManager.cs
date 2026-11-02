@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+// 카드 조합: 형용사 칸 + 동명사 칸에 카드를 놓으면 결과를 미리 보여 주고, 조합 버튼을 누르면 조합 카드를 손패에 만든다.
+// 조합표는 서버에서 받는다 (key: "형용사id_동명사id").
 public class ComboManager : MonoBehaviour
 {
     public static ComboManager Instance;
 
     public CardSlot adjSlot;
     public CardSlot gerSlot;
-    public GameObject slotPanel;
+    public GameObject slotPanel; // 조합 슬롯 묶음 (형용사 카드를 끌 때만 보임)
 
     private CombinationList ComboList;
     private Dictionary<string, Combination> comboTable = new Dictionary<string, Combination>();
 
-    // 서버에서 조합표 요청이 끝났는지 (성공 / 실패 무관). 세이브의 조합 카드 복원은 이후에 해야 함
+    // 서버 조합표 요청이 끝났는지 (성공 / 실패 상관없이). 세이브의 조합 카드 복원은 이 뒤에 해야 함
     public bool IsLoadFinished { get; private set; }
 
     void Awake() { Instance = this; }
@@ -40,6 +42,7 @@ public class ComboManager : MonoBehaviour
         HideSlots();
     }
 
+    // 두 칸이 다 차면 결과 미리보기, 아니면 미리보기 지우기
     public void OnSlotUpdated()
     {
         if (adjSlot.isOccupied && gerSlot.isOccupied)
@@ -51,6 +54,7 @@ public class ComboManager : MonoBehaviour
         }
     }
 
+    // 지금 두 칸의 카드로 조합 결과를 찾아 미리보기
     void TryCombination()
     {
         int adjCardID = adjSlot.GetCardID();
@@ -60,41 +64,33 @@ public class ComboManager : MonoBehaviour
 
         if (result != null)
         {
-
             DataManager.Instance.CombinationPreview(result);
-            //DeckManager.Instance.UseCardsForCombination();
-
-            //if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
-            //if (gerSlot.currentCard != null) Destroy(gerSlot.currentCard);
-
-            //adjSlot.RemoveCard();
-            //gerSlot.RemoveCard();
-            //HideSlots();
         }
     }
 
+    // 조합 버튼: 조합 카드를 손패에 만들고, 재료 두 장은 덱에서 소모하고 칸을 비운다
     public void OnClickCombination()
     {
         DataManager.Instance.ClearPreview();
 
         int adjCardID = adjSlot.GetCardID();
-        
+
         int gerCardID = gerSlot.GetCardID();
 
         Combination result = Combine(adjCardID, gerCardID);
 
         if (result != null)
         {
-            // 조합 카드 생성 및 손패 추가
+            // 조합 카드 생성 후 손패에 추가
             DataManager.Instance.AddSynergyCardToHand(result);
 
-            // 학자의 돋보기 발동
+            // 유물 '학자의 돋보기' 발동
             if (RelicManager.Instance != null)
             {
                 RelicManager.Instance.OnCardCombination();
             }
 
-            // 조합에 사용한 카드 소모
+            // 조합에 쓴 재료 카드 소모
             DeckManager.Instance.UseCardsForCombination();
 
             if (adjSlot.currentCard != null) Destroy(adjSlot.currentCard);
@@ -106,6 +102,7 @@ public class ComboManager : MonoBehaviour
         }
     }
 
+    // 형용사 id + 동명사 id로 조합 결과 찾기 (없으면 null)
     public Combination Combine(int slotAdjID, int slotGerID)
     {
         string searchKey = $"{slotAdjID}_{slotGerID}";
@@ -113,6 +110,7 @@ public class ComboManager : MonoBehaviour
         return null;
     }
 
+    // 서버에서 조합표 받기
     IEnumerator LoadCombinations()
     {
         string url = "http://localhost:8080/api/game/load-combinations";

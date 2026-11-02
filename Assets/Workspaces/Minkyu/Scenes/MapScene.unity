@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 831200ab5b23d614396bffadd262f540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapNodeManager
-  battleSceneName: JunhaTest
+  battleSceneName: BattleScene
   restSceneName: RestScene
 --- !u!4 &388409206
 Transform:
@@ -1647,52 +1647,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 564515385}
   m_CullTransparentMesh: 1
---- !u!1 &619350196
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 619350198}
-  - component: {fileID: 619350197}
-  m_Layer: 0
-  m_Name: MapLineDrawer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &619350197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619350196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd24e60f77a05f54c8132fc8594c992c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapLineDrawer
-  linePrefab: {fileID: 5815104653198651017, guid: ee83fda9d5f4d32498dfb52b189f1701, type: 3}
-  lineParent: {fileID: 1331024149}
---- !u!4 &619350198
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619350196}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 423.76245, y: 278.1298, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &707747077
 GameObject:
   m_ObjectHideFlags: 0
@@ -6206,5 +6160,4 @@ SceneRoots:
   - {fileID: 1766476035}
   - {fileID: 388409206}
   - {fileID: 1357794723}
-  - {fileID: 619350198}
   - {fileID: 950000009}

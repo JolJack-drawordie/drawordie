@@ -336,7 +336,7 @@ MonoBehaviour:
   idleState: Idle
   attackState: Attack
   defendState: 
-  hurtState: 
+  hurtState: Stuned
   deathState: Death
   guardTintColor: {r: 0.55, g: 0.75, b: 1, a: 1}
   guardTintDuration: 0.5
@@ -344,6 +344,7 @@ MonoBehaviour:
   useCodeAttack: 1
   playAttackClip: 1
   attackDistance: 6
+  dashToPlayer: 0
   attackWindupBack: 0.2
   attackWindupTime: 0.2
   attackDashTime: 0.2

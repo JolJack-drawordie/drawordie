@@ -2322,7 +2322,7 @@ MonoBehaviour:
   idleState: Idle
   attackState: Attack
   defendState: 
-  hurtState: 
+  hurtState: Stuned
   deathState: Death
   guardTintColor: {r: 0.55, g: 0.75, b: 1, a: 1}
   guardTintDuration: 0.5

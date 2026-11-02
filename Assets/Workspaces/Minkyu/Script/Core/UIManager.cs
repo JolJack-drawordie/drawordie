@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// 전투 화면 UI: 에너지 게이지, 체력 / 방어도 바 연결, 전투 결과(승리 보상 / 패배 / 게임 클리어 엔딩) 처리.
 public class UIManager : MonoBehaviour
 {
     [Header("에너지 UI")]
@@ -12,12 +13,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI energySliderText;
     public TextMeshProUGUI energyText;
 
-    [Header("기본 UI")]
-    public TextMeshProUGUI playerHpText;
-    public TextMeshProUGUI playerShieldText;
-    public TextMeshProUGUI enemyHpText;
-    public TextMeshProUGUI enemyShieldText;
-
+    // 체력 / 방어도 바와, 바가 읽을 값을 주는 Provider (유닛이 생성되면 LinkUnitToUI로 연결)
     public AnimatedBar playerHpBar;
     public AnimatedBar playerShieldBar;
     public AnimatedBar enemyHpBar;
@@ -28,9 +24,6 @@ public class UIManager : MonoBehaviour
     private ShieldProvider playerShieldProvider;
     private ShieldProvider enemyShieldProvider;
 
-    [Header("참조")]
-    public DiceManager diceManager;
-
     [Header("전투 결과 UI")]
     public GameObject resultPanel;
     public TextMeshProUGUI resultText;
@@ -40,10 +33,8 @@ public class UIManager : MonoBehaviour
     [Header("클리어 랭킹 UI")]
     public Button clearRankingButton;
 
-    [SerializeField] private VideoClip endingVideo;
-    private bool leavingAfterClear;
-
-    private Button defeatLobbyButton;
+    [SerializeField] private VideoClip endingVideo; // 게임 클리어 엔딩 영상
+    private bool leavingAfterClear; // 클리어 연출을 이미 시작했는지 (중복 방지)
 
     public static UIManager Instance;
 
@@ -51,7 +42,7 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
 
-        // 결과 랭킹 씬처럼 로비 이동 버튼용으로만 둔 UIManager에는 resultPanel이 없음
+        // 결과 랭킹 씬처럼 로비 버튼용으로만 둔 UIManager에는 resultPanel이 없음
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
@@ -92,10 +83,9 @@ public class UIManager : MonoBehaviour
             UpdateEnergyUI(DiceManager.Instance.CurrentEnergy);
     }
 
-    // =========================
-    // 에너지 UI
-    // =========================
+    // ===== 에너지 UI =====
 
+    // 에너지가 바뀔 때마다 게이지와 "현재 / 최대" 표시 갱신
     public void UpdateEnergyUI(int newEnergy)
     {
         int maxEnergy = DiceManager.Instance != null
@@ -117,15 +107,14 @@ public class UIManager : MonoBehaviour
             energyText.text = "Energy : " + newEnergy;
     }
 
-    // =========================
-    // 전투 결과
-    // =========================
+    // ===== 전투 결과 =====
 
-    private bool resultWaitingForBossDeath;
+    private bool resultWaitingForBossDeath; // 보스 처치 연출이 끝나기를 기다리는 중인지
 
+    // 승리: 일반 전투는 보상 선택, 마지막 Act 보스는 게임 클리어 / 패배: 결과 랭킹 화면
     public void ShowResult(bool isVictory)
     {
-        // 보스 처치 연출(BossDeathSequence)이 끝날 때까지 결과/보상 화면을 미룸
+        // 보스 처치 연출(BossDeathSequence)이 끝날 때까지 결과 / 보상 화면을 미룸
         if (isVictory && BossDeathSequence.IsPlaying)
         {
             if (!resultWaitingForBossDeath) StartCoroutine(ShowResultAfterBossDeath());
@@ -134,7 +123,7 @@ public class UIManager : MonoBehaviour
 
         if (isVictory)
         {
-            if (GameFlowData.currentNodeType == MapNode.NodeType.Boss && GameFlowData.IsFinalAct()) // 게임 클리어 시
+            if (GameFlowData.currentNodeType == MapNode.NodeType.Boss && GameFlowData.IsFinalAct()) // 게임 클리어
             {
                 if (rewardPanel != null)
                     rewardPanel.SetActive(false);
@@ -149,6 +138,7 @@ public class UIManager : MonoBehaviour
             }
             else
             {
+                // 보상을 고르기 전에 손패와 버린 카드를 덱으로 되돌려 둔다
                 if (DeckManager.Instance != null)
                 {
                     DeckManager.Instance.DiscardHand();
@@ -186,11 +176,10 @@ public class UIManager : MonoBehaviour
             }
 
             StartCoroutine(OpenResultWithDelay(3.0f));
-
-            //CreateDefeatLobbyButton();
         }
     }
 
+    // 보스 처치 연출이 끝나면 결과 표시
     private IEnumerator ShowResultAfterBossDeath()
     {
         resultWaitingForBossDeath = true;
@@ -207,9 +196,9 @@ public class UIManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundManager.Instance.defeatSound);
     }
 
+    // 패배: 몇 초 뒤 결과 랭킹 창
     private IEnumerator OpenResultWithDelay(float delaySeconds)
     {
-        // 지정한 시간(초)만큼 대기 (게임 속도나 유니티 타임스케일에 영향 안 받고 싶다면 WaitForSecondsRealtime 사용 가능)
         yield return new WaitForSeconds(delaySeconds);
 
         if (resultText != null)
@@ -217,7 +206,6 @@ public class UIManager : MonoBehaviour
             resultText.text = "";
         }
 
-        // 3초 뒤에 결과용 랭킹 씬 오픈
         RankingPanel.OpenResult();
     }
 
@@ -225,95 +213,11 @@ public class UIManager : MonoBehaviour
     {
         if (resultPanel != null)
             resultPanel.SetActive(false);
-
-        if (defeatLobbyButton != null)
-            defeatLobbyButton.gameObject.SetActive(false);
     }
 
-    // =========================
-    // 패배 후 로비 이동 버튼
-    // =========================
+    // ===== 승리 후 이동 =====
 
-    private void CreateDefeatLobbyButton()
-    {
-        if (resultPanel == null)
-        {
-            Debug.LogError("[UIManager] ResultPanel이 연결되지 않았습니다.");
-            return;
-        }
-
-        // 이미 생성된 버튼이 있으면 중복 생성하지 않음
-        if (defeatLobbyButton != null)
-        {
-            defeatLobbyButton.gameObject.SetActive(true);
-            return;
-        }
-
-        GameObject buttonObject = new GameObject(
-            "DefeatLobbyButton",
-            typeof(RectTransform),
-            typeof(CanvasRenderer),
-            typeof(Image),
-            typeof(Button)
-        );
-
-        buttonObject.transform.SetParent(resultPanel.transform, false);
-
-        RectTransform rect = buttonObject.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(0.5f, 0.5f);
-        rect.anchorMax = new Vector2(0.5f, 0.5f);
-        rect.pivot = new Vector2(0.5f, 0.5f);
-        rect.anchoredPosition = new Vector2(0f, -60f);
-        rect.sizeDelta = new Vector2(220f, 55f);
-
-        Image image = buttonObject.GetComponent<Image>();
-        image.color = new Color(0.25f, 0.12f, 0.12f, 1f);
-
-        defeatLobbyButton = buttonObject.GetComponent<Button>();
-        defeatLobbyButton.targetGraphic = image;
-        defeatLobbyButton.onClick.AddListener(GoToLobbyAfterDefeat);
-
-        GameObject textObject = new GameObject(
-            "ButtonText",
-            typeof(RectTransform),
-            typeof(CanvasRenderer),
-            typeof(TextMeshProUGUI)
-        );
-
-        textObject.transform.SetParent(buttonObject.transform, false);
-
-        RectTransform textRect = textObject.GetComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI buttonText =
-            textObject.GetComponent<TextMeshProUGUI>();
-
-        buttonText.text = "로비로 돌아가기";
-        buttonText.fontSize = 24;
-        buttonText.alignment = TextAlignmentOptions.Center;
-        buttonText.color = Color.white;
-
-        Debug.Log("[UIManager] 패배 후 로비 이동 버튼을 생성했습니다.");
-    }
-
-    public void GoToLobbyAfterDefeat()
-    {
-        Debug.Log("[UIManager] 패배 후 LobbyScene으로 이동합니다.");
-
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.StopBGM();
-
-        // 새 게임 시작 시 LobbyManager가 런 상태와 플레이어 스탯을 초기화함
-        SceneManager.LoadScene("LobbyScene");
-    }
-
-    // =========================
-    // 승리 후 맵 이동
-    // =========================
-
+    // 보상을 고른 뒤 다음으로: 일반 노드는 맵, Act 보스는 월드맵, 마지막 Act 보스는 엔딩
     public void GoToMapAfterVictory()
     {
         bool isBossNode =
@@ -349,16 +253,17 @@ public class UIManager : MonoBehaviour
 
         GameFlowData.clearedNodeLevel++;
 
-        // 보스를 잡으면 월드맵에서 다음 Act 섬이 열린 걸 보여주고, 섬을 눌러 다음 맵으로 이동
+        // 보스를 잡으면 월드맵에서 다음 Act 섬이 열리는 연출을 보여 주고, 섬을 눌러 다음 맵으로 이동
         SceneManager.LoadScene(isBossNode ? "WorldMapScene" : "MapScene");
 
         if (SoundManager.Instance != null)
             SoundManager.Instance.StopBGM();
     }
 
+    // 게임 클리어: 팡파레 → 엔딩 영상 → 결과 랭킹 창 (엔딩 영상의 마지막 화면이 랭킹 창 배경으로 남음)
     private IEnumerator PlayEndingAndReturnToLobby()
     {
-        // 팡파레가 끝난 뒤 엔딩 영상 시작 (팡파레가 없거나 짧으면 기본 3초)
+        // 팡파레가 끝난 뒤 엔딩 영상 시작 (팡파레가 없거나 짧으면 3초)
         float waitSeconds = 3.0f;
         if (SoundManager.Instance != null && SoundManager.Instance.victorySound != null)
             waitSeconds = Mathf.Max(waitSeconds, SoundManager.Instance.victorySound.length);
@@ -368,7 +273,7 @@ public class UIManager : MonoBehaviour
         if (resultPanel != null)
             resultPanel.SetActive(false);
 
-        // 보상 처리가 모두 끝나 패널을 닫은 다음 프레임부터 컷씬을 시작한다.
+        // 보상 처리가 모두 끝나 패널을 닫은 다음 프레임부터 컷씬 시작
         if (clearRankingButton != null)
             clearRankingButton.gameObject.SetActive(false);
         if (SoundManager.Instance != null && SoundManager.Instance.sfxSource != null)
@@ -386,19 +291,17 @@ public class UIManager : MonoBehaviour
             sound.PlayBGM(endingClip);
         }
 
-        // 패배 때처럼 텍스트 없는 결과 패널로 아래 손패/덱 더미의 클릭·호버를 막음
+        // 패배 때처럼 글자 없는 결과 패널로 아래 손패 / 덱 더미의 클릭 · 호버를 막음
         if (resultText != null)
             resultText.text = "";
         if (resultPanel != null)
             resultPanel.SetActive(true);
 
         RankingPanel.OpenResult();
-        //SceneManager.LoadScene("LobbyScene");
     }
-    // =========================
-    // 유닛 UI 연결
-    // =========================
+    // ===== 유닛 UI 연결 =====
 
+    // 생성된 유닛을 해당 쪽(플레이어 / 적) 체력 · 방어도 바에 연결
     public void LinkUnitToUI(UnitBase unit)
     {
         if (unit == null)
