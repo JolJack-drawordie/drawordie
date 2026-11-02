@@ -10,7 +10,7 @@ public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance;
 
-    private const string SaveUrl = "http://localhost:8080/api/game/save";
+    private static string SaveUrl => ApiConfig.Url("/api/game/save");
 
     private const string MapSceneName = "MapScene";
     private const string WorldMapSceneName = "WorldMapScene";

@@ -9,7 +9,7 @@ public class LoadManager : MonoBehaviour
 {
     public static LoadManager Instance;
 
-    private const string LoadUrl = "http://localhost:8080/api/game/load";
+    private static string LoadUrl => ApiConfig.Url("/api/game/load");
     private const string BattleSceneName = "BattleScene";
     private const string RestSceneName = "RestScene";
 

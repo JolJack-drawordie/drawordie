@@ -145,10 +145,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpineController
   skeletonAnimation: {fileID: 0}
   idleAnim: idle
+  runAnim: run
+  hurtAnim: hurt
   attackAnim1: attack1
   attackAnim2: attack2
   attackAnim3: attack3
+  defeatAnim: defeat
+  chargeAnim: charge
   attackTarget: {fileID: 0}
+  attackImpactTime: 0.2
 --- !u!114 &6448186400643676358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,4 +166,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfd65938cbc6a14bbadd1aa7c73c941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUnit
-  attackPower: 6

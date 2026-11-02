@@ -221,7 +221,7 @@ public class MonsterDatabase : MonoBehaviour
     // 서버에서 몬스터 스탯 목록을 받아 저장하고, 서버에 없는 id는 로컬 기본값으로 채운다
     public IEnumerator LoadServerDataFromJson()
     {
-        string monsterUrl = "http://localhost:8080/api/game/load-monsters";
+        string monsterUrl = ApiConfig.Url("/api/game/load-monsters");
 
         yield return StartCoroutine(FetchData<MonsterServerDataListWrapper>(monsterUrl, (wrapper) => {
             if (wrapper == null || wrapper.monsters == null)
