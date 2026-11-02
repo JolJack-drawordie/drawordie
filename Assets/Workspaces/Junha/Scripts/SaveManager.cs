@@ -186,6 +186,11 @@ public class SaveManager : MonoBehaviour
                 maxShield = enemy.statData.maxShield
             };
 
+            // 다음 행동 / 보스 기믹 상태
+            EnemyController enemyController = enemy.GetComponent<EnemyController>();
+            if (enemyController != null)
+                enemyController.WriteSaveState(monster);
+
             monsterDataJson = JsonUtility.ToJson(monster);
         }
 

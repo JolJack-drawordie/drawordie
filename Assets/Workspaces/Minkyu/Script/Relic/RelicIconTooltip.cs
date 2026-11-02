@@ -25,7 +25,7 @@ public class RelicIconTooltip : MonoBehaviour,
 
         relicIconUI.ShowRelicTooltip(
             relicData,
-            eventData
+            transform as RectTransform
         );
     }
 

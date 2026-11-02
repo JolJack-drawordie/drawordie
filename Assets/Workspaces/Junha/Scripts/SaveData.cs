@@ -62,6 +62,16 @@ public class MonsterSaveData
     public int maxHp;
     public int currentShield;
     public int maxShield;
+
+    // 다음 행동 (불러오기 후에도 같은 행동을 하도록). 구버전 세이브는 hasIntent = false → 랜덤으로 다시 뽑음
+    public bool hasIntent;
+    public string intent;      // Attack / Defend / Charge / StrongAttack
+    public int intentValue;    // 일반 몬스터: 공격 데미지 또는 방어도
+
+    // 중간보스/보스 기믹 상태
+    public int patternIndex;
+    public bool isEnraged;
+    public bool isPhase2;
 }
 
 // ⭐ [로드 기능] 신규 추가

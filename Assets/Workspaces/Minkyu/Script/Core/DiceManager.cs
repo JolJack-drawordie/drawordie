@@ -38,8 +38,15 @@ public class DiceManager : MonoBehaviour
 
     public bool isRollFinished = false; // 턴매니저 대기용 플래그
 
-    // 이번 턴에 주사위로 얻은 에너지 (에너지 게이지의 최대치로 사용)
+    // 이번 턴 에너지 최대치 (기본 + 주사위 + 유물 보너스, 에너지 게이지의 최대치로 사용)
     public int MaxEnergy { get; private set; }
+
+    // 이번 턴에 유물 효과로 추가된 에너지 (전투 로그에서 주사위 에너지와 구분용)
+    public int BonusEnergy { get; private set; }
+
+    // 이번 턴에 에너지를 준 유물 목록 (전투 로그용, 주사위를 굴릴 때마다 비움)
+    public readonly System.Collections.Generic.List<(string source, int amount)> BonusSources
+        = new System.Collections.Generic.List<(string source, int amount)>();
 
     private void Awake()
     {
@@ -104,6 +111,8 @@ public class DiceManager : MonoBehaviour
 
         // 기본 에너지 계산
         MaxEnergy = baseEnergy + diceValue;
+        BonusEnergy = 0;
+        BonusSources.Clear();
         CurrentEnergy = MaxEnergy;
 
         // 유물 효과 처리
@@ -143,19 +152,25 @@ public class DiceManager : MonoBehaviour
     {
         // 저장된 최대치가 없는 구버전 세이브(0)는 남은 코스트를 최대치로 사용
         MaxEnergy = Mathf.Max(maxAmount, amount);
+        // 유물 보너스 내역은 세이브에 없으므로 로드 후엔 합계만 표시
+        BonusEnergy = 0;
+        BonusSources.Clear();
         CurrentEnergy = amount;
     }
 
-    // 유물 효과로 에너지 추가
-    public void AddEnergy(int amount)
+    // 유물 효과로 에너지 추가 (source: 로그에 표시할 유물 이름)
+    public void AddEnergy(int amount, string source = null)
     {
         if (amount <= 0)
         {
             return;
         }
 
-        CurrentEnergy += amount;
+        // 최대치를 먼저 올려야 OnEnergyChanged를 받는 UI가 올바른 최대치를 그림
         MaxEnergy += amount;
+        BonusEnergy += amount;
+        BonusSources.Add((string.IsNullOrEmpty(source) ? "유물" : source, amount));
+        CurrentEnergy += amount;
 
         Debug.Log(
             $"[DiceManager] 추가 에너지 +{amount} " +

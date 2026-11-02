@@ -104,6 +104,11 @@ public class GameManager : MonoBehaviour
         {
             MonsterSaveData monsterSave = JsonUtility.FromJson<MonsterSaveData>(PendingLoadData.monsterDataJson);
             currentEnemy.RestoreState(monsterSave.currentHp, monsterSave.currentShield);
+
+            // 다음 행동 / 보스 기믹 상태는 적의 Start에서 랜덤 대신 이 값으로 복원
+            EnemyController enemyController = currentEnemy.GetComponent<EnemyController>();
+            if (enemyController != null)
+                enemyController.SetSavedState(monsterSave);
         }
     }
 

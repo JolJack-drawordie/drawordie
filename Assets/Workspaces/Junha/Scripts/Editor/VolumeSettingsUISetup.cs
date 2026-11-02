@@ -12,7 +12,7 @@ using UnityEngine.UI;
 // 맨 위에 "설정" 제목, 각 줄: [이름 라벨] [슬라이더] [% 라벨] [소리 아이콘 토글]   (밝기 줄은 아이콘 없음)
 // - 기존 SoundSlider는 배경음 슬라이더로 쓰고, 복제해서 효과음 슬라이더를 만든다.
 // - 아이콘은 Bloodlines UI의 Icon-Toggle 1 프리팹. 꺼짐 = 회색 음소거 스피커(Icons-2), 켜짐 = 빨간 스피커.
-// - 맨 아래 닫기 / 로비로(로비 씬 제외) / 게임 종료 버튼은 Bloodlines UI의 Button 1 (Red) 프리팹으로 나란히 놓는다.
+// - 맨 아래 닫기 / 로비로(로비 씬은 로그아웃) / 게임 종료 버튼은 Bloodlines UI의 Button 1 (Red) 프리팹으로 나란히 놓는다.
 //   글꼴은 온글잎 콘콘체, 효과음은 랭킹 버튼과 같은 방식(호버: EventTrigger / 클릭: onClick → ButtonHoverSound.PlaySafely).
 // - 게임 종료 / 로비로 전에 띄우는 확인 창(ConfirmDialog, 예 / 아니오 / 취소)을 설정 창 안에 만들어 둔다.
 // - 이미 만들어진 요소는 다시 만들지 않고 위치만 맞춘다 (여러 번 실행해도 됨).
@@ -58,9 +58,8 @@ public static class VolumeSettingsUISetup
     private static readonly Vector2 IconSize = new Vector2(60f, 60f);
     private const float LabelFontSize = 32f;
 
-    // 맨 아래 버튼 줄 (가로로 나란히). 로비: [닫기] [게임 종료], 그 외: [닫기] [로비로] [게임 종료]
+    // 맨 아래 버튼 줄 (가로로 나란히). 로비: [닫기] [로그아웃] [게임 종료], 그 외: [닫기] [로비로] [게임 종료]
     private const float ButtonRowY = -190f;
-    private const float TwoButtonsGap = 150f;
     private const float ThreeButtonsGap = 300f;
     private static readonly Vector2 ButtonSize = new Vector2(260f, 70f);
     private const float ButtonFontSize = 36f;
@@ -223,25 +222,23 @@ public static class VolumeSettingsUISetup
         Button close = GetOrCreateRedButton(root, "CloseButton", "닫기", settings.CloseSettings, red);
         Button exit = GetOrCreateRedButton(root, "ExitButton", "게임 종료", settings.OnClickExit, red);
 
-        // 로비 씬의 설정 창에는 로비로 버튼이 필요 없음
-        Button lobby = sceneName == LobbySceneName
+        // 가운데 버튼: 로비 씬은 로그아웃, 그 외 씬은 로비로
+        bool isLobby = sceneName == LobbySceneName;
+        Button lobby = isLobby
             ? null
             : GetOrCreateRedButton(root, "LobbyButton", "로비로", settings.OnClickLobby, red);
+        Button logout = isLobby
+            ? GetOrCreateRedButton(root, "LogoutButton", "로그아웃", settings.OnClickLogout, red)
+            : null;
 
-        if (lobby == null)
-        {
-            PlaceButton(close, -TwoButtonsGap);
-            PlaceButton(exit, TwoButtonsGap);
-        }
-        else
-        {
-            lobby.transform.SetSiblingIndex(close.transform.GetSiblingIndex() + 1);
-            PlaceButton(close, -ThreeButtonsGap);
-            PlaceButton(lobby, 0f);
-            PlaceButton(exit, ThreeButtonsGap);
-        }
+        Button middle = lobby != null ? lobby : logout;
+        middle.transform.SetSiblingIndex(close.transform.GetSiblingIndex() + 1);
+        PlaceButton(close, -ThreeButtonsGap);
+        PlaceButton(middle, 0f);
+        PlaceButton(exit, ThreeButtonsGap);
 
         so.FindProperty("lobbyButton").objectReferenceValue = lobby;
+        so.FindProperty("logoutButton").objectReferenceValue = logout;
         so.FindProperty("confirmDialog").objectReferenceValue = SetupConfirmDialog(root, red);
         return true;
     }

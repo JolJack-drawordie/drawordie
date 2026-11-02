@@ -62,7 +62,17 @@ public abstract class EnemyController : MonoBehaviour
         unitData = GetComponentInChildren<UnitBase>();
 
         // 게임 시작 시 무작위로 첫 의도(공격 또는 방어)를 결정하고 아이콘 띄우기
-        DecideNextAction();
+        // (불러온 전투면 저장된 의도로 복원)
+        if (!RestoreSavedIntent())
+            DecideNextAction();
+
+        // 의도 아이콘 호버 시 설명창 (내용은 GetIntentTooltip)
+        if (intentIcon != null)
+        {
+            IntentTooltipHover hover = intentIcon.GetComponent<IntentTooltipHover>();
+            if (hover == null) hover = intentIcon.gameObject.AddComponent<IntentTooltipHover>();
+            hover.Init(this);
+        }
 
         // ----- 피격 이펙트 공통 설정 -----
         hitRenderer = GetComponent<SpriteRenderer>();
@@ -345,6 +355,48 @@ public abstract class EnemyController : MonoBehaviour
         UpdateIntentUI();
     }
 
+    // ===================== 저장 / 불러오기 =====================
+
+    // 불러온 전투의 몬스터 상태 (GameManager가 스폰 직후, 이 몬스터의 Start보다 먼저 넣어 줌)
+    protected MonsterSaveData savedState;
+
+    public void SetSavedState(MonsterSaveData state)
+    {
+        savedState = state;
+    }
+
+    protected bool HasSavedIntent => savedState != null && savedState.hasIntent && !string.IsNullOrEmpty(savedState.intent);
+
+    // 세이브할 때 다음 행동 기록 (보스는 override해서 기믹 상태까지)
+    public virtual void WriteSaveState(MonsterSaveData data)
+    {
+        data.hasIntent = true;
+        data.intent = isNextAttack ? "Attack" : "Defend";
+        data.intentValue = isNextAttack ? currentAttack : currentDefend;
+    }
+
+    // 저장된 의도가 있으면 그대로 복원하고 true (없으면 false → 랜덤으로 뽑음)
+    protected virtual bool RestoreSavedIntent()
+    {
+        if (!HasSavedIntent) return false;
+
+        isNextAttack = savedState.intent != "Defend";
+
+        if (isNextAttack)
+        {
+            currentAttack = savedState.intentValue;
+            if (actionText != null) actionText.text = currentAttack.ToString();
+        }
+        else
+        {
+            currentDefend = savedState.intentValue;
+            if (actionText != null) actionText.text = currentDefend.ToString();
+        }
+
+        UpdateIntentUI();
+        return true;
+    }
+
     // 의도 아이콘 업데이트
     protected void UpdateIntentUI()
     {
@@ -359,6 +411,20 @@ public abstract class EnemyController : MonoBehaviour
         {
             intentIcon.sprite = GetIntentSprite(false, currentDefend);
         }
+    }
+
+    // 의도 아이콘 호버 설명 (보스는 override해서 기믹까지 설명)
+    public const string TooltipAttackColor = "#FF6B6B";
+    public const string TooltipDefendColor = "#6FA8FF";
+    public const string TooltipChargeColor = "#FFD24D";
+    public const string TooltipNoteColor = "#BBBBBB";
+
+    public virtual string GetIntentTooltip()
+    {
+        if (isNextAttack)
+            return $"<color={TooltipAttackColor}><size=32>공격</size></color>\n피해 {currentAttack}";
+
+        return $"<color={TooltipDefendColor}><size=32>방어</size></color>\n방어도 +{currentDefend}";
     }
 
     protected Sprite GetIntentSprite(bool isAttack, int value)
