@@ -26,7 +26,8 @@ public class RelicIconUI : MonoBehaviour
     [SerializeField] private Canvas rootCanvas;
 
     [Header("툴팁 위치")]
-    [SerializeField] private Vector2 tooltipOffset = new Vector2(20f, -20f);
+    [Tooltip("아이콘과 툴팁 사이 간격")]
+    [SerializeField] private float tooltipGap = 10f;
     [SerializeField] private float screenPadding = 15f;
 
     [Serializable]
@@ -249,10 +250,10 @@ public class RelicIconUI : MonoBehaviour
         return null;
     }
 
-    // 유물 툴팁 표시
+    // 유물 툴팁 표시 (아이콘 바로 위에 표시)
     public void ShowRelicTooltip(
         RelicData relic,
-        PointerEventData eventData)
+        RectTransform iconRect)
     {
         if (relic == null ||
             relicTooltip == null ||
@@ -285,99 +286,59 @@ public class RelicIconUI : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        UpdateTooltipPosition(eventData);
+        UpdateTooltipPosition(iconRect);
 
         // 툴팁을 가장 위에 표시
         tooltipRect.SetAsLastSibling();
     }
 
-    // 마우스 위치에 맞춰 툴팁 이동
-    private void UpdateTooltipPosition(
-        PointerEventData eventData)
+    // 아이콘 위쪽 가운데에 툴팁 배치 (위쪽 공간이 부족하면 아이콘 아래로)
+    private void UpdateTooltipPosition(RectTransform iconRect)
     {
         if (tooltipRect == null ||
             canvasRect == null ||
-            rootCanvas == null)
+            iconRect == null)
         {
             return;
         }
 
-        Camera eventCamera = null;
+        // 아이콘의 네 모서리를 Canvas 기준 좌표로 변환
+        Vector3[] corners = new Vector3[4];
+        iconRect.GetWorldCorners(corners);
 
-        if (rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
-        {
-            eventCamera = rootCanvas.worldCamera;
-        }
-
-        Vector2 localPoint;
-
-        bool converted =
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasRect,
-                eventData.position,
-                eventCamera,
-                out localPoint
-            );
-
-        if (!converted)
-            return;
+        Vector2 bottomLeft = canvasRect.InverseTransformPoint(corners[0]);
+        Vector2 topRight = canvasRect.InverseTransformPoint(corners[2]);
 
         Rect canvasBounds = canvasRect.rect;
-
         Vector2 tooltipSize = tooltipRect.rect.size;
-
-        Vector2 targetPosition =
-            localPoint + tooltipOffset;
 
         float halfWidth = tooltipSize.x * 0.5f;
         float halfHeight = tooltipSize.y * 0.5f;
+        float centerX = (bottomLeft.x + topRight.x) * 0.5f;
 
-        // 오른쪽 공간이 부족하면 마우스 왼쪽으로 이동
-        if (targetPosition.x + halfWidth >
-            canvasBounds.xMax - screenPadding)
+        // 기본: 아이콘 위쪽
+        float centerY = topRight.y + tooltipGap + halfHeight;
+
+        // 위쪽 공간이 부족하면 아이콘 아래쪽
+        if (centerY + halfHeight > canvasBounds.yMax - screenPadding)
         {
-            targetPosition.x =
-                localPoint.x - tooltipOffset.x;
+            centerY = bottomLeft.y - tooltipGap - halfHeight;
         }
 
-        // 왼쪽 공간이 부족하면 오른쪽으로 이동
-        if (targetPosition.x - halfWidth <
-            canvasBounds.xMin + screenPadding)
-        {
-            targetPosition.x =
-                localPoint.x + Mathf.Abs(tooltipOffset.x);
-        }
-
-        // 위쪽 공간이 부족하면 아래쪽으로 이동
-        if (targetPosition.y + halfHeight >
-            canvasBounds.yMax - screenPadding)
-        {
-            targetPosition.y =
-                localPoint.y - Mathf.Abs(tooltipOffset.y);
-        }
-
-        // 아래쪽 공간이 부족하면 위쪽으로 이동
-        if (targetPosition.y - halfHeight <
-            canvasBounds.yMin + screenPadding)
-        {
-            targetPosition.y =
-                localPoint.y + Mathf.Abs(tooltipOffset.y);
-        }
-
-        // 최종적으로 Canvas 영역 안에 위치하도록 제한
-        targetPosition.x = Mathf.Clamp(
-            targetPosition.x,
+        // 화면 밖으로 나가지 않도록 제한
+        centerX = Mathf.Clamp(
+            centerX,
             canvasBounds.xMin + halfWidth + screenPadding,
             canvasBounds.xMax - halfWidth - screenPadding
         );
 
-        targetPosition.y = Mathf.Clamp(
-            targetPosition.y,
+        centerY = Mathf.Clamp(
+            centerY,
             canvasBounds.yMin + halfHeight + screenPadding,
             canvasBounds.yMax - halfHeight - screenPadding
         );
 
-        tooltipRect.anchoredPosition = targetPosition;
+        tooltipRect.anchoredPosition = new Vector2(centerX, centerY);
     }
 
     // 유물 툴팁 숨기기

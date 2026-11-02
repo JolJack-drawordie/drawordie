@@ -26,8 +26,6 @@ public class TurnManager : MonoBehaviour
     public int turnCount = 0;
     public bool playerActionFinished = false;
 
-    private bool isDeckInitialized = false;
-
     // 전투 씬(턴 진행 중인 씬)이 열려 있는지.
     // 휴식 씬 등에 GameManager가 딸려 들어가도 전투로 오인하지 않도록 저장 가능 조건에서 이 값으로 판단
     public static bool IsInBattleScene => instance != null;
@@ -162,7 +160,9 @@ public class TurnManager : MonoBehaviour
 
                 int rolledEnergy = diceManager.CurrentEnergy;
                 Debug.Log($"Turn Energy: {rolledEnergy}");
-                BattleLog.Add($"주사위 {diceManager.diceValue} → 에너지 {rolledEnergy}", BattleLog.Kind.Dice);
+                BattleLog.Add($"주사위 {diceManager.diceValue} → 에너지 {rolledEnergy - diceManager.BonusEnergy}", BattleLog.Kind.Dice);
+                foreach (var bonus in diceManager.BonusSources)
+                    BattleLog.Add($"{bonus.source} 발동! 에너지 +{bonus.amount}", BattleLog.Kind.Dice);
 
                 // DataManager에 마나를 넘겨주며 카드 드로우 실행!
                 if (DataManager.Instance != null)
@@ -196,6 +196,12 @@ public class TurnManager : MonoBehaviour
                 yield return null;
             }
 
+            // 응축된 마력석: 턴 종료 버튼을 누르자마자 남은 에너지만큼 방어도 (적 공격 전에 받아야 의미가 있음)
+            if (RelicManager.Instance != null)
+            {
+                RelicManager.Instance.OnTurnEnd(diceManager.CurrentEnergy, player);
+            }
+
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.EnemyTurn;
@@ -218,15 +224,6 @@ public class TurnManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
             gameManager.currentState = BattleState.TurnEnd;
-
-            // 턴 종료 시 남은 에너지 확인
-            int remainingEnergy = diceManager.CurrentEnergy;
-
-            // 응축된 마력석 발동
-            if (RelicManager.Instance != null)
-            {
-                RelicManager.Instance.OnTurnEnd(remainingEnergy, player);
-            }
 
             Debug.Log($"===== Turn {turnCount} End =====");
 

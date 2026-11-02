@@ -60,10 +60,8 @@ public class RelicManager : MonoBehaviour
         }
         else if (Instance != this)
         {
-            Debug.LogWarning(
-                "[RelicManager] 중복 인스턴스 발견. 해당 오브젝트 제거"
-            );
-
+            // RelicManager는 전투 씬에 배치돼 있어서, 두 번째 전투부터는 씬을 열 때마다 새 사본이 생김.
+            // 첫 전투에서 만든 것(DontDestroyOnLoad)을 계속 쓰고 사본은 조용히 제거하는 정상 흐름이므로 경고는 띄우지 않음
             Destroy(gameObject);
         }
     }
@@ -366,7 +364,7 @@ public class RelicManager : MonoBehaviour
             {
                 if (DiceManager.Instance != null)
                 {
-                    DiceManager.Instance.AddEnergy(luckyDice.effect.value);
+                    DiceManager.Instance.AddEnergy(luckyDice.effect.value, luckyDice.name);
                     Debug.Log(
                         $"[RelicManager] Lucky Dice 발동! 에너지 +{luckyDice.effect.value}"
                     );
@@ -392,7 +390,7 @@ public class RelicManager : MonoBehaviour
             {
                 if (DiceManager.Instance != null)
                 {
-                    DiceManager.Instance.AddEnergy(hourglass.effect.value);
+                    DiceManager.Instance.AddEnergy(hourglass.effect.value, hourglass.name);
                     Debug.Log(
                         $"[RelicManager] Hourglass of Time 발동! 에너지 +{hourglass.effect.value}"
                     );
@@ -524,7 +522,7 @@ public class RelicManager : MonoBehaviour
             return;
         }
 
-        PlayerUnit player = FindObjectOfType<PlayerUnit>();
+        PlayerUnit player = FindFirstObjectByType<PlayerUnit>();
 
         if (player == null)
         {
@@ -572,6 +570,9 @@ public class RelicManager : MonoBehaviour
         }
 
         int shieldAmount = remainingEnergy * relic.effect.value;
+
+        string relicName = string.IsNullOrEmpty(relic.name) ? relic.key : relic.name;
+        BattleLog.Add($"{relicName} 발동! 남은 에너지 {remainingEnergy} → 방어도 +{shieldAmount}", BattleLog.Kind.Shield);
 
         player.AddShield(shieldAmount);
 

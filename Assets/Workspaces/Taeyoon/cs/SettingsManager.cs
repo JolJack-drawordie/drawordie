@@ -34,8 +34,11 @@ public class SettingsManager : MonoBehaviour
     [SerializeField] private ConfirmDialog confirmDialog;
     // 로비 씬에는 없음
     [SerializeField] private Button lobbyButton;
+    // 로비 씬에만 있음
+    [SerializeField] private Button logoutButton;
 
     private const string LobbySceneName = "LobbyScene";
+    private const string TitleSceneName = "TitleScreen";
     private bool isLeaving;
 
     // 음소거를 풀 때 저장된 음량이 이보다 작으면(슬라이더를 끝까지 내려 끈 경우) 기본 음량으로 되돌린다
@@ -140,6 +143,38 @@ public class SettingsManager : MonoBehaviour
             confirmDialog.ShowWithCancel("로비로 돌아가기 전에\n저장하시겠습니까?", SaveAndGoToLobby, GoToLobby);
         else
             SaveAndGoToLobby();
+    }
+
+    public void OnClickLogout()
+    {
+        if (isLeaving) return;
+
+        if (confirmDialog != null)
+            confirmDialog.Show("로그아웃 하시겠습니까?", Logout);
+        else
+            Logout();
+    }
+
+    // 로그인 정보와 이전 계정의 런 상태를 지우고 타이틀 화면으로 이동
+    private void Logout()
+    {
+        isLeaving = true;
+        PlayerPrefs.Save();
+
+        // 설정 창 일시정지를 먼저 풀어야 타이틀이 멈춘 채로 열리지 않음
+        GamePause.Resume();
+
+        AuthManager.Logout();
+        LobbyManager.ResetRunState();
+
+        if (PlayTimeTracker.Instance != null)
+            PlayTimeTracker.Instance.IsPaused = true;
+
+        // 로비와 타이틀은 같은 BGM이라 그대로 두면 이어서 재생됨 → 멈춰서 타이틀에서 처음부터 다시 나오게 함
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.StopBGM();
+
+        SceneManager.LoadScene(TitleSceneName);
     }
 
     // 저장 버튼과 같은 조건 (전투 중이면 플레이어 턴 + 카드 연출 중이 아닐 때만)

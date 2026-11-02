@@ -290,7 +290,58 @@ public class BossController2 : EnemyController
         if (attackSprite == null || defendSprite == null)
             Debug.LogWarning($"[{name}] Attack/Defend Sprite 중 비어있는 게 있습니다.", this);
 
-        DecideIntent();
+        // 불러온 전투면 저장된 의도/기믹 상태로 복원, 아니면 새로 결정
+        if (!RestoreBossState())
+            DecideIntent();
+    }
+
+    // ===================== 저장 / 불러오기 =====================
+
+    public override void WriteSaveState(MonsterSaveData data)
+    {
+        data.hasIntent = true;
+        data.intent = currentIntent.ToString();
+        data.intentValue = currentIntent == BossIntent.Defend ? defendShield : GetAttackPower(currentIntent);
+        data.patternIndex = patternIndex;
+        data.isEnraged = isEnraged;
+        data.isPhase2 = isPhase2;
+    }
+
+    // 부모(EnemyController.Start)의 일반 몬스터 복원은 건너뜀. 보스는 아래 RestoreBossState에서 처리
+    protected override bool RestoreSavedIntent()
+    {
+        return HasSavedIntent;
+    }
+
+    // 서버 기믹/기본 공격력이 준비된 뒤(Start 끝)에 호출
+    private bool RestoreBossState()
+    {
+        if (!HasSavedIntent) return false;
+
+        if (!System.Enum.TryParse(savedState.intent, true, out BossIntent intent))
+            return false;
+
+        // 차지 기믹이 꺼진 보스면 DecideIntent와 같은 규칙으로 일반 공격 취급
+        if (!useCharge && (intent == BossIntent.Charge || intent == BossIntent.StrongAttack))
+            intent = BossIntent.Attack;
+
+        currentIntent = intent;
+        patternIndex = Mathf.Max(0, savedState.patternIndex);
+        isEnraged = useEnrage && savedState.isEnraged;
+        isPhase2 = usePhase2 && savedState.isPhase2;
+
+        // 분노/페이즈 몸 색 복원 (CheckHpGimmicks와 같은 우선순위: 페이즈 2 색이 우선)
+        if (isPhase2) persistentTint = phase2TintColor;
+        else if (isEnraged) persistentTint = enrageTintColor;
+        ApplyPersistentColors();
+
+        isNextAttack = currentIntent == BossIntent.Attack || currentIntent == BossIntent.StrongAttack;
+
+        // 아이콘 + 공격력(분노 배율 포함) 갱신
+        UpdateIntentIcon();
+
+        Debug.Log($"[{name}] 저장된 상태 복원 - 의도:{currentIntent} 패턴:{patternIndex} 분노:{isEnraged} 2페이즈:{isPhase2}", this);
+        return true;
     }
 
     // 보스 몸 앞(왼쪽 끝)이 플레이어 몸 앞(오른쪽 끝) + attackStopGap 위치까지 가는 거리
@@ -579,6 +630,69 @@ public class BossController2 : EnemyController
 
         intentIcon.rectTransform.localScale = scale;
         intentIcon.color = color;
+    }
+
+    // 의도 아이콘 호버 설명: 이번 행동 + 켜져 있는 기믹
+    public override string GetIntentTooltip()
+    {
+        var sb = new System.Text.StringBuilder();
+
+        switch (currentIntent)
+        {
+            case BossIntent.Attack:
+                sb.Append($"<color={TooltipAttackColor}><size=32>공격</size></color>\n피해 {GetAttackPower(BossIntent.Attack)}");
+                break;
+            case BossIntent.Defend:
+                sb.Append($"<color={TooltipDefendColor}><size=32>방어</size></color>\n방어도 +{defendShield}");
+                break;
+            case BossIntent.Charge:
+                sb.Append($"<color={TooltipChargeColor}><size=32>차지 중</size></color>\n기를 모으는 중 (이번 턴 공격 안 함)\n" +
+                          $"다음 턴 강공격: 피해 {GetAttackPower(BossIntent.StrongAttack)}");
+                break;
+            case BossIntent.StrongAttack:
+                sb.Append($"<color={TooltipAttackColor}><size=32>강공격</size></color>\n모은 기를 터뜨려 피해 {GetAttackPower(BossIntent.StrongAttack)}");
+                break;
+        }
+
+        var notes = new System.Collections.Generic.List<string>();
+
+        if (useRegen && regenAmount > 0)
+            notes.Add($"재생: 매 턴 체력 +{regenAmount}");
+
+        if (useLifesteal)
+            notes.Add($"흡혈: 준 피해의 {Mathf.RoundToInt(lifestealRatio * 100f)}% 회복");
+
+        if (useThorns && thornsDamage > 0)
+            notes.Add($"가시 갑옷: 방어도가 있을 때 공격하면 {thornsDamage} 반사");
+
+        if (useEnrage)
+            notes.Add(isEnraged
+                ? $"분노 중: 공격력 x{enrageAttackMultiplier:0.#}"
+                : $"분노: 체력 {Mathf.RoundToInt(enrageHpRatio * 100f)}% 이하면 공격력 x{enrageAttackMultiplier:0.#}");
+
+        if (usePhase2)
+        {
+            if (isPhase2)
+            {
+                notes.Add("페이즈 2 진행 중");
+            }
+            else
+            {
+                string bonus = phase2Shield > 0 ? $"방어도 +{phase2Shield}" : "";
+                if (phase2Heal > 0) bonus += (bonus.Length > 0 ? ", " : "") + $"체력 +{phase2Heal}";
+                notes.Add($"페이즈 2: 체력 {Mathf.RoundToInt(phase2HpRatio * 100f)}% 이하면 돌입" +
+                          (bonus.Length > 0 ? $" ({bonus})" : ""));
+            }
+        }
+
+        if (notes.Count > 0)
+        {
+            sb.Append($"\n<size=22><color={TooltipNoteColor}>");
+            foreach (string n in notes) sb.Append('\n').Append(n);
+            sb.Append("</color></size>");
+        }
+
+        return sb.ToString();
     }
 
     // ===================== 턴 행동 =====================

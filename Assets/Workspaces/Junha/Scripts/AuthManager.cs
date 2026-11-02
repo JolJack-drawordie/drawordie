@@ -25,6 +25,15 @@ public class AuthManager : MonoBehaviour
     public static string token; // 세이브/로드/결과 요청 시 Authorization 헤더로 보냄
     public static bool isLoggedIn = false;
 
+    // 로그아웃: 저장된 로그인 정보를 지운다 (JWT라 서버에 따로 알릴 필요 없음)
+    public static void Logout()
+    {
+        userId = 0;
+        nickname = null;
+        token = null;
+        isLoggedIn = false;
+    }
+
     // 로그인 토큰이 필요한 서버 요청에 "Authorization: Bearer <토큰>" 헤더를 붙임
     public static void SetAuthHeader(UnityWebRequest request)
     {

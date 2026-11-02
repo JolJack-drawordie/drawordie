@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 
 public class BattleRewardManager : MonoBehaviour
 {
@@ -21,7 +20,9 @@ public class BattleRewardManager : MonoBehaviour
     [SerializeField] private Image[] relicSlotIcons = new Image[3];
     [SerializeField] private TextMeshProUGUI[] relicNameTexts = new TextMeshProUGUI[3];
     [SerializeField] private TextMeshProUGUI[] relicDescriptionTexts = new TextMeshProUGUI[3];
-    [SerializeField] private Button[] relicSelectButtons = new Button[3];
+
+    // 유물 아이콘 클릭/호버 처리 (각 RelicIcon에 런타임으로 붙임)
+    private RelicRewardSlotView[] relicSlotViews;
 
     [Header("유물 보상 넘어가기")]
     [SerializeField] private Button nextButton;
@@ -47,9 +48,6 @@ public class BattleRewardManager : MonoBehaviour
     // 현재 표시 중인 유물 3개
     private List<RelicData> selectedRelics = new List<RelicData>();
 
-    // 버튼 이벤트 저장: OnDestroy에서 정확하게 해제하기 위함
-    private UnityAction[] relicButtonActions;
-
     private bool isProcessingReward;
     private bool isRelicReward;
     private bool isLeavingReward;
@@ -72,23 +70,34 @@ public class BattleRewardManager : MonoBehaviour
         if (relicRewardPanel != null)
             relicRewardPanel.SetActive(false);
 
-        // 유물 선택 버튼 이벤트 등록
-        relicButtonActions =
-            new UnityAction[relicSelectButtons.Length];
+        // 카드 보상처럼 유물 아이콘/이름을 클릭하면 선택
+        relicSlotViews =
+            new RelicRewardSlotView[relicSlotIcons.Length];
 
-        for (int i = 0; i < relicSelectButtons.Length; i++)
+        for (int i = 0; i < relicSlotIcons.Length; i++)
         {
             int index = i;
 
-            if (relicSelectButtons[i] != null)
-            {
-                relicButtonActions[i] =
-                    () => AcquireSelectedRelic(index);
+            if (relicSlotIcons[i] == null)
+                continue;
 
-                relicSelectButtons[i].onClick.AddListener(
-                    relicButtonActions[i]
-                );
-            }
+            // 아이콘에만 붙여서 아이콘만 호버/클릭되게 함 (이름/설명 글자는 클릭을 받지 않음)
+            GameObject iconObj = relicSlotIcons[i].gameObject;
+
+            RelicRewardSlotView view =
+                iconObj.GetComponent<RelicRewardSlotView>();
+
+            if (view == null)
+                view = iconObj.AddComponent<RelicRewardSlotView>();
+
+            if (i < relicNameTexts.Length && relicNameTexts[i] != null)
+                relicNameTexts[i].raycastTarget = false;
+
+            if (i < relicDescriptionTexts.Length && relicDescriptionTexts[i] != null)
+                relicDescriptionTexts[i].raycastTarget = false;
+
+            view.Init(relicSlotIcons[i], () => AcquireSelectedRelic(index));
+            relicSlotViews[i] = view;
         }
 
         // 넘어가기 버튼 이벤트 등록
@@ -328,11 +337,9 @@ public class BattleRewardManager : MonoBehaviour
         if (relicSlotIcons == null ||
             relicNameTexts == null ||
             relicDescriptionTexts == null ||
-            relicSelectButtons == null ||
             relicSlotIcons.Length < 3 ||
             relicNameTexts.Length < 3 ||
-            relicDescriptionTexts.Length < 3 ||
-            relicSelectButtons.Length < 3)
+            relicDescriptionTexts.Length < 3)
         {
             Debug.LogError(
                 "[BattleRewardManager] 유물 슬롯 배열 크기가 부족합니다."
@@ -357,8 +364,7 @@ public class BattleRewardManager : MonoBehaviour
 
             if (relicNameTexts[i] == null ||
                 relicDescriptionTexts[i] == null ||
-                relicSlotIcons[i] == null ||
-                relicSelectButtons[i] == null)
+                relicSlotIcons[i] == null)
             {
                 Debug.LogError(
                     $"[BattleRewardManager] 유물 슬롯 {i + 1}의 UI가 연결되지 않았습니다."
@@ -376,7 +382,7 @@ public class BattleRewardManager : MonoBehaviour
             relicSlotIcons[i].sprite = iconSprite;
             relicSlotIcons[i].enabled = iconSprite != null;
 
-            relicSelectButtons[i].interactable = true;
+            SetRelicSlotInteractable(i, true);
 
             Debug.Log(
                 $"[BattleRewardManager] 유물 슬롯 {i + 1}: {relic.name}"
@@ -445,12 +451,7 @@ public class BattleRewardManager : MonoBehaviour
             relicSlotIcons[index].enabled = false;
         }
 
-        if (relicSelectButtons != null &&
-            index < relicSelectButtons.Length &&
-            relicSelectButtons[index] != null)
-        {
-            relicSelectButtons[index].interactable = false;
-        }
+        SetRelicSlotInteractable(index, false);
     }
 
     // =====================================
@@ -460,7 +461,7 @@ public class BattleRewardManager : MonoBehaviour
     private void AcquireSelectedRelic(int selectedIndex)
     {
         Debug.Log(
-            $"[BattleRewardManager] 유물 획득 버튼 클릭: {selectedIndex}"
+            $"[BattleRewardManager] 유물 클릭: {selectedIndex}"
         );
 
         if (!isRelicReward || isProcessingReward || isLeavingReward)
@@ -518,18 +519,29 @@ public class BattleRewardManager : MonoBehaviour
     }
 
     // =====================================
-    // 유물 버튼 활성화 / 비활성화
+    // 유물 슬롯 선택 가능 여부
     // =====================================
+
+    private void SetRelicSlotInteractable(int index, bool interactable)
+    {
+        if (relicSlotViews != null &&
+            index < relicSlotViews.Length &&
+            relicSlotViews[index] != null)
+        {
+            relicSlotViews[index].SetInteractable(interactable);
+        }
+    }
 
     private void SetAllRelicButtonsInteractable(bool interactable)
     {
-        if (relicSelectButtons == null)
+        if (relicSlotViews == null)
             return;
 
-        foreach (Button button in relicSelectButtons)
+        for (int i = 0; i < relicSlotViews.Length; i++)
         {
-            if (button != null)
-                button.interactable = interactable;
+            // 빈 슬롯은 다시 켜지 않음
+            bool hasRelic = i < selectedRelics.Count && selectedRelics[i] != null;
+            SetRelicSlotInteractable(i, interactable && hasRelic);
         }
     }
 
@@ -605,20 +617,6 @@ public class BattleRewardManager : MonoBehaviour
     {
         if (Instance != this)
             return;
-
-        // 유물 버튼 이벤트 해제
-        for (int i = 0; i < relicSelectButtons.Length; i++)
-        {
-            if (relicSelectButtons[i] != null &&
-                relicButtonActions != null &&
-                i < relicButtonActions.Length &&
-                relicButtonActions[i] != null)
-            {
-                relicSelectButtons[i].onClick.RemoveListener(
-                    relicButtonActions[i]
-                );
-            }
-        }
 
         // 넘어가기 버튼 이벤트 해제
         if (nextButton != null)
