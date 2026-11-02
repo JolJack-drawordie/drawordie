@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 맵 씬에 들어올 때 맵 시드로 노드와 연결선을 만든다 (같은 시드면 항상 같은 맵).
+// - 층마다 노드 3~4개, 마지막 층은 보스, 보스 바로 전 층은 전부 휴식
+// - 2층부터 휴식 / 중간보스가 무작위로 섞이고, 중간보스는 Act마다 한 번은 꼭 나온다
+// - 이전 층 노드는 가로로 가까운 노드부터 이어지고, 들어오는 길이 없는 노드는 가장 가까운 노드와 이어 준다
 public class MapGenerator : MonoBehaviour
 {
     [Header("Node Prefabs")]
@@ -25,20 +29,19 @@ public class MapGenerator : MonoBehaviour
     // 1층 노드의 y 위치 (1920x1080 기준). 보스 노드가 상단 바(높이 100)에 가리지 않도록 아래로 내림
     public float startY = -370f;
 
-    [Header("Rest Settings")]
+    [Header("Rest Settings")] // 일반 노드가 휴식 노드가 될 확률
     [Range(0f, 1f)]
     public float restChance = 0.2f;
 
     [Header("Connection Settings")]
+    // 이전 층 노드 하나가 다음 층과 이어지는 개수 범위
     [Range(1, 2)]
     public int minConnections = 1;
 
     [Range(1, 2)]
     public int maxConnections = 2;
 
-    // =========================
-    // Map Seed 기반 Random
-    // =========================
+    // 맵 시드로 만든 맵 전용 난수 (노드 수, 종류, 연결, 노드 시드)
 
     private System.Random mapRandom;
 
@@ -46,7 +49,7 @@ public class MapGenerator : MonoBehaviour
 
     private void Awake()
     {
-        // MapSeedGenerator 가져오기
+        // 같은 오브젝트의 MapSeedGenerator가 이 Act의 맵 시드를 정해 둔다
         mapSeedGenerator =
             GetComponent<MapSeedGenerator>();
 
@@ -59,12 +62,10 @@ public class MapGenerator : MonoBehaviour
             return;
         }
 
-        // Map Seed 확인
         int mapSeed =
             mapSeedGenerator.seed;
 
-        // Map Seed를 기반으로
-        // Map 전용 Random 생성
+        // 맵 시드로 맵 전용 난수를 만든다
         mapRandom =
             new System.Random(mapSeed);
 
@@ -77,15 +78,15 @@ public class MapGenerator : MonoBehaviour
         GenerateLayout();
     }
 
+    // 층마다 노드를 만들고 이전 층과 잇는다
     void GenerateLayout()
     {
-        // 기존 노드 삭제
+        // 이전 맵의 노드 / 선 지우기
         foreach (Transform child in nodeParent)
         {
             Destroy(child.gameObject);
         }
 
-        // 기존 선 삭제
         foreach (Transform child in lineParent)
         {
             Destroy(child.gameObject);
@@ -101,9 +102,7 @@ public class MapGenerator : MonoBehaviour
             List<GameObject> currentFloor =
                 new List<GameObject>();
 
-            // =========================
-            // 마지막 층 = Boss
-            // =========================
+            // ----- 마지막 층 = 보스 -----
 
             if (floor == floorCount - 1)
             {
@@ -123,16 +122,12 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
-                // =========================
-                // 일반 층은 2~3개의 노드 생성
-                // =========================
+                // ----- 일반 층: 노드 3~4개 -----
 
                 int nodeCount =
                     mapRandom.Next(3, 5);
 
-                // =========================
-                // 보스 직전 층인지 확인
-                // =========================
+                // 보스 바로 전 층인지
 
                 bool isBossBeforeFloor =
                     floor == floorCount - 2;
@@ -154,10 +149,7 @@ public class MapGenerator : MonoBehaviour
                     MapNode.NodeType nodeType =
                         MapNode.NodeType.Monster;
 
-                    // =========================
-                    // 보스 직전 층
-                    // 모든 노드를 Rest로 생성
-                    // =========================
+                    // 보스 바로 전 층은 모든 노드를 휴식으로
 
                     if (isBossBeforeFloor)
                     {
@@ -173,13 +165,11 @@ public class MapGenerator : MonoBehaviour
                     }
                     else
                     {
-                        // =========================
-                        // 일반 층의 Rest / Elite 생성
-                        // =========================
+                        // ----- 2층부터 휴식 / 중간보스 섞기 -----
 
                         if (floor >= 2)
                         {
-                            // 중간보스는 이번 액트에서 이미 생성되었는지 확인
+                            // 이번 Act에서 중간보스가 이미 나왔는지 (이전 층과 지금 층 확인)
                             bool eliteAlreadyCreated = false;
 
                             foreach (GameObject previousNode in previousFloor)
@@ -197,7 +187,6 @@ public class MapGenerator : MonoBehaviour
                                 }
                             }
 
-                            // 현재 층에서 중간보스가 생성되었는지도 확인
                             foreach (GameObject currentNode in currentFloor)
                             {
                                 if (currentNode == null) continue;
@@ -213,14 +202,12 @@ public class MapGenerator : MonoBehaviour
                                 }
                             }
 
-                            // 아직 중간보스가 없으면 생성 확률 부여
+                            // 아직 중간보스가 없으면: 마지막 일반 층의 마지막 노드는 반드시, 그 전에는 확률로
                             if (!eliteAlreadyCreated)
                             {
-                                // 마지막 일반 층에서는 반드시 중간보스 생성
                                 bool isLastNormalFloor =
                                     floor == floorCount - 3;
 
-                                // 마지막 일반 층의 마지막 노드라면 확정 생성
                                 bool isLastNode =
                                     i == nodeCount - 1;
 
@@ -245,9 +232,9 @@ public class MapGenerator : MonoBehaviour
                                     }
                                 }
                             }
+                            // 중간보스가 이미 있으면 휴식만 무작위로
                             else
                             {
-                                // 중간보스가 이미 생성되었다면 Rest만 랜덤 생성
                                 if (mapRandom.NextDouble() < restChance)
                                 {
                                     prefab = restPrefab;
@@ -270,9 +257,7 @@ public class MapGenerator : MonoBehaviour
                 }
             }
 
-            // =========================
-            // 이전 층과 현재 층 연결
-            // =========================
+            // ----- 이전 층과 지금 층 잇기 -----
 
             if (previousFloor.Count > 0)
             {
@@ -291,11 +276,7 @@ public class MapGenerator : MonoBehaviour
         );
     }
 
-
-    /// <summary>
-    /// 이전 층과 현재 층을 연결한다.
-    /// 가까운 노드를 우선 연결하고, 연결되지 않은 노드는 보정한다.
-    /// </summary>
+    // 이전 층과 지금 층을 잇는다. 가로로 가까운 노드를 우선 잇고, 들어오는 길이 없는 노드는 보정한다
     void CreateConnections(
         List<GameObject> previousFloor,
         List<GameObject> currentFloor)
@@ -306,10 +287,10 @@ public class MapGenerator : MonoBehaviour
         if (previousFloor.Count == 0 || currentFloor.Count == 0)
             return;
 
-        // 현재 층 각 노드의 유입 연결 개수
+        // 지금 층 노드마다 들어오는 연결 수
         int[] incomingConnections = new int[currentFloor.Count];
 
-        // 각 이전 층 노드에서 가까운 노드를 우선 연결
+        // 이전 층 노드마다 가까운 순서로 정해진 개수만큼 연결
         foreach (GameObject prev in previousFloor)
         {
             if (prev == null)
@@ -321,7 +302,7 @@ public class MapGenerator : MonoBehaviour
             if (prevNode == null || prevRect == null)
                 continue;
 
-            // 기존 설정에 따라 연결 개수 결정
+            // 연결 개수 결정 (설정 범위 안에서 무작위)
             int minCount = Mathf.Clamp(minConnections, 1, currentFloor.Count);
             int maxCount = Mathf.Clamp(
                 maxConnections,
@@ -385,7 +366,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // 유입 연결이 없는 노드는 이전 층의 가장 가까운 노드와 연결
+        // 들어오는 연결이 없는 노드는 이전 층의 가장 가까운 노드와 연결
         for (int i = 0; i < currentFloor.Count; i++)
         {
             if (incomingConnections[i] > 0 || currentFloor[i] == null)
@@ -445,7 +426,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-
+    // 노드 프리팹을 만들고 위치 / 종류 / 노드 시드 지정
     GameObject CreateNode(
         GameObject prefab,
         Vector2 pos,
@@ -463,9 +444,7 @@ public class MapGenerator : MonoBehaviour
             return null;
         }
 
-        // -----------------------------
-        // 노드 생성
-        // -----------------------------
+        // 노드 생성 후 위치 지정
 
         GameObject node =
             Instantiate(
@@ -482,16 +461,12 @@ public class MapGenerator : MonoBehaviour
                 pos;
         }
 
-        // -----------------------------
-        // Node Seed 생성
-        // -----------------------------
+        // 노드 전용 시드 (맵 난수에서 뽑으므로 같은 맵이면 같은 값)
 
         int nodeSeed =
             mapRandom.Next();
 
-        // -----------------------------
-        // MapNode 정보 설정
-        // -----------------------------
+        // 노드 정보 설정
 
         MapNode mapNode =
             node.GetComponent<MapNode>();
@@ -517,6 +492,7 @@ public class MapGenerator : MonoBehaviour
         return node;
     }
 
+    // 두 노드 사이에 선 그리기 (가운데에 두고 길이 / 각도를 맞춘 얇은 이미지)
     void CreateLine(
         RectTransform from,
         RectTransform to)
@@ -548,18 +524,15 @@ public class MapGenerator : MonoBehaviour
         float distance =
             direction.magnitude;
 
-        // 선 위치
         lineRect.anchoredPosition =
             (start + end) / 2f;
 
-        // 선 길이
         lineRect.sizeDelta =
             new Vector2(
                 distance,
                 6f
             );
 
-        // 선 회전
         float angle =
             Mathf.Atan2(
                 direction.y,

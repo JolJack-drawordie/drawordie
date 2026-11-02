@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 전투의 턴 진행: 주사위 굴리기 → 카드 뽑기 → 플레이어 턴(카드 사용, 턴 종료 버튼) → 적 턴 → 반복.
+// 불러온 전투의 첫 턴은 저장된 손패 / 에너지로 바로 이어서 진행한다.
 public class TurnManager : MonoBehaviour
 {
-
     [Header("참조")]
     public GameManager gameManager;
     public DiceManager diceManager;
@@ -13,21 +14,20 @@ public class TurnManager : MonoBehaviour
     public PlayerUnit player;
     public EnemyUnit enemy;
 
+    // 적 행동 연출 (전투가 시작되면 적 오브젝트에서 찾음)
     [Header("전투 애니메이션 (선택)")]
-    public PlayerController playerController;
-    public PlayerSpineController playerSpineController;
     public EnemyController enemyController;
 
     [Header("턴 종료 버튼")]
-    public Button endTurnButton; // 비어있으면 씬에서 "EndTurnButton" 이름으로 찾음
-    public bool alignEndTurnWithRollButton = true; // 주사위 버튼과 같은 위치에 배치
+    public Button endTurnButton; // 비어 있으면 씬에서 "EndTurnButton" 이름으로 찾음
+    public bool alignEndTurnWithRollButton = true; // 주사위 버튼과 같은 자리에 배치
 
     [Header("턴 정보")]
     public int turnCount = 0;
-    public bool playerActionFinished = false;
+    public bool playerActionFinished = false; // 턴 종료 버튼을 눌렀는지
 
-    // 전투 씬(턴 진행 중인 씬)이 열려 있는지.
-    // 휴식 씬 등에 GameManager가 딸려 들어가도 전투로 오인하지 않도록 저장 가능 조건에서 이 값으로 판단
+    // 전투 씬(턴을 진행하는 씬)이 열려 있는지.
+    // 휴식 씬 등에 GameManager가 따라 들어가도 전투로 착각하지 않도록 저장 가능 조건에서 이 값으로 판단한다
     public static bool IsInBattleScene => instance != null;
     private static TurnManager instance;
 
@@ -41,6 +41,7 @@ public class TurnManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
+    // 카드 데이터를 서버에서 다 받은 뒤 전투 시작
     private void Start()
     {
         SetupEndTurnButton();
@@ -55,6 +56,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    // 덱 준비 → 전투 BGM → 전투 시작 → 턴 진행
     private void StartGame()
     {
         CardDataManager.Instance.OnDataLoaded -= StartGame;
@@ -66,14 +68,13 @@ public class TurnManager : MonoBehaviour
             PendingLoadData.pendingDeckJson = null;
         }
 
-        // ⭐ [로드 기능] 조건 추가 (원래는 !DeckManager.Instance.IsDeckInitialized 만 있었음)
-        // 로드된 게임이면 저장된 덱으로 복원되므로 기본 덱 초기화는 건너뜀 (GameManager.StartBattle에서 처리)
+        // 처음 하는 전투면 기본 덱으로 초기화 (불러온 전투는 GameManager.StartBattle에서 저장된 덱으로 복원)
         if (!PendingLoadData.isPending && !DeckManager.Instance.IsDeckInitialized)
         {
             DeckManager.Instance.InitializeDeck(CardDataManager.Instance.defaultAdjectiveIds, CardDataManager.Instance.defaultGerundIds);
-            DeckManager.Instance.IsDeckInitialized = true; // "이제 초기화 끝났다"고 체크 박아둠
+            DeckManager.Instance.IsDeckInitialized = true;
         }
-        // 배경 음악
+        // 전투 배경음
         if (SoundManager.Instance != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.GetBattleBGM());
         }
@@ -89,7 +90,6 @@ public class TurnManager : MonoBehaviour
             enemy = GameManager.Instance.Enemy;
 
             BattleLog.AddHeader(isLoadedBattle ? "전투 이어서 진행" : "전투 시작");
-            playerSpineController = PlayerSpineController.Instance;
 
             if (enemy != null)
             {
@@ -101,9 +101,10 @@ public class TurnManager : MonoBehaviour
         StartCoroutine(BattleLoop());
     }
 
+    // 전투가 끝날 때까지 턴을 반복
     private IEnumerator BattleLoop()
     {
-        bool isFirstLoop = true; // ⭐ [로드 기능] 추가
+        bool isFirstLoop = true; // 불러온 전투의 첫 턴인지 판단용
 
         while (!gameManager.isGameOver)
         {
@@ -111,11 +112,10 @@ public class TurnManager : MonoBehaviour
             gameManager.currentState = BattleState.TurnStart;
             BattleLog.AddTurn(turnCount);
 
-            // ⭐ [로드 기능] 추가 시작
-            // 로드된 게임의 첫 턴: 저장된 손패/코스트가 이미 있으므로 버리기/주사위/드로우를 건너뛰고 그대로 이어서 진행
+            // 불러온 전투의 첫 턴: 저장된 손패 / 에너지가 이미 있으므로 버리기 / 주사위 / 뽑기를 건너뛰고 그대로 이어서 진행
             bool isResumedTurn = isFirstLoop && PendingLoadData.isPending;
 
-            // 세이브에 있던 손패의 조합 카드 (첫 턴에만 사용하고 비움)
+            // 세이브에 있던 손패의 조합 카드 (첫 턴에만 쓰고 비움)
             List<ComboSaveData> savedCombos = null;
             if (isFirstLoop)
             {
@@ -126,8 +126,8 @@ public class TurnManager : MonoBehaviour
 
             isFirstLoop = false;
 
-            // 주사위를 굴리기 전(손패를 이미 버렸지만 아직 새로 뽑지 않은 상태)에 저장된 경우
-            // 복원할 손패가 없으므로, 이어서 진행하지 않고 새 턴처럼 주사위 굴리기부터 다시 시작한다.
+            // 주사위를 굴리기 전(손패를 버렸지만 아직 새로 뽑지 않은 상태)에 저장했으면
+            // 복원할 손패가 없으므로 새 턴처럼 주사위 굴리기부터 다시 시작한다
             if (isResumedTurn && DeckManager.Instance.Hand.Count == 0 && !hasSavedCombos)
             {
                 isResumedTurn = false;
@@ -141,7 +141,7 @@ public class TurnManager : MonoBehaviour
                 {
                     DataManager.Instance.RestoreHand(DeckManager.Instance.Hand);
 
-                    // 조합 카드는 조합표를 받아온 뒤에 다시 만든다
+                    // 조합 카드는 조합표를 받아 온 뒤에 다시 만든다
                     if (hasSavedCombos)
                     {
                         yield return new WaitUntil(() => ComboManager.Instance == null || ComboManager.Instance.IsLoadFinished);
@@ -149,12 +149,12 @@ public class TurnManager : MonoBehaviour
                     }
                 }
             }
-            // ⭐ [로드 기능] 추가 끝
+            // 새 턴: 손패 버리기 → 주사위 → 카드 뽑기
             else
             {
                 DeckManager.Instance.DiscardHand();
 
-                // 주사위 굴리기 버튼 대기
+                // 주사위 굴리기 버튼을 누를 때까지 대기
                 diceManager.ShowRollButton();
                 yield return new WaitUntil(() => diceManager.isRollFinished);
 
@@ -164,10 +164,10 @@ public class TurnManager : MonoBehaviour
                 foreach (var bonus in diceManager.BonusSources)
                     BattleLog.Add($"{bonus.source} 발동! 에너지 +{bonus.amount}", BattleLog.Kind.Dice);
 
-                // DataManager에 마나를 넘겨주며 카드 드로우 실행!
+                // 이번 턴 손패 뽑기
                 if (DataManager.Instance != null)
                 {
-                    DataManager.Instance.TriggerCardDraw(rolledEnergy);
+                    DataManager.Instance.TriggerCardDraw();
                 }
 
                 yield return new WaitForSeconds(1.5f);
@@ -180,7 +180,7 @@ public class TurnManager : MonoBehaviour
             playerActionFinished = false;
             ShowEndTurnButton(true);
 
-            // 카드 드래그로 공격, EndTurnButton이 EndPlayerTurn() 호출할 때까지 대기
+            // 카드를 끌어 사용하다가 턴 종료 버튼(EndPlayerTurn)을 누를 때까지 대기
             while (!playerActionFinished)
             {
                 if (gameManager.isGameOver)
@@ -189,14 +189,14 @@ public class TurnManager : MonoBehaviour
                     yield break;
                 }
 
-                // 카드 사용(공격 연출) 중에는 회색 처리
+                // 카드 연출 중에는 턴 종료 버튼을 누를 수 없게
                 if (endTurnButton != null)
                     endTurnButton.interactable = !EnemyTarget.IsActing;
 
                 yield return null;
             }
 
-            // 응축된 마력석: 턴 종료 버튼을 누르자마자 남은 에너지만큼 방어도 (적 공격 전에 받아야 의미가 있음)
+            // 유물 '응축된 마력석': 턴 종료 버튼을 누르자마자 남은 에너지만큼 방어도 (적 공격 전에 받아야 의미가 있음)
             if (RelicManager.Instance != null)
             {
                 RelicManager.Instance.OnTurnEnd(diceManager.CurrentEnergy, player);
@@ -208,12 +208,11 @@ public class TurnManager : MonoBehaviour
             Debug.Log("Enemy Turn Start");
             BattleLog.AddHeader($"{enemy.LogName}의 차례");
 
-            // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라짐
+            // 적 방어도는 지난 적 행동에서 얻은 것이 플레이어 턴 동안 유지되다가, 다음 적 행동 직전에 사라진다
             enemy.ResetShield();
 
             if (enemyController != null)
                 yield return StartCoroutine(enemyController.ExecuteAction());
-            //enemy.Attack(player);
             gameManager.CheckBattleResult();
 
             if (ShowBattleResultIfGameOver()) yield break;
@@ -231,6 +230,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    // 턴 종료 버튼 연결 (주사위 버튼과 같은 자리에 두고, 상황에 따라 둘 중 하나만 보이게)
     private void SetupEndTurnButton()
     {
         if (endTurnButton == null)
@@ -240,7 +240,6 @@ public class TurnManager : MonoBehaviour
         }
         if (endTurnButton == null) return;
 
-        // 주사위 버튼과 같은 자리에 겹쳐 두고, 상황에 따라 둘 중 하나만 보이게 함
         if (alignEndTurnWithRollButton && diceManager != null && diceManager.rollDiceButton != null)
             endTurnButton.transform.position = diceManager.rollDiceButton.transform.position;
 
@@ -254,6 +253,7 @@ public class TurnManager : MonoBehaviour
         endTurnButton.gameObject.SetActive(show);
     }
 
+    // 전투가 끝났으면 결과 화면을 띄우고 true
     private bool ShowBattleResultIfGameOver()
     {
         if (!gameManager.isGameOver) return false;
@@ -266,12 +266,13 @@ public class TurnManager : MonoBehaviour
         return true;
     }
 
+    // 턴 종료 버튼 (onClick에 연결)
     public void EndPlayerTurn()
     {
-        // 플레이어 턴이 아니거나 이미 종료 요청됐으면 무시
+        // 플레이어 턴이 아니거나 이미 종료를 눌렀으면 무시
         if (playerActionFinished || gameManager.currentState != BattleState.PlayerTurn) return;
 
-        // 카드 사용(공격 연출) 중에는 턴 종료 불가
+        // 카드 연출 중에는 턴 종료 불가
         if (EnemyTarget.IsActing)
         {
             Debug.Log("카드 사용 중에는 턴을 종료할 수 없습니다.");

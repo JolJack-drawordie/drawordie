@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 맵의 노드 하나 (일반 전투 / 중간보스 / 휴식 / 보스). 누르면 MapNodeManager가 해당 씬으로 이동시킨다.
 public class MapNode : MonoBehaviour
 {
     public enum NodeType
@@ -15,26 +16,22 @@ public class MapNode : MonoBehaviour
     [Header("Node Info")]
     public NodeType nodeType;
 
-    public int floor;
+    public int floor; // 층 (0부터)
 
-    public int index;
+    public int index; // 같은 층 안에서의 순서
 
-    // =========================
-    // Node Seed
-    // =========================
+    // 이 노드 전용 시드 (전투에 나올 몬스터 등을 정함, MapGenerator가 만듦)
 
     [Header("Node Seed")]
     public int nodeSeed;
 
+    // 다음 층에서 이어지는 노드
     [Header("Connected Nodes")]
     public List<MapNode> connectedNodes =
         new List<MapNode>();
 
     [Header("UI")]
     public Button button;
-
-    [Header("Progress")]
-    public bool isVisited = false;
 
     private MapNodeManager manager;
 
@@ -45,7 +42,7 @@ public class MapNode : MonoBehaviour
             button = GetComponent<Button>();
         }
 
-        // Unity 6 권장 방식
+        // 씬의 노드 매니저 (클릭 처리)
         manager =
             FindFirstObjectByType<MapNodeManager>();
 
@@ -55,6 +52,7 @@ public class MapNode : MonoBehaviour
         }
     }
 
+    // MapGenerator가 노드를 만들 때 종류 / 위치 / 시드 지정
     public void Initialize(
         NodeType type,
         int floorIndex,
@@ -65,10 +63,7 @@ public class MapNode : MonoBehaviour
         floor = floorIndex;
         index = nodeIndex;
 
-        // 노드 전용 Seed 저장
         nodeSeed = seed;
-
-        isVisited = false;
 
         Debug.Log(
             $"Node Initialized : " +
@@ -79,6 +74,7 @@ public class MapNode : MonoBehaviour
         );
     }
 
+    // 다음 층 노드와 연결 (중복 연결은 무시)
     public void AddConnection(MapNode nextNode)
     {
         if (nextNode == null)
@@ -112,27 +108,12 @@ public class MapNode : MonoBehaviour
         }
     }
 
+    // 지금 갈 수 있는 노드만 누를 수 있게
     public void SetInteractable(bool value)
     {
         if (button != null)
         {
             button.interactable = value;
         }
-    }
-
-    /// <summary>
-    /// 방문한 노드로 설정
-    /// </summary>
-    public void SetVisited()
-    {
-        isVisited = true;
-
-        SetInteractable(false);
-
-        Debug.Log(
-            $"Visited Node : " +
-            $"Floor {floor} / " +
-            $"Index {index}"
-        );
     }
 }

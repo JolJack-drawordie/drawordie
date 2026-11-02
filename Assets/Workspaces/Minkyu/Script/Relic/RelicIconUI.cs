@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
+// 보유한 유물 아이콘을 화면에 표시하고, 아이콘에 마우스를 올리면 이름 / 설명 창을 띄운다.
 public class RelicIconUI : MonoBehaviour
 {
     public static RelicIconUI Instance { get; private set; }
@@ -14,6 +14,7 @@ public class RelicIconUI : MonoBehaviour
     [SerializeField] private Transform relicIconContainer;
     [SerializeField] private GameObject relicIconPrefab;
 
+    // 유물 key ↔ 아이콘 그림 (인스펙터에서 연결)
     [Header("유물별 아이콘 연결")]
     [SerializeField]
     private List<RelicIconEntry> relicIcons =
@@ -30,6 +31,7 @@ public class RelicIconUI : MonoBehaviour
     [SerializeField] private float tooltipGap = 10f;
     [SerializeField] private float screenPadding = 15f;
 
+    // 유물 key와 아이콘 그림 한 쌍
     [Serializable]
     public class RelicIconEntry
     {
@@ -37,6 +39,7 @@ public class RelicIconUI : MonoBehaviour
         public Sprite icon;
     }
 
+    // 이미 표시한 유물 (같은 유물을 두 번 그리지 않도록)
     private readonly HashSet<string> displayedRelicKeys =
         new HashSet<string>();
 
@@ -64,7 +67,7 @@ public class RelicIconUI : MonoBehaviour
             tooltipRect =
                 relicTooltip.GetComponent<RectTransform>();
 
-            // 툴팁이 마우스 이벤트를 가로채지 않도록 설정
+            // 설명창이 마우스 이벤트를 가로채지 않도록
             Graphic[] graphics =
                 relicTooltip.GetComponentsInChildren<Graphic>(true);
 
@@ -87,11 +90,12 @@ public class RelicIconUI : MonoBehaviour
 
         if (tooltipRect != null)
         {
-            // 툴팁의 기준점을 중앙으로 설정
+            // 설명창 기준점을 가운데로
             tooltipRect.pivot = new Vector2(0.5f, 0.5f);
         }
     }
 
+    // 유물 목록을 서버에서 받아 올 때까지 기다렸다가 아이콘 표시
     private IEnumerator Start()
     {
         Debug.Log("[RelicIconUI] 아이콘 초기화 시작");
@@ -112,7 +116,7 @@ public class RelicIconUI : MonoBehaviour
         Debug.Log("[RelicIconUI] 아이콘 초기화 완료");
     }
 
-    // 현재 보유한 유물 아이콘을 다시 표시
+    // 지금 보유한 유물 아이콘을 다시 그린다 (유물을 얻을 때마다 호출)
     public void RefreshRelicIcons()
     {
         if (relicIconContainer == null)
@@ -235,7 +239,7 @@ public class RelicIconUI : MonoBehaviour
         }
     }
 
-    // 유물 키에 맞는 스프라이트 검색
+    // 유물 key에 맞는 아이콘 그림 찾기
     private Sprite FindRelicIcon(string relicKey)
     {
         foreach (RelicIconEntry entry in relicIcons)
@@ -250,7 +254,7 @@ public class RelicIconUI : MonoBehaviour
         return null;
     }
 
-    // 유물 툴팁 표시 (아이콘 바로 위에 표시)
+    // 유물 설명창 표시 (아이콘 바로 위)
     public void ShowRelicTooltip(
         RelicData relic,
         RectTransform iconRect)
@@ -277,7 +281,7 @@ public class RelicIconUI : MonoBehaviour
 
         relicTooltip.SetActive(true);
 
-        // 텍스트 변경 후 레이아웃 갱신
+        // 글자를 바꾼 뒤 크기를 다시 계산해야 위치가 맞음
         Canvas.ForceUpdateCanvases();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(
@@ -288,11 +292,11 @@ public class RelicIconUI : MonoBehaviour
 
         UpdateTooltipPosition(iconRect);
 
-        // 툴팁을 가장 위에 표시
+        // 설명창을 가장 위에 그림
         tooltipRect.SetAsLastSibling();
     }
 
-    // 아이콘 위쪽 가운데에 툴팁 배치 (위쪽 공간이 부족하면 아이콘 아래로)
+    // 아이콘 위쪽 가운데에 설명창 배치 (위쪽 공간이 부족하면 아이콘 아래로, 화면 밖으로는 나가지 않게)
     private void UpdateTooltipPosition(RectTransform iconRect)
     {
         if (tooltipRect == null ||
@@ -302,7 +306,7 @@ public class RelicIconUI : MonoBehaviour
             return;
         }
 
-        // 아이콘의 네 모서리를 Canvas 기준 좌표로 변환
+        // 아이콘의 네 모서리를 캔버스 기준 좌표로 변환
         Vector3[] corners = new Vector3[4];
         iconRect.GetWorldCorners(corners);
 
@@ -341,7 +345,7 @@ public class RelicIconUI : MonoBehaviour
         tooltipRect.anchoredPosition = new Vector2(centerX, centerY);
     }
 
-    // 유물 툴팁 숨기기
+    // 유물 설명창 숨기기
     public void HideRelicTooltip()
     {
         if (relicTooltip != null)

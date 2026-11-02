@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// 맵 씬 배경 그림을 지금 Act에 맞게 바꾼다.
 public class ActMapBackgroundManager : MonoBehaviour
 {
     [Header("Map Background")]
