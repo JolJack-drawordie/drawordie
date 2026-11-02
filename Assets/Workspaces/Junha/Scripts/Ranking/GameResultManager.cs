@@ -9,7 +9,7 @@ public class GameResultManager : MonoBehaviour
 {
     public static GameResultManager Instance;
 
-    private const string ResultUrl = "http://localhost:8080/api/game/result";
+    private static string ResultUrl => ApiConfig.Url("/api/game/result");
 
     // 결과 등록 요청 중인지 (랭킹 화면은 등록이 끝난 뒤 조회해야 내 기록이 포함됨)
     public bool IsSubmitting { get; private set; }

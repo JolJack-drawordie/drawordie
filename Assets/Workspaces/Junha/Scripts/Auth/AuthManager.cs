@@ -74,7 +74,7 @@ public class AuthManager : MonoBehaviour
 
     private const string AuthSceneName = "AuthScene";
     private const string NextSceneName = "LobbyScene";
-    private const string ApiBaseUrl = "http://localhost:8080";
+    private static string ApiBaseUrl => ApiConfig.BaseUrl;
 
     void Start()
     {

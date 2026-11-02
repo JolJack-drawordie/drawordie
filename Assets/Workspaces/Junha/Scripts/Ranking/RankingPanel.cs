@@ -16,7 +16,7 @@ public class RankingPanel : MonoBehaviour
 
     public const string ResultScene = "ResultRankingScene";
 
-    private const string RankingUrl = "http://localhost:8080/api/game/ranking";
+    private static string RankingUrl => ApiConfig.Url("/api/game/ranking");
     private const string MyRecordColor = "#FFD54A"; // 내 기록 강조 색
 
     [SerializeField] private TMP_Text myRankText;

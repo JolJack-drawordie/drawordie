@@ -31,6 +31,9 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
+        // 잠들어 있을 수 있는 서버를 미리 깨워 둠 (로그인을 누를 때 기다리지 않도록)
+        ApiConfig.WakeUpServer();
+
         // 메인 BGM
         if (SoundManager.Instance != null && SoundManager.Instance.mainBackgroundSound != null) {
             SoundManager.Instance.PlayBGM(SoundManager.Instance.mainBackgroundSound);

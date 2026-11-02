@@ -47,7 +47,7 @@ public class RelicManager : MonoBehaviour
         ownedRelicKeys.Clear();
     }
 
-    private const string ApiBaseUrl = "http://localhost:8080";
+    private static string ApiBaseUrl => ApiConfig.BaseUrl;
 
     private void Awake()
     {

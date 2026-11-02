@@ -113,7 +113,7 @@ public class ComboManager : MonoBehaviour
     // 서버에서 조합표 받기
     IEnumerator LoadCombinations()
     {
-        string url = "http://localhost:8080/api/game/load-combinations";
+        string url = ApiConfig.Url("/api/game/load-combinations");
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();

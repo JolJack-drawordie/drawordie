@@ -61,8 +61,8 @@ public class CardDataManager : MonoBehaviour
     // 형용사 / 동명사 목록을 차례로 받아 표를 만든 뒤 완료를 알린다
     public IEnumerator LoadCards()
     {
-        string adjUrl = "http://localhost:8080/api/game/load-adjectives";
-        string gerUrl = "http://localhost:8080/api/game/load-gerunds";
+        string adjUrl = ApiConfig.Url("/api/game/load-adjectives");
+        string gerUrl = ApiConfig.Url("/api/game/load-gerunds");
 
         yield return StartCoroutine(FetchData<AdjectiveList>(adjUrl, (list) => {
             adjectiveTable.Clear();
@@ -104,7 +104,7 @@ public class CardDataManager : MonoBehaviour
     // 새 게임 기본 덱 받기
     public IEnumerator LoadDefaultDeck()
     {
-        string defaultDeckUrl = "http://localhost:8080/api/game/load-default-deck";
+        string defaultDeckUrl = ApiConfig.Url("/api/game/load-default-deck");
 
         yield return StartCoroutine(FetchData<DefaultDeckData>(defaultDeckUrl, (deckData) => {
             defaultAdjectiveIds = deckData.adjectiveIds;
